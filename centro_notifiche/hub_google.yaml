@@ -1,0 +1,92 @@
+#######################################-#######################################
+##                                 CUSTOMIZE                                   
+#######################################-#######################################
+homeassistant:
+  customize:
+    ################################################
+    ## NODE ANCHORS
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'Centro Notifiche'
+        version: 'Google 2.0'
+        author: 'Caio & Gianpi'
+        site: 'www.hassiohelp.eu'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+  ## input
+    input_boolean.tts_google_mode:
+      <<: *customize
+    input_boolean.google_switch:
+      <<: *customize
+    input_select.notification_media_player_google:
+      <<: *customize
+    input_select.language:
+      <<: *customize
+
+  ## Sensor
+    sensor.media_player_google:
+      <<: *customize
+
+#######################################-#######################################
+##                                   INPUT
+#######################################-#######################################
+input_boolean:
+  tts_google_mode:
+    name: Google Say / Google Assistant
+    icon: mdi:google
+
+  google_switch:
+    name: Google
+    icon: mdi:google-home
+
+input_select:
+  #----------------------------------------------------------------------------------------------------#
+  # Inserire i propri dispositivi GOOGLE con il proprio friandly_name o usare il file secret.yaml      #
+  #----------------------------------------------------------------------------------------------------#
+  notification_media_player_google:
+    name: Sorgente Google
+    icon: mdi:speaker-wireless
+    options: !secret notification_media_player_google_hub
+
+  language:
+    name: Lingua
+    options:
+      - It
+      - En
+      - Fr
+      - De
+      - Nl
+
+#######################################-#######################################
+##                                  SENSOR
+#######################################-#######################################
+sensor:
+  - platform: template
+    sensors:
+      media_player_google:
+        friendly_name: 'Player Google Attivo'
+        entity_id:
+          - input_select.notification_media_player_google
+        value_template: >
+          {% set domains = ['media_player','group'] -%}
+          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_google')|lower -%}
+          {% if x.domain == 'group' %}
+          {{- x.attributes.entity_id | join(', ') -}}
+          {% else %}
+          {{- x.entity_id -}}
+          {% endif %}
+          {% endfor %}
+        icon_template: >-
+          {% set domains = ['media_player','group'] -%}
+          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_google')|lower -%}
+          {% if x.domain == 'group' %}
+          mdi:speaker-multiple
+          {% else %}
+          mdi:speaker
+          {% endif %}
+          {% endfor %}

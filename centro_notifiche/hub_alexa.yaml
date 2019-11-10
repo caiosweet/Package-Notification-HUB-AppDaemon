@@ -1,0 +1,130 @@
+#######################################-#######################################
+##                                 CUSTOMIZE                                   
+#######################################-#######################################
+homeassistant:
+  customize:
+  ## NODE ANCHORS
+    package.node_anchors:
+      customize: &customize
+        package: 'Centro Notifiche'
+        version: 'Alexa 2.0'
+        author: 'Caio & Gianpi'
+        site: 'www.hassiohelp.eu'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+  ## Automation
+    automation.alexa_method_select_hub:
+      <<: *customize
+      friendly_name: 'Selezione Metodo Alexa'
+      icon: mdi:alpha-a-circle-outline
+  ## input 
+    input_boolean.alexa_switch:
+      <<: *customize
+    input_boolean.alexa_push:
+      <<: *customize
+    input_select.notification_media_player_alexa:
+      <<: *customize
+    input_select.default_alexa_method:
+      <<: *customize
+    input_select.default_alexa_type:
+      <<: *customize
+  ## Sensor
+    sensor.last_alexa:
+      <<: *customize
+      friendly_name: 'Last Alexa'
+      icon: mdi:play-network
+    sensor.media_player_alexa:
+      <<: *customize
+
+#######################################-#######################################
+##                                  SENSOR
+#######################################-#######################################
+sensor:
+  - platform: template
+    sensors:
+      media_player_alexa:
+        friendly_name: 'Player Alexa Attivo'
+        entity_id: input_select.notification_media_player_alexa, sensor.last_alexa
+        value_template: >
+          {% set domains = ['media_player','group','sensor'] -%}
+          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_alexa')|lower -%}
+          {% if x.domain == 'sensor' %}
+          {{ x.state }}
+          {% else %}
+          {{- x.entity_id -}}
+          {% endif %}
+          {% endfor %}
+        icon_template: >-
+          {% set domains = ['media_player','group','sensor'] -%}
+          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_alexa')|lower -%}
+          {% if x.domain == 'group' %}
+          mdi:speaker-multiple
+          {% else %}
+          mdi:speaker
+          {% endif %}
+          {% endfor %}
+
+#######################################-#######################################
+##                                   INPUT
+#######################################-#######################################
+
+input_boolean:
+  alexa_switch:
+    name: Alexa
+    icon: mdi:amazon-alexa
+  alexa_push:
+    name: Alexa Push
+    icon: mdi:cellphone-text
+
+input_select:
+  #----------------------------------------------------------------------------------------------------#
+  # Inserire i propri dispositivi ALEXA con il proprio friandly_name                                   #
+  #----------------------------------------------------------------------------------------------------#
+  notification_media_player_alexa:
+    name: Sorgente Alexa
+    icon: mdi:speaker-wireless
+    options: !secret notification_media_player_alexa_hub
+  default_alexa_method:
+    name: Metodo Predefinito Alexa
+    icon: mdi:speaker-multiple
+    options:
+      - All
+      - Speak
+      - Show
+      - None
+  default_alexa_type:
+    name: Tipo Predefinito Alexa
+    icon: mdi:bullhorn-outline
+    options:
+      - Announce
+      - Push
+      - TTS
+
+#######################################-#######################################
+##                                 AUTOMATION
+#######################################-#######################################
+automation:
+#1-----------------------------------------------------------------------------------------------------#
+  # Selezione automatica alexa_method per announce (Speak di default) o None per TTS e PUSH
+  #----------------------------------------------------------------------------------------------------#
+  - id: alexa_method_select_hub
+    alias: alexa_method_select_hub
+    initial_state: true
+    hide_entity: true
+    trigger:
+      - platform: state
+        entity_id: input_select.default_alexa_type
+    action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.default_alexa_method
+        option: >
+          {% if is_state('input_select.default_alexa_type', 'Announce') %}
+            Speak
+          {% else %}
+            None
+          {% endif %}

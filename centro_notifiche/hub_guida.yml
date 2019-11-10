@@ -1,0 +1,84 @@
+######################################################################################################
+#  Script per inviare notifiche audio|testo|web_UI durante le ore normali quando siamo a casa o con ospiti
+#  Funziona in questo modo:
+######################################################################################################
+
+  #action:
+    # service: script.my_notify
+    # data:
+      # call_no_annuncio: 1 [Non riproduce Buon giorno|Buon pomeriggio|Buona sera]
+      # call_bentornato: 1 (person) [Aggiunge in maniera casuale una frase con il nome della persona (variabile ~person~)]
+      # call_saluto: 1 [Aggiunge in maniera casuale una parola/frase (ciao, salve, Ehi, ragazzi!...)]
+      # call_introduzione: 1 [Aggiunge in maniera casuale una parola/frase per una "breve" introduzione sull'assistente]
+      # call_va_bene: 1 [Aggiunge in maniera casuale una parola/frase di affermazione (ok, certo, Ovviamente! Felice di esserti di aiuto.)]
+      # call_informare: 1 [Aggiunge in maniera casuale una parola/frase per di tipo informativo (Ti informo che... Vale la pena sapere...)]
+      # call_modo_ospite_on: 1 [Aggiunge in maniera casuale una parola/frase per avvertirci che la modalità ospite si è attivata ]
+      # call_modo_ospite_off: 1 [Aggiunge in maniera casuale una parola/frase per avvertirci che la modalità ospite è stata disattivata ]
+      # call_controllo_porte: 1 []
+      # call_spegni: 1 [Aggiunge in maniera casuale una parola/frase di spegnimento. Esempio da usare quando il sitema si riavvia o si spegne]
+      # call_nuovo_dispositivo: (introduzione) [Chiama la macro nuovo_dispositivo aggiungendo la macro introduzione() 
+      #                                         che inserisce una frase introduttiva nella variabile ~introduzione~]
+      # call_fatto_casuale: 1 [aggiunta di un fatto preso a caso da quelli inseriti nella parte  {# chiama un fatto casuale #} a fine codice del build_message.yml]
+      # call_no_fatto_casuale: 1 [Evita l'aggiunta di un fatto preso a caso da quelli inseriti nella parte  {# chiama un fatto casuale #} a fine codice del build_message.yml]
+      # call_inizio_lavoro: 1 []
+      # call_fine_lavoro: 1 []
+      # call_controllo_luci: 1 []
+      # call_controllo_infissi: 1 []
+
+# Variabili richiamabili
+
+      # notify: telegram      [Serve per scegliere il tipo di servzio da usare per l'invio del messaggio (notify.pushover, notify.famiglia, notify.telegram)]
+      # notify: 0             [Mettendo 0, non verrà inviata la notifica di testo]
+      # location:             "home" oppure "not_home" [Per inviare i messaggi di testo solo se si è in casa o fuori casa.]
+      # link:                 http://tuolink [Invia un link solo nei messaggi testo]
+      # url:                  [Per l'ivio di immagini tramite telegram o servizi che utilizzano lo stesso metodo con url ]
+      # file:                 [Per l'ivio di immagini tramite telegram o servizi che utilizzano lo stesso metodo con file]
+      # caption:              [Per il testo all'interno dell'immagine - Se omesso, vengono utilizzati Title e Message]
+      # title:                'Notifiche Hassio' [Usato per aggiungere un titolo alla notifica/messaggio, ad esclusione del TTS]
+      # message:              "messaggio personale da aggiungere" [Il proprio messaggio che verrà inserito, fra le varie macro, annuncio, salut, spegni... se chiamate!]
+      # message_tts:          messaggio solo per la funzione TTS [Se il campo resta vuoto o non viene utilizzato, verrà considerato il contenuto di "message"]
+      # volume:               [numero da 0 a 1 es. 0.50 per il 50% del volume]
+      # mute: 1               [Il messaggio audio non verà riprodotto dal media_player]
+      # no_show: 1            [Il messaggio non verrà inserito nelle notifiche persistenti di Hass]
+      # alexa_type:           [Il tipo di servizio che userà Alexa (tts, announce, push)]
+      # alexa_method:         [Solo per annuncio (announce). Controlla se l'annuncio deve essere pronunciato, visualizzato o entrambi. (speak, show, all)]
+      # alexa_push: 1         [Invia notifica push se impostato ad 1 se Alexa switch è on se Push è on]
+      # media_player_alexa:   [Per inviare le notifiche ad un media player specifico - inserire l'entity_id (es. media_player.echo_di_caio)]
+      # media_player_google:  [Per inviare le notifiche ad un media player specifico - inserire l'entity_id (es. media_player.camera)]
+      # person: "Caio"        [Variabile usata per il nome della persona] Vedi esempio trigger più sotto, da usare per ricavare il nome della persona in automatico
+      # benvenuto:            [Si può eliminare se  volete. Variabile usata dall'esterno dello script (tipo message:) Chiamata da parte di un'automazione ]
+
+
+## Se si utilizza un template ricordarsi di usare data_template
+    # data_template:
+    #   person:  >-
+    #     {{ trigger.to_state.attributes.friendly_name }}
+######################################################################################################
+
+#Esempio invio foto con URL o FILE (se CAPTION è definito verranno utilizzati TITLE e MESSAGE)
+# script:
+#   my_notify_telegram_foto_file_file:
+#     alias: 'Invio foto www test'
+#     sequence:
+#       - service: script.my_notify
+#         data_template:
+#           alexa_player: >
+#             {{ states('sensor.last_alexa') }}
+#           google_player: >
+#             media_player.black2
+#         data:
+#           title: 'Invio foto da www'
+#           message: 'Test per invio foto da www'
+#           file: "/config/extra/www.png"
+#           caption: "da hassio"
+#-----------------------------------------------------------------------------------------------------
+#   my_notify_telegram_foto_url_file:
+#     alias: 'Invio foto www test'
+#     sequence:
+#       - service: script.my_notify
+#         data_template:
+#           title: 'Invio foto da url'
+#           message: 'Test per invio foto da url'
+#           url: >-
+#               {{trigger.to_state.attributes.image_url}}
+#           notify: telegram

@@ -1,0 +1,155 @@
+#######################################-#######################################
+##                                 CUSTOMIZE                                   
+#######################################-#######################################
+homeassistant:
+  customize:
+    ################################################
+    ## NODE ANCHORS
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'Centro Notifiche'
+        version: 'Ariela 2.0'
+        author: 'Caio & Gianpi'
+        site: 'www.hassiohelp.eu'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## Automation
+    ################################################
+    automation.event_notifications_tts_ariela_hub:
+      <<: *customize
+      friendly_name: Evento TTS Ariela
+      icon: mdi:alpha-a-circle-outline
+    automation.event_notifications_push_ariela_hub:
+      <<: *customize
+      friendly_name: Evento PUSH Ariela
+      icon: mdi:alpha-a-circle-outline
+    ################################################
+    ## input Boolean
+    ################################################
+    input_boolean.ariela_switch:
+      <<: *customize
+    input_boolean.ariela_push:
+      <<: *customize
+
+#######################################-#######################################
+##                                   INPUT
+#######################################-#######################################
+
+input_boolean:
+  ariela_switch:
+    name: Ariela
+    icon: mdi:android-studio
+
+  ariela_push:
+    name: Ariela Push
+    icon: mdi:cellphone-text
+
+#######################################-#######################################
+##                                 AUTOMATION
+#######################################-#######################################
+automation:
+  #----------------------------------------------------------------------------------------------------#
+  # PUSH #
+  #----------------------------------------------------------------------------------------------------#
+  - id: event_notifications_push_ariela_hub
+    alias: event_notifications_push_ariela_hub
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: hub
+    condition:
+      - condition: template
+        value_template: >
+          {{ is_state('input_boolean.ariela_push', 'on') }}
+    action:
+      - service: !secret ariela_notify
+        data_template:
+          title: >- 
+            {{ trigger.event.data.title }}
+          message: >-
+            {{ trigger.event.data.message  |replace('\n','')|replace('   ',' ')| replace('  ',' ') }}
+
+          # ----- DA IMPLEMENTARE -----#
+          
+          # data:
+          #   actions: # action and title
+          #     - action: "{{ ariela_action_1 }}"
+          #       title: "{{ ariela_action_title_1 }}"
+          #     - action: "{{ ariela_action_2 }}"
+          #       title: "{{ ariela_action_title_2}}"
+          #     - action: "{{ ariela_action_3 }}"
+          #       title: "{{ ariela_action_title_3 }}"
+          #   color: "{{ ariela_color }}" #Colore icona blu di default  # "#00ff00" #verde "#FF0000" #rosso #
+          #   dismiss: "{{ ariela_dismiss }}" # true or false (funziona insieme a tag)
+          #   force_image: "{{ force_image }}" # boolean, default false. Put this to true to force images to be downloaded
+          #   icon: "{{ ariela_icon }}" #A URL of an icon to use for the notification
+          #   image: "{{ ariela_image }}" # A URL of an image to send
+          #   message_type: "{{ ariela_message_type }}" # notification or data
+          #   stream_source: "{{ ariela_stream_source }}" # A camera entity id (eg: camera.ffmpeg) or http / https video file url to stream. 
+          #   tag: "{{ ariela_tag }}" # id integer
+          #   url: "{{ url }}" # An URL that you want to be opened with the implicit browser when clicking the notification
+
+  #----------------------------------------------------------------------------------------------------#
+  # ARIELA TTS - ANDROID #
+  #----------------------------------------------------------------------------------------------------#
+  # - id: event_notifications_tts_ariela_hub
+  #   alias: event_notifications_tts_ariela_hub
+  #   initial_state: true
+  #   trigger:
+  #     - platform: event
+  #       event_type: hub
+  #   condition:
+  #     - condition: template
+  #       value_template: >
+  #         {{ trigger.event.data.mute | length == 0 }}
+  #     - condition: template
+  #       value_template: >
+  #         {{ is_state('input_boolean.ariela_switch', 'on') }}
+  #     - condition: state
+  #       entity_id: input_boolean.speech_notifications
+  #       state: 'on'
+  #     - condition: and
+  #       conditions:
+  #         - condition: or
+  #           conditions:
+  #             - condition: template
+  #               value_template: >
+  #                 {{ is_state('binary_sensor.dnd', 'off') }}
+  #             - condition: state
+  #               entity_id: input_boolean.priority_message
+  #               state: 'on'
+  #         - condition: or
+  #           conditions:
+  #             - condition: state
+  #               entity_id: group.location_tracker
+  #               state: 'home'
+  #             - condition: state
+  #               entity_id: input_boolean.guest_mode
+  #               state: 'on'
+  #   action:
+  #     - service: mqtt.publish
+  #       data_template:
+  #         topic: !secret ariela_tts
+  #         payload: >-
+  #            {{ trigger.event.data.message |replace('\n','')|replace('   ',' ')| replace('  ',' ')}}
+
+#----- SCHEMA -----#
+# title
+# message
+# data:
+#   actions
+#   color
+#   dismiss
+#   force_image
+#   icon
+#   image
+#   message_type
+#   stream_source
+#   tag
+#   url
