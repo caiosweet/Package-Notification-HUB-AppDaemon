@@ -373,6 +373,8 @@ script:
             {{ media_player_alexa }}
           language: >
             {{ language }}
+          priority: >
+            {{ priority }}
           message_tts: >-
             {{ message_tts | replace('\n','') | replace('   ',' ') | replace('  ',' ') }}
           #######################################-#######################################
