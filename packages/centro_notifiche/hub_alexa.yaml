@@ -16,15 +16,8 @@ homeassistant:
         haaska_hidden: false
         homebridge_hidden: false
 
-  ## Automation
-    automation.alexa_method_select_hub:
-      <<: *customize
-      friendly_name: 'Selezione Metodo Alexa'
-      icon: mdi:alpha-a-circle-outline
   ## input 
     input_boolean.alexa_switch:
-      <<: *customize
-    input_boolean.alexa_push:
       <<: *customize
     input_select.notification_media_player_alexa:
       <<: *customize
@@ -76,14 +69,8 @@ input_boolean:
   alexa_switch:
     name: Alexa
     icon: mdi:amazon-alexa
-  alexa_push:
-    name: Alexa Push
-    icon: mdi:cellphone-text
 
 input_select:
-  #----------------------------------------------------------------------------------------------------#
-  # Inserire i propri dispositivi ALEXA con il proprio friandly_name                                   #
-  #----------------------------------------------------------------------------------------------------#
   notification_media_player_alexa:
     name: Sorgente Alexa
     icon: mdi:speaker-wireless
@@ -92,39 +79,11 @@ input_select:
     name: Metodo Predefinito Alexa
     icon: mdi:speaker-multiple
     options:
-      - All
       - Speak
-      - Show
-      - None
+      - All
   default_alexa_type:
     name: Tipo Predefinito Alexa
     icon: mdi:bullhorn-outline
     options:
-      - Announce
-      - Push
       - TTS
-
-#######################################-#######################################
-##                                 AUTOMATION
-#######################################-#######################################
-automation:
-#1-----------------------------------------------------------------------------------------------------#
-  # Selezione automatica alexa_method per announce (Speak di default) o None per TTS e PUSH
-  #----------------------------------------------------------------------------------------------------#
-  - id: alexa_method_select_hub
-    alias: alexa_method_select_hub
-    initial_state: true
-    hide_entity: true
-    trigger:
-      - platform: state
-        entity_id: input_select.default_alexa_type
-    action:
-    - service: input_select.select_option
-      data_template:
-        entity_id: input_select.default_alexa_method
-        option: >
-          {% if is_state('input_select.default_alexa_type', 'Announce') %}
-            Speak
-          {% else %}
-            None
-          {% endif %}
+      - Announce

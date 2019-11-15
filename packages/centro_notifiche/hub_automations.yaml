@@ -86,6 +86,9 @@ automation:
     trigger:
       - platform: state
         entity_id: updater.updater
+      - platform: state
+        entity_id: binary_sensor.updater
+        to: 'on'
     action:
       - service: script.my_notify
         data:
@@ -146,69 +149,69 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   # Bentronato # Esempio Call di Bentornato [ if call_bentornato == 1 Macro {{ bentornato(person) }} ]
   #----------------------------------------------------------------------------------------------------#
-  - id: Bentornato HUB
-    alias: Bentornato
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: !secret location_tracker_hub
-          # - person.nome
-        from: 'not_home'
-        to: 'home'
-        for: '00:02:00'
-    action:
-      - service: script.my_notify
-        data:
-          call_no_annuncio: 1
-          call_bentornato: 1
-        data_template:
-          alexa_type: "announce"
-          alexa_method: "all"
-          title: Bentornato
-          person: >-
-            {{ trigger.to_state.attributes.friendly_name }}
+  # - id: Bentornato HUB
+  #   alias: Bentornato
+  #   initial_state: true
+  #   trigger:
+  #     - platform: state
+  #       entity_id: !secret location_tracker_hub
+  #         # - person.nome
+  #       from: 'not_home'
+  #       to: 'home'
+  #       for: '00:02:00'
+  #   action:
+  #     - service: script.my_notify
+  #       data:
+  #         call_no_annuncio: 1
+  #         call_bentornato: 1
+  #       data_template:
+  #         alexa_type: "announce"
+  #         alexa_method: "all"
+  #         title: Bentornato
+  #         person: >-
+  #           {{ trigger.to_state.attributes.friendly_name }}
 
   #----------------------------------------------------------------------------------------------------#
   # Lavoro/Zone # Esempio Call di Inizio/Fine lavoro [ {% if call_fine_lavoro == 1 %} {{ fine_lavoro(person) }} {% endif %} ]
   #----------------------------------------------------------------------------------------------------#
-  - id: notifica_inizio_lavoro_hub
-    alias: Notifica Inzio Lavoro
-    initial_state: true
-    trigger:
-      platform: state
-      entity_id: !secret location_tracker_hub
-      to: "Lavoro"
-    action:
-      - service: script.my_notify
-        data:
-          call_no_annuncio: 1
-          call_inizio_lavoro: 1
-          #notify: "Famiglia"
-          title: "In Ufficio"
-          alexa_type: "tts"
-        data_template:
-          person: >-
-            {{ trigger.to_state.attributes.friendly_name }}
+  # - id: notifica_inizio_lavoro_hub
+  #   alias: Notifica Inzio Lavoro
+  #   initial_state: true
+  #   trigger:
+  #     platform: state
+  #     entity_id: !secret location_tracker_hub
+  #     to: "Lavoro"
+  #   action:
+  #     - service: script.my_notify
+  #       data:
+  #         call_no_annuncio: 1
+  #         call_inizio_lavoro: 1
+  #         #notify: "Famiglia"
+  #         title: "In Ufficio"
+  #         alexa_type: "tts"
+  #       data_template:
+  #         person: >-
+  #           {{ trigger.to_state.attributes.friendly_name }}
 
-  - id: notifica_fine_lavoro_hub
-    alias: Notifica Fine Lavoro
-    initial_state: true
-    trigger:
-      platform: state
-      entity_id: !secret location_tracker_hub
-      from: "Lavoro"
-      to: "not_home"
-    action:
-      - service: script.my_notify
-        data:
-          call_no_annuncio: 1
-          call_fine_lavoro: 1
-          #notify: "Nome"
-          title: "Fine Lavoro"
-          alexa_type: "tts"
-        data_template:
-          person: >-
-            {{ trigger.to_state.attributes.friendly_name }}
+  # - id: notifica_fine_lavoro_hub
+  #   alias: Notifica Fine Lavoro
+  #   initial_state: true
+  #   trigger:
+  #     platform: state
+  #     entity_id: !secret location_tracker_hub
+  #     from: "Lavoro"
+  #     to: "not_home"
+  #   action:
+  #     - service: script.my_notify
+  #       data:
+  #         call_no_annuncio: 1
+  #         call_fine_lavoro: 1
+  #         #notify: "Nome"
+  #         title: "Fine Lavoro"
+  #         alexa_type: "tts"
+  #       data_template:
+  #         person: >-
+  #           {{ trigger.to_state.attributes.friendly_name }}
 
   #----------------------------------------------------------------------------------------------------#
   # Nuovo Dispositivo Connesso

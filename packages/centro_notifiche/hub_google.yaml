@@ -45,9 +45,6 @@ input_boolean:
     icon: mdi:google-home
 
 input_select:
-  #----------------------------------------------------------------------------------------------------#
-  # Inserire i propri dispositivi GOOGLE con il proprio friandly_name o usare il file secret.yaml      #
-  #----------------------------------------------------------------------------------------------------#
   notification_media_player_google:
     name: Sorgente Google
     icon: mdi:speaker-wireless
