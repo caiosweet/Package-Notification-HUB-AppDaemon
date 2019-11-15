@@ -4,7 +4,7 @@ icon: mdi:account-tie
 cards:
   - type: custom:banner-card
     heading: "\U0001f935 Alfred"
-    background: 'var(--primary-color)' #"#03a9f4"
+    background: 'var(--primary-color)'
     link: /lovelace/centro_notifiche
     entities:
       - entity: sensor.period_of_day_volume
@@ -26,7 +26,6 @@ cards:
       - entity: input_select.notification_media_player_google
         action:
           service: input_select.select_next
-
 
   # CARD 99 Gruppo Automazioni
   - type: entities
@@ -69,7 +68,7 @@ cards:
         action_name: Ascolta
         service: input_boolean.turn_on
         service_data:
-              entity_id: input_boolean.last_message
+          entity_id: input_boolean.last_message
       - type: custom:fold-entity-row
         head:
           type: section
@@ -139,7 +138,6 @@ cards:
       - type: section
         label: ''
       - entity: input_boolean.alexa_switch
-      - entity: input_boolean.alexa_push
       - entity: input_select.notification_media_player_alexa
       - entity: input_select.default_alexa_type
       - entity: input_select.default_alexa_method
@@ -152,5 +150,3 @@ cards:
       - type: section
         label: ''
       - entity: input_boolean.ariela_switch
-      - entity: input_boolean.ariela_push
-      - entity: automation.event_notifications_push_ariela_hub
