@@ -1,0 +1,103 @@
+
+#######################################-#######################################
+##                                SCRIPT-TEST
+#######################################-#######################################
+script:
+  centro_notifiche_test:
+    alias: 'centro_notifiche_test'
+    sequence:
+
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          media_player_alexa: media_player.studio, media_player.sala
+          media_player_google: media_player.red, media_player.black2
+          volume: 0.4
+        data_template:
+          title: >-
+            M0 - {{now().time()}} 
+          message: >-
+            M0 - Volume 4. Gruppo Media Player
+          message_tts: >-
+            M0 - Messaggio TTS diverso da Testo
+
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          media_player_alexa: media_player.studio
+          media_player_google: media_player.red
+          volume: 0.5
+        data_template:
+          title: >-
+            M1 - {{now().time()}} 
+          message: >-
+            M1 - Volume 5. Media Player Singolo
+
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          volume: 0.4
+        data_template:
+          title: >-
+            M2 - {{now().time()}} 
+          message: >-
+            M2 - Volume scelto 4.
+            {% set alexa = ' Media player selezionato ' + states('input_select.notification_media_player_alexa') +'. '%}
+            {% set google = ' Google Media player selezionato ' + states('input_select.notification_media_player_google') %}
+            {% if states('input_boolean.alexa_switch') == 'on' %}
+            {{alexa}}
+            {% endif %}
+            {% if states('input_boolean.google_switch') == 'on' %}
+            {{google}}
+            {% endif %}
+
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          volume: 0.3
+        data_template:
+          title: >-
+            M3 - {{now().time()}} 
+          message: >-
+            M3 - Volume scelto 3.
+
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+        data_template:
+          title: >-
+            M4 - {{now().time()}} 
+          message: >-
+            Ciao, mi chiamo {{'ehm, non mi hai dato un nome? ' if states('input_text.personal_assistant_name') == '' 
+            else states('input_text.personal_assistant_name')}}, sono un centro notifiche personalizzato.
+
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+        data_template:
+          title: >-
+            M5 - {{now().time()}} 
+          message: >
+            M5 è {{states('sensor.period_of_day')}}
+            {% if states('input_boolean.alexa_switch') == 'on' %}
+            {% set alexa = '. Media player selezionato ' 
+            + states('input_select.notification_media_player_alexa')
+            + '. Tipo ' + states('input_select.default_alexa_type')
+            + '. Metodo ' + ('Nessuno' if states('input_select.default_alexa_method5') == 'unknown' else states('input_select.default_alexa_method5')) %}
+            {% endif %}
+            {% if states('input_boolean.google_switch') == 'on' %}
+            {% set google = '. Google media player selezionato ' + states('input_select.notification_media_player_google')
+            +'. Servizio ' + ('Google Assistant ' if states('input_boolean.tts_google_mode') == 'on' else 'Google TTS') %}
+            {% endif %}
+            {% set message = '. Volume programmato ' + states('sensor.period_of_day_volume')
+            +', Modo silenzioso ' + states('binary_sensor.dnd')
+            +', Modo ospite ' + states('input_boolean.guest_mode')
+            +', Messaggio prioritario ' + states('input_boolean.priority_message')
+            +', Notifiche vocali ' + states('input_boolean.speech_notifications')
+            +', Notifiche testo ' + states('input_boolean.text_notifications')
+            +', Notifiche persistenti ' + states('input_boolean.screen_notifications') %}
+            {{(alexa ~ google ~ message)|replace(' off',' spento')|replace(' on',' acceso')}}
+
+
+
+

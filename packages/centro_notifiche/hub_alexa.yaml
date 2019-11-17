@@ -87,3 +87,4 @@ input_select:
     options:
       - TTS
       - Announce
+      - Push

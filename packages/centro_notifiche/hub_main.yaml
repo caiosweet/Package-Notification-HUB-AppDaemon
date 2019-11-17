@@ -235,7 +235,7 @@ input_number:
     icon: mdi:volume-vibrate
     min: 0
     max: 5
-    step: 1
+    step: 0.1
     unit_of_measurement: 'sec'
 
 input_select:
