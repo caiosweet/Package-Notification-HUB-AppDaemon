@@ -150,3 +150,37 @@ cards:
       - type: section
         label: ''
       - entity: input_boolean.ariela_switch
+
+  # CARD TEST
+  - type: entities
+    title: CARD TEST
+    show_header_toggle: false
+    entities:
+      # - entity: input_boolean.disattiva_centro
+      #   name: disattiva centro notifiche
+      - entity: script.centro_notifiche_test
+        name: Test coda 1
+      - type: call-service
+        icon: mdi:power
+        name: Test Centro Notifiche
+        action_name: Esegui TEST
+        service: script.turn_on
+        service_data:
+          entity_id: script.centro_notifiche_test
+        secondary_info: last-changed
+      - entity: script.my_notify_telegram_foto_url_file
+        secondary_info: last-changed
+      - entity: sensor.period_of_day
+        secondary_info: last-changed
+      - entity: sensor.period_of_day_volume
+        secondary_info: last-changed
+      - type: section
+        label: 'Alexa'
+      - entity: sensor.media_player_alexa
+        secondary_info: last-changed
+      - entity: sensor.last_alexa
+        secondary_info: last-changed
+      - type: section
+        label: 'Google'
+      - entity: sensor.media_player_google
+        secondary_info: last-changed
