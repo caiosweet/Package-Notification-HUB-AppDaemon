@@ -81,11 +81,12 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   # Nuova versione di Hassi.io
   #----------------------------------------------------------------------------------------------------#
-  - alias: Update notifications
+  - id: update_notifications_hub
+    alias: Update notifications hub
     initial_state: true
     trigger:
-      - platform: state
-        entity_id: updater.updater
+      # - platform: state
+      #   entity_id: updater.updater
       - platform: state
         entity_id: binary_sensor.updater
         to: 'on'
@@ -93,8 +94,8 @@ automation:
       - service: script.my_notify
         data:
           title: "Nuovo Aggiornamento Hassio"
-          message: "Home Assistant {{ states('updater.updater') }} è disponibile."
-          file: https://raw.githubusercontent.com/home-assistant/home-assistant-assets/master/logo-round-192x192.png
+          message: "Home Assistant {{ state_attr('binary_sensor.updater','newest_version') }} è disponibile."
+          link: https://raw.githubusercontent.com/home-assistant/home-assistant-assets/master/logo-round-192x192.png
 
   #----------------------------------------------------------------------------------------------------#
   # Benvenuto # Esempio Macro di Benvenuto elaborata al di fuori del buil_message   {{ benvenuto }}
