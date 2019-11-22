@@ -83,6 +83,32 @@ automation:
           link: https://raw.githubusercontent.com/home-assistant/home-assistant-assets/master/logo-round-192x192.png
 
   #----------------------------------------------------------------------------------------------------#
+  # Aggiornamenti HACS
+  #----------------------------------------------------------------------------------------------------#
+  - id: hacs_updater_hub
+    alias: "Notifica Aggiornamenti HACS"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.hacs
+    condition:
+      - condition: template
+        value_template: "{{ trigger.to_state.state > trigger.from_state.state }}"
+    action:
+      - service: script.my_notify
+        data_template:
+          mute: 1
+          title: "HACS"
+          message: >-
+            Aggiornamenti plug-in disponibili. 
+            {%set hacs=state_attr('sensor.hacs','repositories')%}
+            {%set hacs_num=states('sensor.hacs')|int%}
+            {%for n in range(0,hacs_num)%}
+            *{{state_attr('sensor.hacs','repositories')[n]['display_name']}}* {{state_attr('sensor.hacs','repositories')[n]['available version']}}
+            {%if not loop.last%}-{%endif%}
+            {%endfor%}.
+
+  #----------------------------------------------------------------------------------------------------#
   # Benvenuto # Esempio Macro di Benvenuto elaborata al di fuori del buil_message   {{ benvenuto }}
   #----------------------------------------------------------------------------------------------------#
   - id: Benvenuto HUB
