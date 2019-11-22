@@ -1,0 +1,237 @@
+#----------------------------------------------------------------------------------------------------#
+# ESEMPI DI COME CREARE DELLE AUTOMAZIONI CON I RICHIAMI ALLE MACRO
+#----------------------------------------------------------------------------------------------------#
+automation:
+  #----------------------------------------------------------------------------------------------------#
+  # Hassio Start
+  #----------------------------------------------------------------------------------------------------#
+  - id: notifica_di_avvio_hub
+    alias: Notifica di avvio
+    initial_state: true
+    trigger:
+    - platform: homeassistant
+      event: start
+    action:
+    - delay: 00:00:15
+    - service: script.my_notify
+      data:
+        title: "Hassio Start!"
+        message: "Il sistema è operativo!. "
+
+  #----------------------------------------------------------------------------------------------------#
+  # Hassio Shtudown
+  #----------------------------------------------------------------------------------------------------#
+  - id: Shut Down HUB
+    alias: Shut Down
+    initial_state: true
+    trigger:
+      # Trigger su evento restart, per dare il tempo ad AppDaemon di avviarsi
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: homeassistant
+          service: restart
+    action:
+      - service: script.my_notify
+        data:
+          title: "Hassio Shutdown!"
+          call_no_annuncio: 1
+          call_arrivederci: 1
+          call_spegni: 1
+          alexa_type: "tts"
+          #notify: 0
+          volume: 0.3
+
+  #----------------------------------------------------------------------------------------------------#
+  # Accesso Fallito
+  #----------------------------------------------------------------------------------------------------#
+  - id: accesso_fallito_hub
+    alias: "Accesso fallito"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: persistent_notification.http_login
+    condition:
+      - condition: template
+        value_template: "{{ trigger.to_state.state != 'None' }}"
+    action:
+      - service: script.my_notify
+        data_template:
+          title: "Hassio Accesso Fallito. "
+          #message: "{{ states.persistent_notification.http_login.attributes.message }}"
+          message: "Tentativo di accesso o richiesta con autenticazione non valida."
+          link: "url: https://whatismyipaddress.com/ip/{{ states.persistent_notification.http_login.attributes.message.split ('from ') [1] }}"
+          #notify: alert
+
+  #----------------------------------------------------------------------------------------------------#
+  # Nuova versione di Hassi.io con il binary_sensor.updater
+  #----------------------------------------------------------------------------------------------------#
+  - id: update_notifications_hub
+    alias: Update notifications hub
+    initial_state: true
+    trigger:
+      # - platform: state
+      #   entity_id: updater.updater
+      - platform: state
+        entity_id: binary_sensor.updater
+        to: 'on'
+    action:
+      - service: script.my_notify
+        data:
+          title: "Nuovo Aggiornamento Hassio"
+          message: "Home Assistant {{ state_attr('binary_sensor.updater','newest_version') }} è disponibile."
+          link: https://raw.githubusercontent.com/home-assistant/home-assistant-assets/master/logo-round-192x192.png
+
+  #----------------------------------------------------------------------------------------------------#
+  # Benvenuto # Esempio Macro di Benvenuto elaborata al di fuori del buil_message   {{ benvenuto }}
+  #----------------------------------------------------------------------------------------------------#
+  - id: Benvenuto HUB
+    alias: Benvenuto
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: !secret location_tracker_hub
+        from: 'not_home'
+        to: 'home'
+        for: '00:02:00'
+    action:
+      - service: script.my_notify
+        data_template:
+          call_no_annuncio: 1
+          alexa_type: "announce"
+          alexa_method: "speak"
+          title: Benvenuto
+          benvenuto: >
+            {% set person = trigger.entity_id.split('.')[1]|replace('_', ' ') %}
+            {%- macro benvenuto(person) -%}
+            {{ [
+            "Bentornato a casa " ~person~" ",
+            "Indovina chi è a casa? è " ~person~" ",
+            person + " è ora in casa. ",
+            "Benvenuto a casa " ~person~". Ci sei mancato. ",
+            "La nostra casa è ora completa, riposati e rilassati!. Bentornato " ~person~" ",
+            "La vita è come una canzone, sei di nuovo al posto tuo. Benvenuto a casa " ~person~" ",
+            "Ehilà!. " ~person~ " Benvenuto a casa!. ",
+            "Toc toc. Chi c'è qui? è " ~person~" ",
+            person~ "!. Tu sei a casa!.",
+            "Conosco un segreto!. " ~person~ " è a casa!. ",
+            "Sto percependo un disturbo nella forza.. " ~person~ " deve essere a casa!. ",
+            "E la casa diventa una casa. Bentornato. " ~person~" ",
+            person~ " è qui ora. Benvenuto a casa. ",
+            person~ " è ora qui. ",
+            "Solo un piccolo annuncio. " ~person~ " è arrivato!. ",
+            "Perdonate l'interruzione, ma " ~person~ " è a casa!. ",
+            "I miei sistemi stanno rilevando la presenza di ulteriori umani. " ~person~ " è stato identificato come: in casa. "
+            "Bentornato "~person~"!. La casa si sta attivando!. ",
+            "Benvenuto a casa "~person~"!. È bello rivederti!. Lasciami accendere la casa. ",
+            "Beh, sembra che "~person~" sia finalmente a casa!. Preparerò la casa per te. ",
+            "È bello vedere che sei tornato sano e salvo "~person~"!. Lasciami aprire la porta e preparare la casa. ",
+            "Fantastico, "~person~" è tornato!. Permettimi di preparare la casa per te. "
+            ] | random }}
+            {%- endmacro -%}
+            {{ benvenuto(person) }}
+
+  #----------------------------------------------------------------------------------------------------#
+  # Bentronato # Esempio Call di Bentornato [ if call_bentornato == 1 Macro {{ bentornato(person) }} ]
+  #----------------------------------------------------------------------------------------------------#
+  - id: Bentornato HUB
+    alias: Bentornato
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: !secret location_tracker_hub
+        from: 'not_home'
+        to: 'home'
+        for: '00:02:00'
+    action:
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          call_bentornato: 1
+        data_template:
+          alexa_type: "announce"
+          alexa_method: "all"
+          title: Bentornato
+          person: >-
+            {{ trigger.to_state.attributes.friendly_name }}
+
+  #----------------------------------------------------------------------------------------------------#
+  # Lavoro/Zone # Esempio Call di Inizio/Fine lavoro [ {% if call_fine_lavoro == 1 %} {{ fine_lavoro(person) }} {% endif %} ]
+  #----------------------------------------------------------------------------------------------------#
+  - id: notifica_inizio_lavoro_hub
+    alias: Notifica Inzio Lavoro
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: !secret location_tracker_hub
+      to: "Lavoro"
+    action:
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          call_inizio_lavoro: 1
+          #notify: "Famiglia"
+          title: "In Ufficio"
+          alexa_type: "tts"
+        data_template:
+          person: >-
+            {{ trigger.to_state.attributes.friendly_name }}
+
+  - id: notifica_fine_lavoro_hub
+    alias: Notifica Fine Lavoro
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: !secret location_tracker_hub
+      from: "Lavoro"
+      to: "not_home"
+    action:
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          call_fine_lavoro: 1
+          #notify: "Nome"
+          title: "Fine Lavoro"
+          alexa_type: "tts"
+        data_template:
+          person: >-
+            {{ trigger.to_state.attributes.friendly_name }}
+
+  #----------------------------------------------------------------------------------------------------#
+  # Nuovo Dispositivo Connesso
+  #----------------------------------------------------------------------------------------------------#
+  - id: Nuovo Dispositivo Connesso HUB
+    alias: Nuovo Dispositivo Connesso
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: device_tracker_new_device
+    action:
+      - service: script.my_notify
+        data:
+          call_nuovo_dispositivo: 1
+          alexa_type: "tts"
+          title: "Nuovo Dispositivo"
+        data_template:
+          person: >-
+            {% if trigger.event.data.host_name != None %}
+            {{ trigger.event.data.host_name }}
+            {% else %}
+            Sconosciuto
+            {% endif %}
+
+  #----------------------------------------------------------------------------------------------------#
+  # Avvio Computer
+  #----------------------------------------------------------------------------------------------------#
+  - id: computer_on_hub
+    alias: "Computer ON"
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: switch.computer
+      to: 'on'
+    action:
+      service: script.my_notify
+      data:
+        title: "Computer attivo"
+        message: "Il computer è attivo. "
