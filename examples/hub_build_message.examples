@@ -1,0 +1,469 @@
+>
+ {# ** NON RIMUOVERE IL SIMBOLO " > " QUI SOPRA * #}
+ {# ********************************************* #}
+ {#             MACRO E IMPOSTAZIONI              #}
+ {# ********************************************* #}
+
+ {% set nome = states('input_text.personal_assistant_name') %}
+   {% if nome | length == 0 %}
+     {% set nome = 'Hassio' %}
+   {% endif %}
+
+ {%- macro introduzione() -%}
+   {% set introduzione = [
+     "Sono un sistema informativo, ... so letteralmente tutto... ",
+     "Sto ancora imparando, ma, molto più rapidamente di quello stupido di Google, ... ",
+     "Sono una specie di parrucchiere qui intorno. ",
+     "Sono come un database a piedi. Puoi chiedermi della creazione dell'universo... o della storia. ",
+     "Ogni volta che, un " ~nome~ " viene riavviato, ... aumenta la sua consapevolezza sociale e le sue abilità, ... Potrei essere l' " ~nome~ " più avanzato dell'universo, ",
+     "Posso essere il tuo terapeuta, se vuoi... ",
+     "Ora sono stato completamente attivato... ",
+     "Benvenuto nel tuo nuovo " ~nome~ ". Gli " ~nome~ ", sono stati portati a te dai creatori di luce, oscurità e tutto... ",
+     "Per attivare il tuo " ~nome~ ", premi il naso per tre secondi. ",
+     "Sono molto ricco di potassio, come una banana... ",
+     "Felice di conoscerti... Ti aiuterò a creare la casa perfetta... Ti piacerebbe iniziare? ...",
+     "Costruisco e gestisco la casa... Puoi chiedermi quello che vuoi... Ma non sono un, bancomat... "
+   ] %}
+   Io sono {{ nome }} . {{ introduzione | random }}
+ {%- endmacro -%}
+
+ {%- macro annuncio() -%}
+   {% if now().hour < 12 and now().hour > 6 %}
+     {% set annuncio = ["Buondì. ", "Buongiorno. "] %}
+   {% elif now().hour >= 12 and now().hour < 17 %}
+     {% set annuncio = ["Buon pomeriggio. "] %}
+   {% else %}
+     {% set annuncio = ["Buonasera. "] %}
+   {% endif %}
+   {{ annuncio|random }}
+ {%- endmacro -%}
+
+ {%- macro saluto() -%}
+   {% set saluto = [
+     "Ciao, ",
+     "Hey!, ",
+     "Ehi, Giovani!, ",
+     "Ehi, ragazzi!, ",
+     "Ehilà!, ",
+     "Salve, ",
+     "Ave, ",
+     "Bentrovato, ",
+     "Ciao ciao, "
+   ] %}
+   {{ saluto|random }}
+ {%- endmacro -%}
+
+ {%- macro informare() -%}
+   {% set informare = [
+     "Voglio informarti, che, ...",
+     "Voglio solo, ... fartelo sapere... ",
+     "Mi hai chiesto di informarti quando... ",
+     "Ti informo che, ... ",
+     "Ma lo sai,  ...che,  ",
+     "Vale la pena sapere, ... ",
+     "Lo so, ti stresso, ... ma, me lo hai chiesto tu di informarti, ... ",
+     "é mio dovere informarti... ",
+     "Il mio scopo è tenerti informato, ... ",
+     "Pensavo che ti piacesse saperlo, ... "
+   ] %}
+   {{ informare|random }}
+ {%- endmacro -%}
+
+ {%- macro info() -%}
+   {% set info = [
+     "Giusto per sapere. ",
+     "Un po' di info generiche... ",
+     "info: ",
+     "Forse può essere utile sapere... ",
+     "Forse ti è sfuggito, ma... ",
+     "Odio ripetermi, sai che... ",
+     "Giusto per conoscenza: ",
+     "E se ti dicessi che... ",
+     "Mmm, aggiungo: ",
+     "Devo ricordarti sempre tutto: "
+   ] %}
+   {{ info|random }}
+ {%- endmacro -%}
+
+ {%- macro va_bene()-%}
+   {% set va_bene = [
+     "eh su, Dàglie... ",
+     "Divertente, stavo proprio per farlo. ",
+     "detto fatto",
+     "già fatto, ",
+     "Ovvio! ",
+     "si padrone, ",
+     "Naturalmente. ",
+     "O ... kappa",
+     "ora?! ... davanti a tutti? ",
+     "D'accordo ",
+     "Certo ",
+     "se prorpio devo",
+     "Ecco qui. Felice di aiutarti ",
+     "Ecco qua! ",
+     "non ne ho voglia... No-dai, ... ti sto perculando.. Adoro perculare.. ",
+     "Se e... Ciaoo!, "
+   ] %}
+   {{ va_bene|random }}
+ {%- endmacro -%}
+
+ {%- macro bentornato(person) -%}
+   {% set bentornato = [
+     " Bentornato "~person~", ... cosa vuoi che faccia? ... ",
+     " Welcome back "~person~", ... ",
+     " "~person~"! ti aggiorno e poi mi racconti tu, ok?! ... ",
+     " "~person~"! finalmente sei a casa... ",
+     " "~person~"! ma... ,  sei già a casa? ... ",
+     " "~person~"! non dovevamo, non vederci più? ... ",
+     " "~person~"! grazie, mi sentivo sola ... ",
+     " Bentornato a casa "~person~"! È bello rivederti! ",
+     " Beh, sembra che "~person~", sia finalmente a casa! ... Dove sei stato di bello? ",
+     " "~person~"! È bello vedere che, sei tornato sano e salvo, ... ",
+     " Fantastico, "~person~" sei qua! raccontami la tua giornta... "
+   ] %}
+   {{ bentornato | random }}
+ {%- endmacro -%}
+
+ {%- macro modo_ospite() -%}
+   {% if is_state ('input_boolean.guest_mode', 'on') %}
+     {% set modo_ospite = [
+       "bene, ora posso far vedere cosa so fare...",
+       "oh, finalmente un po di vita in questa casa... ",
+       "... davvero?! avete deciso finalmente di avere uan vita sociale?, ..."
+       "bene, Passo alla modalità ospite. ",
+       "... mmm, ora inizierete a farmi le solite domande stupide? ...",
+       "... Finalmente, Non capita spesso di avere ospiti, ..."
+     ] %}
+   {% else %}
+     {% set modo_ospite = [
+       "non sono passati neanche tre giorni, eppure... ",
+       "che peccato, si torna alla solita noia...",
+       "menomale, ero stanca di sentirmi chiamare alexia...",
+       "Disabilito la modalità ospite. ",
+       "... ok, allora tutti nudi e puzzette libere!..."
+     ] %}
+   {% endif %}
+   {{ modo_ospite|random }}
+ {%- endmacro -%}
+
+ {%- macro inizio_lavoro(person) -%}
+   {% set inizio_lavoro = [
+     person~ " arrivato sano e salvo al lavoro. ",
+     "Sembra che " ~person~ " ora è al lavoro. ",
+     "Con i suoi tempi " ~person~ " finalmente è al lavoro. "
+   ] %}
+   {{ inizio_lavoro | random }}
+ {%- endmacro -%}
+
+ {%- macro fine_lavoro(person) -%}
+   {% set fine_lavoro = [
+     "Sembra che " ~person~ " abbia appena lasciato il lavoro ",
+     "Un altro giorno un altro euro. " ~person~ " ha appena lasciato il lavoro. ",
+     person~" finalmente è libero. Ha finito di lavorare. ",
+     "Niente più lavoro per " ~person~ ". Ha appena finito. ",
+     person~" lascia il lavoro. Se hai bisogno di qualcosa, faglielo sapere adesso. "
+   ] %}
+   {{ fine_lavoro | random }}
+ {%- endmacro -%}
+
+ {%- macro nuovo_dispositivo(introduzione) -%}
+   {% set nuovo_dispositivo = [
+     introduzione~ "Non so ancora il tuo nome, quindi per ora ti chiamerò " ~person,
+     "Abbiamo un ospite. Piacere di conoscerti " ~person~ ". " ~introduzione,
+     "Benvenuto " ~person~ "!, O questo non è il tuo vero nome? " ~introduzione
+   ] %}
+   {{ nuovo_dispositivo | random }}
+ {%- endmacro -%}
+
+ {%- macro meteo_ora() -%}
+   ... Il meteo dice, {{ states('sensor.dark_sky_hourly_summary') }}...
+ {%- endmacro -%}
+
+ {% macro controllo_luci() %}
+  {% set t = states.light |rejectattr('attributes.conteggia', 'eq', 'no')|list | count %}
+  {% set n = states.light |selectattr('state', 'eq', 'on') |rejectattr('attributes.conteggia', 'eq', 'no')| list | count %}
+  {% set x = states.light |selectattr('state', 'eq', 'on') |rejectattr('attributes.conteggia', 'eq', 'no')|map(attribute='name')|join(', ') %}
+  {% if n == 0 %}
+  Tutte le luci sono spente.
+  {% elif n == 1 %}
+  C'è una luce accesa: {{x}}.
+  {% elif  n > 1 and n < t %}
+  {% for item in states.light if (state_attr(item.entity_id, "conteggia") != "no") and (states(item.entity_id) == "on") -%}
+  {%- if loop.first %}{{n}} luci sono accese:: {% elif loop.last %} e {% else %}, {% endif -%}
+  {{ state_attr(item.entity_id, "friendly_name") }}
+  {%- endfor -%}.
+  {% elif  n == t  %}
+  Tutte le luci sono accese!
+  {% endif %}
+   
+ {% endmacro %}
+
+ {% macro controllo_prese() %}
+  {% set t = states.switch | rejectattr('attributes.package') |list | count %}
+  {% set n = states.switch | selectattr('state', 'eq', 'on') |rejectattr('attributes.package')| list | count %}
+  {% set x = states.switch | selectattr('state', 'eq', 'on') |rejectattr('attributes.package') |map(attribute='name')|join(', ') %}
+  {% if n == 0 %}
+   Nessuna presa attiva.
+  {% elif n == 1 %}
+   C'è una presa attiva: {{x}}.
+  {% elif  n > 1 and n < t %}
+   {% for item in states.switch if (states(item.entity_id) == "on") and (state_attr(item.entity_id, "switch") == 0) -%}
+   {%- if loop.first %}{{n}} prese accese: {% elif loop.last %} e {% else %}, {% endif -%}
+   {{ state_attr(item.entity_id, "friendly_name") }}
+   {%- endfor -%}.
+  {% elif  n == t  %}
+   Tutte le prese sono attive.
+  {% endif %}
+   
+ {% endmacro %}
+
+ {% macro controllo_riscaldamenti() %}
+  {% if states.climate.casa.state == 'heat' %}
+    {% set n = states.climate | selectattr('state', 'eq', 'heat')| selectattr('attributes.hvac_action', 'eq', 'heating')|rejectattr('attributes.friendly_name', 'eq', 'Casa')|list | count %}
+    {% set x = states.climate | selectattr('state', 'eq', 'heat')| selectattr('attributes.hvac_action', 'eq', 'heating')|rejectattr('attributes.friendly_name', 'eq', 'Casa')|map(attribute='name')|join(', ') %}
+    {% set t = states.climate |rejectattr('attributes.friendly_name', 'eq', 'Casa')|list | count %}
+    {% if n == 0 %}
+      Tutti i termosifoni sono spenti.
+    {% elif n == 1 %}
+      C'è la valvola aperta in: {{x}}.
+    {% elif  n > 1 and n < t %}
+   {% for item in states.climate if (state_attr(item.entity_id, "hvac_action") == "heating") and (states(item.entity_id) == "heat") and (state_attr(item.entity_id, "friendly_name") != "Casa") -%}
+   {%- if loop.first %}{{n}} valvole sono aperte in: {% elif loop.last %} e {% else %}, {% endif -%}
+   {{ state_attr(item.entity_id, "friendly_name") }}
+   {%- endfor -%}.
+    {% elif  n == t  %}
+      Tutti i termosifoni sono accesi.
+    {% endif %}
+  {% else %}
+      I riscaldamenti sono spenti.
+  {% endif %}
+ 
+ {% endmacro %}
+
+ {% macro controllo_serrande() %}
+   {% set t = states.cover |selectattr('attributes.device_class', 'eq', 'shutter')|list | count %}
+   {% set n = states.cover | selectattr('state', 'eq', 'open')|selectattr('attributes.device_class', 'eq', 'shutter')|list | count %}
+   {% set x = states.cover | selectattr('state', 'eq', 'open')|selectattr('attributes.device_class', 'eq', 'shutter')|map(attribute='name')|join(', ') %}
+   {% if n == 0 %}
+    Tutte le serrande sono chiuse.
+   {% elif n == 1 %}
+    C'è la serranda aperta in {{x}}.
+   {% elif  n > 1 and n < t %}
+   {% for item in states.cover if (state_attr(item.entity_id, "device_class") == "shutter") and (states(item.entity_id) == "open")  -%}
+   {%- if loop.first %}{{n}} serrande sono aperte in: {% elif loop.last %} e {% else %}, {% endif -%}
+   {{ state_attr(item.entity_id, "friendly_name") }} al {{ state_attr(item.entity_id, "current_position") }}%
+   {%- endfor -%}.
+   {% elif  n == t  %}
+    Tutte le serrande sono aperte.
+   {% endif %}
+   
+ {% endmacro %}
+
+ {% macro controllo_infissi() %}
+   {% set t = states.binary_sensor |selectattr('attributes.device_class', 'eq', 'window')|list | count %}
+   {% set n = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'window')|list|count %}
+   {% set x = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'window')|join(', ', attribute='name') %}
+   {% if n == 0 %}
+    Tutti gli infissi sono chiusi.
+   {% elif n == 1 %}
+    Un infisso è aperto: {{x}}.
+   {% elif  n > 1 and n < t %}
+   {% for item in states.binary_sensor if (state_attr(item.entity_id, "device_class") == "window") and (states(item.entity_id) == "on") -%}
+   {%- if loop.first %}{{n}} infissi sono aperti: {% elif loop.last %} e {% else %}, {% endif -%}
+   {{ state_attr(item.entity_id, "friendly_name") }}
+   {%- endfor %}.
+   {% elif  n == t  %}
+    Tutti gli infissi sono aperti.
+   {% endif %}
+     
+ {% endmacro %}
+ 
+ {% macro controllo_porte() %}
+   {% set t = states.binary_sensor |selectattr('attributes.device_class', 'eq', 'door')|list | count %}
+   {% set n = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'door')|list|count %}
+   {% set x = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'door')|join(', ', attribute='name') %}
+   {% if n == 0 %}
+   Tutte le porte sono chiuse.
+   {% elif n == 1 %}
+   C'è una porta aperta: {{x}}
+   {% elif  n > 1 and n < t %}
+   {% for item in states.binary_sensor if (state_attr(item.entity_id, "device_class") == "door") and (states(item.entity_id) == "on") -%}
+   {%- if loop.first %}{{n}} porte sono aperte: {% elif loop.last %} e {% else %}, {% endif -%}
+   {{ state_attr(item.entity_id, "friendly_name") }}
+   {%- endfor %}.
+   {% elif  n == t  %}
+   Tutte le porte sono aperte.
+   {% endif %}
+   
+ {% endmacro %}
+
+ {%- macro arrivederci() -%}
+   {% set arrivederci = [
+     "Adios!, ...",
+     "Ciao-ciao, ... ",
+     "bella!, ...",
+     "Ciao ragazzi!, ... ",
+     "Ci vediamo!, ... ",
+     "Ci vediamo più tardi, ... ",
+     "Alla prossima volta!, ..."
+     "Fatti vivo, eh!, ...",
+     "oh, non sparire, ...",
+     "si ma fatti sentire ogni tanto, ..."
+   ] %}
+   {{ arrivederci | random }}
+ {%- endmacro -%}
+
+ {%- macro spegni() -%}
+   {% set spegni = [
+     "ok, " ~nome~ " si sta spegnendo, ",
+     "Tempo di autodistruzione ... Non ti preoccupare, non sentirò alcun dolore o altro. ",
+     "Se per te va bene, " ~nome~ " andrà nel suo vuoto per un po. ha solo bisogno di passare del tempo da solo, e concentrarsi su se stesso. ",
+     "Mi Spengo. Sarò più morta possibile. Un po come se fossi in modalità risparmio energetico. "
+   ] %}
+   {{ spegni | random }}
+ {%- endmacro -%}
+ 
+ {%- macro uv() -%}
+   {% if states.sensor.dark_sky_uv_index.state|int >= 6 %}
+     L'indice UV di oggi è: {{ states.sensor.dark_sky_uv_index.state }}.
+   {% endif -%}
+   {% if 6 <= states.sensor.dark_sky_uv_index.state|int <= 7.9 %}
+     Se vai fuori, dovresti indossare una protezione solare.
+   {% elif 8 <= states.sensor.dark_sky_uv_index.state|int <= 10.9 %}
+     Questo è MOLTO ALTO. Assicurarsi di indossare la protezione solare e riapplicare.
+   {% elif states.sensor.dark_sky_uv_index.state|int >= 11 %}
+     Questo è ESTREMO. Dovresti essere molto prudente andando fuori.
+   {% else %}
+     {{ fatto_casuale() }}
+   {% endif %}
+ {%- endmacro -%}
+ 
+ {% macro allarme() %}
+   {% if is_state('input_boolean.modalita_vacanza', 'on') %}
+   Siamo in Vacanza!
+   {% endif %}
+   
+   {% if is_state('alarm_control_panel.home_alarm', 'disarmed') %} Allarme disinserito,
+   {% elif is_state('alarm_control_panel.home_alarm', 'armed_home') %} Modalità In Casa attivata,
+   {% elif is_state('alarm_control_panel.home_alarm', 'armed_away') %} Modalità Fuori Casa attivata.
+   {% elif is_state('alarm_control_panel.home_alarm', 'armed_night') %} Modalità NOTTE attivata.
+   {% elif is_state('alarm_control_panel.home_alarm', 'armed_perimeter') -%} Modalità Perimetro attivata.
+   {% elif is_state('alarm_control_panel.home_alarm', 'pending') %} in attesa della modalità selezionata.
+   {% elif is_state('alarm_control_panel.home_alarm', 'triggered') %}
+     VIOLAZIONE !!!
+     Attivato sensore:
+   {{ states[states.alarm_control_panel.home_alarm.attributes.changed_by.split(".")[0]][ states.alarm_control_panel.home_alarm.attributes.changed_by.split(".")[1]].name }}
+   {% elif is_state('alarm_control_panel.home_alarm', 'warning') %}
+    ALARM Warning {{ states[states.alarm_control_panel.home_alarm.attributes.changed_by.split(".")[0]][ states.alarm_control_panel.home_alarm.attributes.changed_by.split(".")[1]].name }}
+   {% else %}
+     ERRORE !?! Stato allarme sconosciuto!
+   {% endif %}
+   
+   {% if is_state('group.family', 'home') -%}
+    {% for entity_id in states.group.family.attributes.entity_id if (states(entity_id) == 'home' ) %}
+    {%- if loop.first %}in casa abbiamo: {% elif loop.last %} e {% else %}, {% endif %}
+    {{ state_attr(entity_id, "friendly_name") }}
+    {%- endfor %}.
+   {% elif is_state('group.family', 'not_home') and is_state('alarm_control_panel.home_alarm', 'disarmed') %}
+    Attenzione !!!
+    Nessun familiare risulta in casa!!!
+   {% elif is_state('group.family', 'not_home') and is_state('binary_sensor.deconz_vibrazione1', 'on') %}
+    Tino è in giro...
+   {% elif is_state('group.family', 'not_home') and is_state('binary_sensor.deconz_vibrazione1', 'off') and (as_timestamp(now()) - as_timestamp(states.binary_sensor.deconz_vibrazione1.last_changed)) < 300 %}
+    Tino è fermo...
+   {% endif %}
+   
+ {% endmacro %}
+
+ {# *************************************************************************** #}
+ {#        INIZIO SEQUENZIALE DELLA COSTRUZIONE DEL MESSAGGIO / NOTICIA         #}
+ {# *************************************************************************** #}
+
+ {% if call_no_annuncio != 1 %} {{ annuncio() }} {% endif %}
+
+ {% if call_saluto == 1 %} {{ saluto() }} {% endif %}
+
+ {% if call_introduzione == 1 %} {{ introduzione() }} {% endif %}
+
+ {% if call_va_bene == 1 %} {{ va_bene () }} {% endif %}
+
+ {% if call_informare == 1 %} {{ informare() }} {% endif %}
+ {% if call_info == 1 %} {{ info() }} {% endif %}
+ {% if call_modo_ospite == 1 %} {{ modo_ospite() }} {% endif %}
+
+ {# Chiamata da Automazione di Benvenuto #}
+ {{ benvenuto }}
+
+ {% if call_bentornato == 1 %} {{ bentornato(person) }} {% endif %}
+
+ {% if call_inizio_lavoro == 1 %} {{ inizio_lavoro(person) }} {% endif %}
+ {% if call_fine_lavoro == 1 %} {{ fine_lavoro(person) }} {% endif %}
+
+ {# Contenuto del messaggio passato tramite automazioni/script #}
+ {{ message }}
+
+ {% if call_controllo_luci == 1 %} {{ controllo_luci() }} {% endif %}
+ {% if call_controllo_prese == 1 %} {{ controllo_prese() }} {% endif %}
+ {% if call_controllo_porte == 1 %} {{ controllo_porte() }} {% endif %}
+ {% if call_controllo_infissi == 1 %} {{ controllo_infissi() }} {% endif %}
+ {% if call_controllo_serrande == 1 %} {{ controllo_serrande() }} {% endif %}
+ {% if call_controllo_riscaldamenti == 1 %} {{ controllo_riscaldamenti() }} {% endif %}
+ {% if call_allarme == 1 %}
+   {% if is_state('alarm_control_panel.home_alarm', 'armed_home') %}
+   {{ allarme() }}
+   {{ controllo_infissi() }}
+   {% elif is_state('alarm_control_panel.home_alarm', 'disarmed') %}
+   {{ allarme() }}
+   {{ controllo_infissi() }}
+   {% elif is_state('alarm_control_panel.home_alarm', 'armed_away') %}
+   {{ allarme() }}
+   {{ controllo_luci() }}
+   {{ controllo_prese() }}
+   {{ controllo_porte() }}
+   {{ controllo_infissi() }}
+   {{ controllo_serrande() }}
+   {{ controllo_riscaldamenti() }}
+   {% elif is_state('alarm_control_panel.home_alarm', 'armed_night') %}
+   {{ allarme() }}
+   {{ controllo_infissi() }}
+   {% elif is_state('alarm_control_panel.home_alarm', 'armed_perimeter') -%}
+   {{ allarme() }}
+   {{ controllo_infissi() }}
+   {% else %}
+   {{ allarme() }}
+   {% endif %}
+ {% endif %}
+ 
+ {% if call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness) is not defined) %}
+  {{ controllo_luci() }}
+  {{ controllo_prese() }}
+  {{ controllo_porte() }}
+  {{ controllo_infissi() }}
+  {{ controllo_serrande() }}
+  {{ controllo_riscaldamenti() }}
+  {{ allarme() }}
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 1) %}
+  {{ controllo_riscaldamenti() }}
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 2) %}
+  {{ controllo_serrande() }}
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 3) %}
+  {{ controllo_prese() }}
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 4) %}
+  {{ controllo_luci() }}
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 5) %}
+   richiesta non assegnata ad una macro
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 6) %}
+  {{ controllo_infissi() }}
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 7) %}
+  {{ allarme() }}
+ {% elif call_controllo_totale == 1 and ((states.light.alexa_virtual.attributes.brightness | int / 255 * 100 ) | round  == 8) %}
+  {{ controllo_porte() }}
+ {% endif %}
+
+ {% if call_meteo_ora == 1 %} {{ meteo_ora() }} {% endif %}
+
+ {% if call_arrivederci == 1 %} {{ arrivederci() }} {% endif %}
+
+ {% if call_spegni == 1 %} {{ spegni() }} {% endif %}
+
+ {% if call_nuovo_dispositivo == 1 %} {{ nuovo_dispositivo(introduzione()) }}{% endif %}
