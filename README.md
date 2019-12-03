@@ -4,4 +4,6 @@
 [![GitHub issues](https://img.shields.io/github/issues/caiosweet/Package-Notification-HUB-AppDaemon)](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/issues)
 
 # Package-Notification-HUB-AppDaemon
-Package for Appdaemon Notifier Centre - Home Assistant [jumping2000](https://github.com/jumping2000/appdaemon/commits?author=jumping2000)
+Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/appdaemon/commits?author=jumping2000)
+
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
