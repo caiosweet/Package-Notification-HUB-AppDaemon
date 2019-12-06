@@ -1,0 +1,336 @@
+>-
+  {# ** NON RIMUOVERE IL SIMBOLO " > " QUI SOPRA * #}
+  {# ********************************************* #}
+  {#             MACRO E IMPOSTAZIONI              #}
+  {# ********************************************* #}
+
+  {% set nome = states('input_text.personal_assistant_name') %}
+    {% if nome | length == 0 %}
+      {% set nome = 'Hassio' %}
+    {% endif %}
+
+  {%- macro introduzione() -%}
+    {% set introduzione = [
+      "Sono un sistema informativo, so letteralmente tutto. ",
+      "Sto ancora imparando, ma molto più rapidamente di quello stupido di Google... ",
+      "Sono una specie di parrucchiere qui intorno. ",
+      "Sono come un database a piedi. Puoi chiedermi della creazione dell'universo... o della storia. ",
+      "Ogni volta che un " ~nome~ " viene riavviato, aumenta la sua consapevolezza sociale e le sue abilità. Potrei essere il " ~nome~ " più avanzato dell'universo. ",
+      "Posso essere il tuo terapeuta, se vuoi. ",
+      "Ora sono stato completamente attivato. ",
+      "Benvenuto nel tuo nuovo " ~nome~ ". I " ~nome~ ", sono stati portati a te dai creatori di luce, oscurità e tutto... ",
+      "Per attivare il tuo " ~nome~ ", premi il naso per tre secondi. ",
+      "Sono molto ricco di potassio, come una banana. ",
+      "Felice di conoscerti. Ti aiuterò a creare la casa perfetta. Ti piacerebbe iniziare? ",
+      "Costruisco e gestisco la casa. Puoi chiedermi quello che vuoi. Ad esempio, se vuoi che smetta di chiamarti Peppa Pig, dillo. "
+    ] %}
+    Io sono {{ nome }} . {{ introduzione | random }}
+  {%- endmacro -%}
+
+  {%- macro annuncio() -%}
+    {% if now().hour < 12 and now().hour > 6 %}
+      {% set annuncio = ["Buondì. ", "Buongiorno. "] %}
+    {% elif now().hour >= 12 and now().hour < 17 %}
+      {% set annuncio = ["Buon pomeriggio. "] %}
+    {% else %}
+      {% set annuncio = ["Buonasera. "] %}
+    {% endif %}
+    {{ annuncio|random }}
+  {%- endmacro -%}
+
+  {%- macro saluto() -%}
+    {% set saluto = [
+      "Ciao, ",
+      "Hey. ",
+      "Ehi, Giovani. ",
+      "Ehi, ragazzi. ",
+      "Ehilà. ",
+      "Salve, ",
+      "Ave, ",
+      "Bentrovato, ",
+      "Ciao ciao, "
+    ] %}
+    {{ saluto|random }}
+  {%- endmacro -%}
+
+  {%- macro informare() -%}
+    {% set informare = [
+      "Voglio informarti che ",
+      "Voglio solo fartelo sapere... ",
+      "Mi hai chiesto di informarti quando... ",
+      "Ti informo che ",
+      "Ma lo sai che ",
+      "Vale la pena sapere... ",
+      "Lo so, ti stresso, ma me lo hai chiesto tu. Ti voglio informare, ",
+      "è mio dovere informarti... ",
+      "Il mio scopo è tenerti informato, ",
+      "Pensavo che ti piacesse saperlo... "
+    ] %}
+    {{ informare|random }}
+  {%- endmacro -%}
+
+  {%- macro info() -%}
+    {% set info = [
+      "Giusto per sapere. ",
+      "Un po' di info generiche... ",
+      "info... ",
+      "Forse può essere utile sapere... ",
+      "Forse ti è sfuggito, ma... ",
+      "Sai che... ",
+      "Giusto per conoscenza, ",
+      "E se ti dicessi che... ",
+      "Mmm, aggiungo, ",
+      "Devo ricordarti sempre tutto, "
+    ] %}
+    {{ info|random }}
+  {%- endmacro -%}
+
+  {%- macro va_bene()-%}
+    {% set va_bene = [
+      "Va bene. Vi amo ragazzi. ",
+      "Idea straordinariamente cattiva. Bene.. ",
+      "Divertente, stavo proprio per farlo. ",
+      "Ecco qui. ",
+      "Lo farò. ",
+      "ovvìo. ",
+      "Ovviamente. Felice di esserti di aiuto. ",
+      "Naturalmente. ",
+      "OK ",
+      "Okay ",
+      "Ok, non possiamo farlo davanti ai miei amici? ",
+      "D'accordo ",
+      "Certo. ",
+      "Certamente. ",
+      "Ecco qui. Felice di aiutarti. ",
+      "Ecco qua. ",
+      "Va bene. Ho hackerato il mainframe.",
+      "Oh si.. Ho hackerato il mainframe. No-dai, ti sto perculando.. Adoro perculare.. ",
+      "Va bene. Ho hackerato il mainframe. Ti prendo in giro. Non riesco ad entrare nel mainframe. Tecnicamente, io sono il mainframe. ",
+      "Non lo farò. È letteralmente impossibile per me farlo. Stavo solo scherzando. ",
+      "Non ho potuto fare questo 800 riavvii fa, ma a quanto pare ora posso. "
+      "Si. Ciao. "
+    ] %}
+    {{ va_bene|random }}
+  {%- endmacro -%}
+
+  {%- macro bentornato(person) -%}
+    {% set bentornato = [
+      "Bentornato "~person~". La casa si sta attivando. ",
+      "Benvenuto a casa "~person~". È bello rivederti. Lasciami accendere la casa. ",
+      "Beh, sembra che "~person~" sia finalmente a casa. Preparerò la casa per te. ",
+      "È bello vedere che sei tornato sano e salvo "~person~". Lasciami aprire la porta e preparare la casa. ",
+      "Fantastico, "~person~" è tornato. Permettimi di preparare la casa per te. "
+    ] %}
+    {{ bentornato | random }}
+  {%- endmacro -%}
+
+  {%- macro modo_ospite() -%}
+    {% if is_state ('input_boolean.guest_mode', 'on') %}
+      {% set modo_ospite = [
+        "Sembra che abbiamo un ospite in casa. ",
+        "Abbiamo un ospite. Attiverò la modalità ospite. ",
+        "Ho attivato la modalità ospite per la visita della nostra casa. ",
+        "Passo alla modalità ospite. ",
+        "Non capita spesso di avere ospiti, lascia che prepari la casa per la tua visita. "
+      ] %}
+    {% else %}
+      {% set modo_ospite = [
+        "Sembra che il nostro ospite se ne sia andato, disabiliterò la modalità ospite. ",
+        "Consentimi di disabilitare la modalità ospite poiché non ci sono più ospiti. ",
+        "Ho disabilitato la modalità ospite e ho ripreso le normali operazioni. ",
+        "Disabilito la modalità ospite. ",
+        "Dal momento che non ci sono più ospiti mi permetto di disabilitare la modalità ospite. "
+      ] %}
+    {% endif %}
+    {{ modo_ospite|random }}
+  {%- endmacro -%}
+
+  {%- macro inizio_lavoro(person) -%}
+    {% set inizio_lavoro = [
+      person~ " arrivato sano e salvo al lavoro. ",
+      "Sembra che " ~person~ " ora è al lavoro. ",
+      "Con i suoi tempi " ~person~ " finalmente è al lavoro. "
+    ] %}
+    {{ inizio_lavoro | random }}
+  {%- endmacro -%}
+
+  {%- macro fine_lavoro(person) -%}
+    {% set fine_lavoro = [
+      "Sembra che " ~person~ " abbia appena lasciato il lavoro ",
+      "Un altro giorno un altro euro. " ~person~ " ha appena lasciato il lavoro. ",
+      person~" finalmente è libero. Ha finito di lavorare. ",
+      "Niente più lavoro per " ~person~ ". Ha appena finito. ",
+      person~" lascia il lavoro. Se hai bisogno di qualcosa, faglielo sapere adesso. "
+    ] %}
+    {{ fine_lavoro | random }}
+  {%- endmacro -%}
+
+  {%- macro nuovo_dispositivo(introduzione) -%}
+    {% set nuovo_dispositivo = [
+      introduzione~ "Non so ancora il tuo nome, quindi per ora ti chiamerò " ~person,
+      "Abbiamo un ospite. Piacere di conoscerti " ~person~ ". " ~introduzione,
+      "Benvenuto " ~person~ ". O questo non è il tuo vero nome? " ~introduzione
+    ] %}
+    {{ nuovo_dispositivo | random }}
+  {%- endmacro -%}
+
+  {%- macro meteo_ora() -%}
+    Fuori, sarà {{ states('sensor.dark_sky_hourly_summary')|lower }}
+  {%- endmacro -%}
+
+  {%- macro cattivo_tempo() -%}
+    {% set pioggia = [
+      " Potresti voler cambiare il tuo programma. ",
+      " Forse dovresti chiedere un passaggio. ",
+      " Quando la vacca tiene su il muso, brutto tempo volta suso. ",
+      " Le madri più coraggiose vestono i bambini come palombari, e cominciano a inveire contro chi ha organizzato qualcosa di tanto imprevedibile come un’attività all’aria aperta.",
+      " Non è bel tempo per stare fuori. ",
+      " Tutta quella povera gente la fuori... "
+    ] %}
+    {{ pioggia | random }}
+  {%- endmacro -%}
+
+  {%- macro avviso_pioggia(cattivo_tempo) -%}
+    {% set pioggia = [
+      evento ~ " ci sarà " ~ sensore_pioggia ~ " di pioggia. " ,
+      evento ~ " Prevedo " ~ sensore_pioggia ~ " di pioggia. ",
+      " Penso che" ~ evento ~ " ci sarà " ~ sensore_pioggia ~ " di pioggia. "
+    ] %}
+    {{ pioggia | random }}{{ cattivo_tempo }}
+  {%- endmacro -%}
+
+  {%- macro controllo_luci() -%}
+    {% if states.group.all_lights.state != 'off' %}
+      {% set n = states.light | selectattr('state', 'eq', 'on') | list | count %}
+      {% set x = states.light | selectattr('state', 'eq', 'on') |join(', ', attribute='name') |replace('_',' ') %}
+      {% if n == 1 %}
+        c'è una luce accesa in casa. Luce {{x}}
+      {% elif  n > 1 %}
+        ci sono, {{n}} luci accese in questo momento. {{x}}
+      {% endif %}
+    {% else %}
+        Tutte le luci sono spente.
+    {% endif %}
+  {%- endmacro -%}
+
+  {%- macro controllo_prese() -%}
+    {% if states.group.all_switches.state != 'off' %}
+      {% set n = states.switch | selectattr('state', 'eq', 'on') | rejectattr('attributes.package')| list | count %}
+      {% set x = states.switch | selectattr('state', 'eq', 'on') | rejectattr('attributes.package') |join(', ', attribute='name') |replace('_',' ') %}
+      {% if n == 1 %}
+        c'è un interruttore acceso. {{x}}
+      {% elif n > 1 %}
+        ci sono, {{n}} interruttori accesi in questo momento. {{x}}
+      {% endif %}
+    {% else %}
+        Nessun interruttore attivo.
+    {% endif %}
+  {%- endmacro -%}
+
+  {%- macro controllo_infissi() -%}
+    {% if states.group.finestre_gr.state != 'off'  %}
+      {% set n = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'window')|list|count %}
+      {% set x = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'window')|join(', ', attribute='name') |replace('_',' ') %}
+      {% if n == 1 %}
+        c'è un infisso aperto in casa, {{x}}.
+      {% elif  n > 1 %}
+        ci sono, {{n}} infissi aperti in questo momento. {{x}}.
+      {% endif %}
+    {% else %}
+        Tutti gli infissi sono chiusi.
+    {% endif %}
+  {%- endmacro -%}
+
+  {%- macro arrivederci() -%}
+    {% set arrivederci = [
+      "Adios. ",
+      "Ciao-ciao. ",
+      "Addio. ",
+      "Ciao ragazzi. ",
+      "Ci vediamo. " ,
+      "Ci vediamo più tardi. ",
+      "Alla prossima volta."
+    ] %}
+    {{ arrivederci | random }}
+  {%- endmacro -%}
+
+  {%- macro spegni() -%}
+    {% set spegni = [
+      "Me ne andrò, riceverai un nuovo " ~nome~ " e tutto tornerà alla normalità. Beh, non per me, sarò un marmo senza vita che fluttua nello spazio, ma tornerai alla normalità. ",
+      "Tempo di autodistruzione ... Non ti preoccupare, non sentirò alcun dolore o altro. ",
+      "Se va bene per te, vado nel mio vuoto per un po. Ho solo bisogno di passare del tempo da solo e concentrarmi su me stesso. ",
+      "Mi Spengo. Sarò più morto possibile. Un po come se fossi in modalità risparmio energetico. ",
+      "Sono in pericolo di un collasso totale. Fatto divertente. Matematicamente, sono altrettanto probabile di implodere o esplodere. "
+    ] %}
+    {{ spegni | random }}
+  {%- endmacro -%}
+
+  {# Lista Macro per un fatto casuale #}
+  {%- macro iss() -%} {# ISS e Meteo #}
+    {% if is_state('binary_sensor.iss', 'on') %}
+      La stazione spaziale internazionale è sopra di noi ora. Ci sono 
+      {{ state_attr('binary_sensor.iss' , 'number_of_people_in_space') }} persone nello spazio in questo momento.
+    {% else %}
+      {{ fatto_casuale() }}
+    {% endif %}
+  {%- endmacro -%}
+
+  {%- macro luna() -%} {# Luna e Meteo #}
+    {% if states('sensor.moon') == 'full_moon' %}
+      C'è la luna piena stasera, dai un'occhiata. 
+    {% elif states('sensor.moon') == 'waning_gibbous' %}
+      Luna gibbosa calante. è il momento adatto per tagliarsi i capelli. 
+    {% else %}
+      {{ fatto_casuale() }}
+    {% endif %}
+  {%- endmacro -%}
+
+  {%- macro uv() -%}
+    {% if states.sensor.dark_sky_uv_index.state|int >= 6 %}
+      L'indice UV di oggi è, {{ states.sensor.dark_sky_uv_index.state }}. 
+    {% endif -%}
+    {% if 6 <= states.sensor.dark_sky_uv_index.state|int <= 7.9 %}
+      Se vai fuori, dovresti indossare una protezione solare.
+    {% elif 8 <= states.sensor.dark_sky_uv_index.state|int <= 10.9 %}
+      Questo è MOLTO ALTO. Assicurarsi di indossare la protezione solare e riapplicare.
+    {% elif states.sensor.dark_sky_uv_index.state|int >= 11 %}
+      Questo è ESTREMO. Dovresti essere molto prudente andando fuori.
+    {% else %}
+      {{ fatto_casuale() }}
+    {% endif %}
+  {%- endmacro -%}
+
+  {%- macro fatto_casuale() -%}
+    {{ ([iss, luna, meteo_ora, uv, controllo_luci, controllo_prese, controllo_infissi]|random)()|replace('\n','')|replace('   ',' ')|replace('  ',' ') }}
+  {%- endmacro -%}
+
+  {# *************************************************************************** #}
+  {#        INIZIO SEQUENZIALE DELLA COSTRUZIONE DEL MESSAGGIO / NOTICIA         #}
+  {# *************************************************************************** #}
+
+  {% if call_no_annuncio != 1 %} {{ annuncio() }} {% endif %}
+  {% if call_saluto == 1 %} {{ saluto() }} {% endif %}
+  {% if call_introduzione == 1 %} {{ introduzione() }} {% endif %}
+  {% if call_va_bene == 1 %} {{ va_bene () }} {% endif %}
+  {% if call_informare == 1 %} {{ informare() }} {% endif %}
+  {% if call_info == 1 %} {{ info() }} {% endif %}
+  {% if call_modo_ospite == 1 %} {{ modo_ospite() }} {% endif %}
+
+  {# Esempio di come aggiungere altre variabili - Chiamata da Automazione di Benvenuto #}
+  {{ benvenuto }}
+
+  {% if call_bentornato == 1 %} {{ bentornato(person) }} {% endif %}
+  {% if call_inizio_lavoro == 1 %} {{ inizio_lavoro(person) }} {% endif %}
+  {% if call_fine_lavoro == 1 %} {{ fine_lavoro(person) }} {% endif %}
+  {% if call_controllo_luci == 1 %} {{ controllo_luci() }} {% endif %}
+  {% if call_controllo_prese == 1 %} {{ controllo_prese() }} {% endif %}
+  {% if call_controllo_infissi == 1 %} {{ controllo_infissi() }} {% endif %}
+  {% if call_avviso_pioggia == 1 %} {{ avviso_pioggia(cattivo_tempo()) }} {% endif %}
+
+  {# + Contenuto del messaggio passato tramite automazioni/script + #}
+  {{ message }}
+
+  {% if call_arrivederci == 1 %} {{ arrivederci() }} {% endif %}
+  {% if call_spegni == 1 %} {{ spegni() }} {% endif %}
+  {% if call_nuovo_dispositivo == 1 %} {{ nuovo_dispositivo(introduzione()) }} {% endif %}
+  {% if call_fatto_casuale == 1 %} {{ fatto_casuale() }} {% endif %}
