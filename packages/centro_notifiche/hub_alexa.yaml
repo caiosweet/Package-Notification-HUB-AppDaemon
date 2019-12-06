@@ -6,32 +6,58 @@ homeassistant:
   ## NODE ANCHORS
     package.node_anchors:
       customize: &customize
-        package: 'Centro Notifiche'
-        version: 'Alexa 2.0'
-        author: 'Caio & Gianpi'
-        site: 'www.hassiohelp.eu'
+        package: Centro Notifiche
+        version: Alexa 2.0
+        author: Caio & Gianpi
+        site: www.hassiohelp.eu
 
       expose: &expose
         <<: *customize
         haaska_hidden: false
         homebridge_hidden: false
 
-  ## input 
+  ## INPUT 
     input_boolean.alexa_switch:
       <<: *customize
+      friendly_name: Alexa
+      icon: mdi:amazon-alexa
     input_select.notification_media_player_alexa:
       <<: *customize
+      friendly_name: Sorgente Alexa
+      icon: mdi:speaker-wireless
     input_select.default_alexa_method:
       <<: *customize
+      friendly_name: Metodo Predefinito Alexa
+      icon: mdi:speaker-multiple
     input_select.default_alexa_type:
       <<: *customize
-  ## Sensor
+      friendly_name: Tipo Predefinito Alexa
+      icon: mdi:bullhorn-outline
+  ## SENSOR
     sensor.last_alexa:
       <<: *customize
-      friendly_name: 'Last Alexa'
+      friendly_name: Last Alexa
       icon: mdi:play-network
     sensor.media_player_alexa:
       <<: *customize
+      friendly_name: Player Alexa Attivo
+
+#######################################-#######################################
+##                                   INPUT
+#######################################-#######################################
+input_boolean:
+  alexa_switch:
+input_select:
+  notification_media_player_alexa:
+    options: !secret notification_media_player_alexa_hub
+  default_alexa_method:
+    options:
+      - Speak
+      - All
+  default_alexa_type:
+    options:
+      - TTS
+      - Announce
 
 #######################################-#######################################
 ##                                  SENSOR
@@ -40,50 +66,12 @@ sensor:
   - platform: template
     sensors:
       media_player_alexa:
-        friendly_name: 'Player Alexa Attivo'
         entity_id: input_select.notification_media_player_alexa, sensor.last_alexa
         value_template: >
-          {% set domains = ['media_player','group','sensor'] -%}
-          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_alexa')|lower -%}
-          {% if x.domain == 'sensor' %}
-          {{ x.state }}
-          {% else %}
-          {{- x.entity_id -}}
-          {% endif %}
-          {% endfor %}
+          {%set domains=['media_player','group','sensor']-%}
+          {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
+          {%if x.domain=='sensor'%}{{x.state}}{%else%}{{-x.entity_id-}}{%endif%}{%endfor%}
         icon_template: >-
-          {% set domains = ['media_player','group','sensor'] -%}
-          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_alexa')|lower -%}
-          {% if x.domain == 'group' %}
-          mdi:speaker-multiple
-          {% else %}
-          mdi:speaker
-          {% endif %}
-          {% endfor %}
-
-#######################################-#######################################
-##                                   INPUT
-#######################################-#######################################
-
-input_boolean:
-  alexa_switch:
-    name: Alexa
-    icon: mdi:amazon-alexa
-
-input_select:
-  notification_media_player_alexa:
-    name: Sorgente Alexa
-    icon: mdi:speaker-wireless
-    options: !secret notification_media_player_alexa_hub
-  default_alexa_method:
-    name: Metodo Predefinito Alexa
-    icon: mdi:speaker-multiple
-    options:
-      - Speak
-      - All
-  default_alexa_type:
-    name: Tipo Predefinito Alexa
-    icon: mdi:bullhorn-outline
-    options:
-      - TTS
-      - Announce
+          {%set domains=['media_player','group','sensor']-%}
+          {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
+          {%if x.domain=='group'%}mdi:speaker-multiple{%else%}mdi:speaker{%endif%}{%endfor%}

@@ -8,33 +8,31 @@ homeassistant:
     ################################################
     package.node_anchors:
       customize: &customize
-        package: 'Centro Notifiche'
-        version: 'Ariela 2.0'
-        author: 'Caio & Gianpi'
-        site: 'www.hassiohelp.eu'
+        package: Centro Notifiche
+        version: Ariela 2.0
+        author: Caio & Gianpi
+        site: www.hassiohelp.eu
 
       expose: &expose
         <<: *customize
         haaska_hidden: false
         homebridge_hidden: false
 
-    ################################################
-    ## input Boolean
-    ################################################
+    ## INPUT
     input_boolean.ariela_switch:
       <<: *customize
+      friendly_name: Ariela
+      icon: mdi:android-studio
+
     # input_boolean.ariela_push:
     #   <<: *customize
+    #   friendly_name: Ariela Push
+    #   icon: mdi:cellphone-text
 
 #######################################-#######################################
 ##                                   INPUT
 #######################################-#######################################
-
 input_boolean:
   ariela_switch:
-    name: Ariela
-    icon: mdi:android-studio
-
   # ariela_push:
-  #   name: Ariela Push
-  #   icon: mdi:cellphone-text
+
