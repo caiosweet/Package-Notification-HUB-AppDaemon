@@ -1,0 +1,154 @@
+views:
+  title: Centro Notifiche
+  path: centro_notifiche
+  icon: mdi:account-tie
+  cards:
+    - type: custom:banner-card
+      heading: "\U0001f935 Centro Notifiche"
+      background: 'var(--primary-color)'
+      link: /lovelace/centro_notifiche
+      entities:
+        - entity: sensor.period_of_day_volume
+        - entity: input_boolean.speech_notifications
+          name: Notifiche Audio
+          action:
+            service: input_boolean.toggle
+        - entity: input_boolean.last_message
+          value: Ascolta
+          action:
+            service: input_boolean.turn_on
+        - entity: input_select.notification_media_player_alexa
+          action:
+            service: input_select.select_next
+        - entity: input_boolean.text_notifications
+          name: Notifiche Testo
+          action:
+            service: input_boolean.toggle
+        - entity: input_select.notification_media_player_google
+          action:
+            service: input_select.select_next
+
+    # CARD 99 Gruppo Automazioni
+    - type: entities
+      title: Automazioni
+      show_header_toggle: false
+      entities:
+        - type: custom:fold-entity-row
+          head: group.automations_notification_hub
+
+    # CARD 01 Centro Notifiche
+    - type: entities
+      title: Centro Notifiche
+      show_header_toggle: false
+      entities:
+        - type: section
+          label: Monitor
+        - group.location_tracker
+        - type: custom:fold-entity-row
+          head: sensor.period_of_day
+          entities:
+            - input_datetime.start_morning
+            - input_datetime.start_afternoon
+            - input_datetime.start_evening
+            - input_datetime.start_night
+        - type: custom:fold-entity-row
+          head: sensor.period_of_day_volume
+          entities:
+            - input_number.morning_volume
+            - input_number.afternoon_volume
+            - input_number.evening_volume
+            - input_number.night_volume
+            - input_number.default_restore_volume
+        - entity: binary_sensor.dnd
+          tap_action:
+            action: call-service
+            service: input_boolean.toggle
+            service_data:
+              entity_id: input_boolean.speech_notifications
+        - type: call-service
+          # icon: mdi:repeat-one
+          name: Ultimo Messaggio
+          action_name: Ascolta
+          service: input_boolean.turn_on
+          service_data:
+            entity_id: input_boolean.last_message
+        - type: custom:fold-entity-row
+          head:
+            type: section
+            label: Modalità
+          entities:
+            - entity: input_boolean.guest_mode
+            - entity: input_boolean.priority_message
+            - entity: input_boolean.speech_notifications
+            - entity: input_boolean.text_notifications
+            - entity: input_boolean.screen_notifications
+            - entity: input_boolean.last_message
+        - type: section
+          label: Interfono
+        - entity: automation.send_intercom_message_hub
+          name: Off/On
+        - entity: input_number.intercom_message_volume
+        - entity: input_text.intercom_message_hub
+
+    # CARD 02 Impostazioni Assistente
+    - type: entities
+      title: Impostazioni Assistente
+      show_header_toggle: false
+      entities:
+        - entity: input_text.personal_assistant_name
+        - entity: input_select.default_notify
+        - entity: input_number.tts_wait_time
+        - type: custom:fold-entity-row
+          head:
+            type: section
+            label: Impostazione orario modo silenzioso
+          entities:
+            - entity: input_datetime.dnd_start
+            - entity: input_datetime.dnd_end
+        - type: custom:fold-entity-row
+          head:
+            type: section
+            label: Impostazione Volume di default durante il griorno
+          entities:
+            - input_datetime.start_morning
+            - input_datetime.start_afternoon
+            - input_datetime.start_evening
+            - input_datetime.start_night
+            - input_number.morning_volume
+            - input_number.afternoon_volume
+            - input_number.evening_volume
+            - input_number.night_volume
+            - input_number.default_restore_volume
+
+    # CARD 03 Google
+    - type: entities
+      title: Google
+      show_header_toggle: false
+      entities:
+        - type: section
+          label: ''
+        - entity: input_boolean.google_switch
+        - entity: input_boolean.tts_google_mode
+        - entity: input_select.language
+        - entity: input_select.notification_media_player_google
+
+    # CARD 04 Alexa
+    - type: entities
+      title: Alexa
+      show_header_toggle: false
+      entities:
+        - type: section
+          label: ''
+        - entity: input_boolean.alexa_switch
+        - entity: input_select.notification_media_player_alexa
+        - entity: input_select.default_alexa_type
+        - entity: input_select.default_alexa_method
+
+    # CARD 05 Ariela
+    - type: entities
+      title: Ariela
+      show_header_toggle: false
+      entities:
+        - type: section
+          label: ''
+        - entity: input_boolean.ariela_switch
