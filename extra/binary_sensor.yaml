@@ -5,6 +5,14 @@ binary_sensor:
         friendly_name: Persone in casa
         device_class: presence
         value_template: "{{is_state('group.location_tracker','home')}}"
+        icon_template: >-
+          {% set people = expand('group.location_tracker')|selectattr('state','eq','home')
+            |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0) %}
+          {% set icon = {0 :'mdi:account-off',
+                         1 :'mdi:account',
+                         2 :'mdi:account-multiple',
+                         3 :'mdi:account-multiple-check'} %}
+          {{icon[people] if people in icon else 'mdi:account-group'}}
         attribute_templates:
           number: >-
             {% if is_state('group.location_tracker','home')%}
@@ -14,6 +22,6 @@ binary_sensor:
           name: >-
             {% if is_state('group.location_tracker','home')%}
             {{expand('group.location_tracker')|selectattr('state','eq','home')
-            |join(', ',attribute='name')~(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
+            |join(', ',attribute='name')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
             {%endif%}
             
