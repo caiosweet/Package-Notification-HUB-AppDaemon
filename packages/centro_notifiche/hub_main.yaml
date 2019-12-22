@@ -157,7 +157,7 @@ homeassistant:
 ##                             CUSTOMIZE GLOB                              
 ############################################################################
   customize_glob:
-    .*_hub:
+    automation.*_hub:
       <<: *customize
       icon: mdi:alpha-a-circle-outline
 
