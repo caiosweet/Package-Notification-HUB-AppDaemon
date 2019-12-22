@@ -2,7 +2,7 @@
   #   @author         :   Caio & Gianpi- www.hassiohelp.eu
   #   @date           :   01/11/2019
   #   @package        :   Notification HUB - Centro Notifiche
-  #   @description    :   Package Appdaemon Notifier Centre for Home Assistant
+  #   @description    :   Package Appdaemon Notifier Center for Home Assistant
   ############################################################################
 
 #######################################-#######################################
@@ -157,7 +157,7 @@ homeassistant:
 ##                             CUSTOMIZE GLOB                              
 ############################################################################
   customize_glob:
-    id.*_hub:
+    .*_hub:
       <<: *customize
       icon: mdi:alpha-a-circle-outline
 
@@ -314,16 +314,16 @@ sensor:
 #######################################-#######################################
 script:
   #----------------------------------------------------------------------------------------------------#
-  # SCRIPT PRINCIPALE - Variabili da passare all'evento HUB + template se incluso
+  # SCRIPT PRINCIPALE - Variabili da passare all'evento HUB + file template se incluso
   #----------------------------------------------------------------------------------------------------#
   my_notify:
     alias: HUB
     sequence:
       - event: hub
         event_data_template:
-          # ********************************************* #
-          #                    VARIABILI                  #
-          # ********************************************* #
+          # --------------------------------------------- #
+          # VARIABILI
+          # --------------------------------------------- #
           title: >-
             {{title}}
           link: >-
@@ -360,9 +360,9 @@ script:
             {{priority}}
           message_tts: >-
             {{message_tts}}
-          #######################################-#######################################
-          ## FILE DA INCLUDERE PER LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml   ##
-          #######################################-#######################################
+          #-----------------------------------------------------------------------------#
+          # FILE DA INCLUDERE PER LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
+          #-----------------------------------------------------------------------------#
           message: !include hub_build_message.yml
 
 #######################################-#######################################
