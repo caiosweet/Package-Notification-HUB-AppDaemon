@@ -10,6 +10,8 @@ Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://g
 ## [My Lovelace Card](./extra/personal_card.yaml)
 <br>
 <img src="./extra/Personal_Card.png">
+
+## [My Lovelace view](./lovelace/view_centro_notifiche.yaml)
 <br>
 <img src="./extra/tab_view.png">
 
