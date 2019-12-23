@@ -7,6 +7,11 @@
 # Package-Notification-HUB-AppDaemon
 Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/appdaemon/commits?author=jumping2000) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
 
+## Guide
+[AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)
+
+[Nuovo Centro notifiche](prossimo)
+
 ## [Standard Lovelace Cards](./lovelace/)
 <br>
 <img src="./extra/preview/CN_standard_cards.png">
