@@ -15,20 +15,30 @@ Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://g
 [Nuovo Centro notifiche](prossimo)
 
 ## [Standard Lovelace Cards](./lovelace/)
-<br>
+<p align="center">
 <img src="./extra/preview/CN_standard_cards.png">
+<br><br>
+</p>
 
 ## [My Lovelace Card](./extra/personal_card.yaml)
-<br>
+<p align="center">
 <img src="./extra/preview/CN_my_card.png">
+<br><br>
+</p>
 
 ## [My Lovelace view](./extra/my_lovelace_view)
-<br>
+<p align="center">
 <img src="./extra/preview/CN_my_view.png">
+<br><br>
+Custom Cards: card-mod, button-entity-row, fold-entity-row
+</p>
 
 ## [Ex. Banner Card](./extra/card_custom_banner_card.yaml)
-<br>
+<p align="center">
 <img src="./extra/preview/CN_view_banner_card.png">
+<br><br>
+Custom Cards: card-mod, banner-card, fold-entity-row
+</p>
 
 
 Se volete conoscere tutte le entità potete usare jinja in modelli
