@@ -1,0 +1,33 @@
+type: entities
+title: Centro Notifiche
+show_header_toggle: false
+entities:
+  - type: section
+    label: Monitor
+  - entity: group.location_tracker
+  - entity: sensor.period_of_day
+  - entity: sensor.period_of_day_volume
+  - entity: input_number.default_restore_volume
+  - type: call-service
+    icon: 'mdi:power'
+    name: Ultimo Messaggio
+    action_name: Ascolta
+    service: input_boolean.turn_on
+    service_data:
+      entity_id: input_boolean.last_message
+  - type: section
+    label: Modalità
+  - entity: binary_sensor.dnd
+  - entity: input_boolean.guest_mode
+  - entity: input_boolean.priority_message
+  - type: section
+    label: Opzioni
+  - entity: input_boolean.speech_notifications
+  - entity: input_boolean.text_notifications
+  - entity: input_boolean.screen_notifications
+  - type: section
+    label: Interfono
+  - entity: automation.send_intercom_message_hub
+    name: Off/On
+  - entity: input_number.intercom_message_volume
+  - entity: input_text.intercom_message_hub
