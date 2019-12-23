@@ -106,8 +106,8 @@ automation:
       - service: script.my_notify
         data_template:
           title: "Nuovo Aggiornamento Hassio"
-          message: "Home Assistant {{ state_attr('binary_sensor.updater','newest_version') }} è disponibile."
-          link: https://raw.githubusercontent.com/home-assistant/home-assistant-assets/master/logo-round-192x192.png
+          message: "Home Assistant {{state_attr('binary_sensor.updater','newest_version')}} è disponibile."
+          link: "{{state_attr('binary_sensor.updater','release_notes')}}"
 
   #----------------------------------------------------------------------------------------------------#
   # Benvenuto # Esempio Macro elaborata al di fuori di build_message, dove al suo interno va inserito {{ benvenuto }}
@@ -408,3 +408,29 @@ automation:
           {% for repo in state_attr(trigger.entity_id, 'repositories') %}
             Nuova versione per {{ repo.display_name }}.
           {% endfor %}
+
+  #----------------------------------------------------------------------------------------------------#
+  # HACS - Updater
+  #----------------------------------------------------------------------------------------------------#
+  # - id: hacs_updater_hub
+  #   alias: "Notifica Aggiornamenti HACS"
+  #   initial_state: true
+  #   trigger:
+  #     - platform: state
+  #       entity_id: sensor.hacs
+  #   condition:
+  #     - condition: template
+  #       value_template: "{{ trigger.to_state.state > trigger.from_state.state }}"
+  #   action:
+  #     - service: script.my_notify
+  #       data_template:
+  #         mute: 1
+  #         title: "HACS"
+  #         message: >-
+  #           Aggiornamenti plug-in disponibili. 
+  #           {%set hacs=state_attr('sensor.hacs','repositories')%}
+  #           {%set hacs_num=states('sensor.hacs')|int%}
+  #           {%for n in range(0,hacs_num)%}
+  #           *{{state_attr('sensor.hacs','repositories')[n]['display_name']}}* {{state_attr('sensor.hacs','repositories')[n]['available version']}}
+  #           {%if not loop.last%}-{%endif%}
+  #           {%endfor%}.
