@@ -1,0 +1,13 @@
+type: entities
+title: Alexa
+show_header_toggle: false
+entities:
+  - type: section
+    label: ''
+  - entity: input_boolean.alexa_switch
+  - entity: input_select.notification_media_player_alexa
+  - entity: input_select.default_alexa_type
+  - entity: input_select.default_alexa_method
+  - type: section
+    label: 'Sensore'
+  - entity: sensor.media_player_alexa
