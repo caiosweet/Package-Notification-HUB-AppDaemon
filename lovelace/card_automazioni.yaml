@@ -1,0 +1,7 @@
+type: entities
+title: Automazioni
+show_header_toggle: false
+entities:
+  - type: section
+    label: ''
+  - entity: group.automations_notification_hub
