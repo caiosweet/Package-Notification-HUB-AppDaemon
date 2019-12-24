@@ -26,7 +26,7 @@ Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://g
 <br><br>
 </p>
 
-## [My Lovelace view](./extra/my_lovelace_view)
+## [My Lovelace view](./extra/my_lovelace_view.yaml)
 <p align="center">
 <img src="./extra/preview/CN_my_view.png">
 <br><br>
