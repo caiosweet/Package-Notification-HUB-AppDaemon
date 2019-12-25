@@ -12,7 +12,7 @@ Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://g
 ## Guide
 [AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)
 
-[Nuovo Centro notifiche](prossimo)
+[Nuovo Centro notifiche](https://hassiohelp.eu/2019/12/25/notifer/)
 
 ## [Standard Lovelace Cards](./lovelace/)
 <p align="center">
