@@ -5,14 +5,19 @@
 [![GitHub issues](https://img.shields.io/github/issues/caiosweet/Package-Notification-HUB-AppDaemon)](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/issues)
 
 # Package-Notification-HUB-AppDaemon
-Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/appdaemon/commits?author=jumping2000) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
+Package for Appdaemon Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/appdaemon/commits?author=jumping2000)<br>
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
 [![GitHub Release Date](https://img.shields.io/github/release-date/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
 [![GitHub issues](https://img.shields.io/github/issues/jumping2000/notifier)](https://github.com/jumping2000/notifier/issues)
 
-## Guide
+## Guide e info
 [AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)
 
 [Nuovo Centro notifiche](https://hassiohelp.eu/2019/12/25/notifer/)
+
+![Website](https://img.shields.io/website?down_message=Offline&label=HssioHelp&logoColor=blue&up_message=Online&url=https%3A%2F%2Fhassiohelp.eu)
+[![Chat on Telegram](https://img.shields.io/badge/Chat-Telegram-blue?logo=Telegram)](https://t.me/HassioHelp)
+[![Chat on Facebook](https://img.shields.io/badge/Group-Facebook-blue?logo=Facebook)](https://www.facebook.com/groups/2062381507393179/)
 
 ## [Standard Lovelace Cards](./lovelace/)
 <p align="center">
