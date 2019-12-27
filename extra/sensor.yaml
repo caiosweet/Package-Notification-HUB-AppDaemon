@@ -1,0 +1,12 @@
+sensor:
+  - platform: command_line
+    name: HA Start
+    command: grep -m1 'Home Assistant initialized' home-assistant.log | awk '{ print $6, $7, $8, $9, $10 }'
+
+############################################################################
+## In order to use this sensor, set the info logs in this way
+############################################################################
+# logger:
+#   default: warn
+#   logs:
+#     homeassistant.bootstrap: info
