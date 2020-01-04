@@ -2,11 +2,43 @@ sensor:
   - platform: command_line
     name: HA Start
     command: grep -m1 'Home Assistant initialized' home-assistant.log | awk '{ print $6, $7, $8, $9, $10 }'
-
 ############################################################################
-## In order to use this sensor, set the info logs in this way
+## In order to use sensor.ha_start, set the info logs in this way
 ############################################################################
 # logger:
 #   default: warn
 #   logs:
 #     homeassistant.bootstrap: info
+
+# ClockTime
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'date_time_iso'
+      - 'time_date'
+      - 'time_utc'
+      - 'beat'
+
+# Calcolo Giorno della settimana
+  - platform: template
+    sensors:
+      day_of_week:
+        friendly_name: 'Giorno della settimana'
+        entity_id: sensor.date
+        value_template: >
+          {{ ['lun','mar','mer','gio','ven','sab','dom'][now().weekday()] }}
+        icon_template: >-
+          mdi:{{['emoticon-dead-outline', 'emoticon-angry-outline', 'emoticon-sad-outline','emoticon-neutral-outline','emoticon-cool-outline','emoticon-excited-outline','emoticon-happy-outline'][now().weekday()] }}
+
+# Calcolo Giorno dopo
+  - platform: template
+    sensors:
+      tomorrow_day_of_week:
+        friendly_name: 'Domani'
+        entity_id: sensor.date
+        value_template: >
+          {{ ['mar','mer','gio','ven','sab','dom','lun'][now().weekday()] }}
+        icon_template: >-
+          mdi:{{['emoticon-angry-outline', 'emoticon-sad-outline','emoticon-neutral-outline','emoticon-cool-outline','emoticon-excited-outline','emoticon-happy-outline','emoticon-dead-outline'][now().weekday()] }}
