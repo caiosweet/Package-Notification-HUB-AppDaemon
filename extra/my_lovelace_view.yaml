@@ -18,12 +18,12 @@ views:
               ha-card {
                 border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
                 #background: var(--primary-color);
-                background: content-box radial-gradient(var(--paper-item-icon-active-color), var(--primary-color));
+                #background: content-box radial-gradient(var(--paper-item-icon-active-color), var(--primary-color));
+                background: content-box radial-gradient(var(--light-primary-color), var(--primary-color));
                 box-shadow: none;
               }
             content: >-
               <font size=5><center>🤵 Centro Notifiche</font>
-
           - type: custom:button-entity-row
             buttons:
               - entity: binary_sensor.people_home
@@ -52,31 +52,26 @@ views:
                   #"on": "mdi:message-bulleted"
               - entity: input_boolean.guest_mode
                 state_icons:
-                  "on": mdi:account-multiple-plus
-                  "off": mdi:account-multiple-minus-outline
-              # - entity: input_boolean.google_switch
-              # - entity: input_boolean.alexa_switch
+                  "on": "mdi:account-multiple-plus"
+                  "off": "mdi:account-multiple-minus-outline"
               - entity: input_boolean.priority_message
                 state_icons:
                   "off": "mdi:alarm-light-outline"
+              - entity: input_boolean.holidays
               - entity: binary_sensor.dnd
                 state_icons:
                   "on": "mdi:do-not-disturb"
-                  "off": mdi:do-not-disturb-off
+                  "off": "mdi:do-not-disturb-off"
               - entity: input_boolean.last_message
-
           - type: divider
             style:
               background-color: var(--primary-color)
               height: 1px
-
           - type: custom:hui-glance-card
             style: |
               ha-card {
                 overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
               }
-            #title: "\U0001f935 Centro Notifiche"
-            #show_name: False
             columns: 3
             show_icon: false
             entities:
@@ -122,18 +117,19 @@ views:
                     entity_id: input_select.default_notify
                 double_tap_action:
                   action: more-info
-
+          # - type: divider
+          #   style:
+          #     background-color: var(--primary-color)
+          #     height: 1px
           - type: custom:button-entity-row
             buttons:
               - entity: input_boolean.ariela_switch
                 name: Ariela
               - entity: input_boolean.google_switch
                 name: Google
-              # - entity: input_select.notification_media_player_google
               - entity: input_boolean.tts_google_mode
                 state_icons:
                   "on": "mdi:google-assistant"
-                #name: TTS / Assistant
               - entity: input_boolean.alexa_switch
                 name: Alexa
               - entity: input_select.default_alexa_type
@@ -147,12 +143,10 @@ views:
                 service: input_select.select_next
                 service_data:
                   entity_id: input_select.default_alexa_type
-
-
           - type: custom:hui-entities-card
             style: |
               ha-card {
-               background:none; border-radius: 0px; box-shadow: none; 
+                background:none; border-radius: 0px; box-shadow: none; 
               }
               .card-content {
                 padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
@@ -199,7 +193,6 @@ views:
               service_data:
                 entity_id: input_boolean.speech_notifications
           - type: call-service
-            # icon: mdi:repeat-one
             name: Ultimo Messaggio
             action_name: Ascolta
             service: input_boolean.turn_on
@@ -210,6 +203,7 @@ views:
               type: section
               label: Modalità
             entities:
+              - entity: input_boolean.holidays
               - entity: input_boolean.guest_mode
               - entity: input_boolean.priority_message
               - entity: input_boolean.speech_notifications
@@ -234,22 +228,29 @@ views:
           - type: custom:fold-entity-row
             head:
               type: section
-              label: Impostazione orario modo silenzioso
+              label: FERIALI - Orario modo silenzioso
             entities:
-              - entity: input_datetime.dnd_start
-              - entity: input_datetime.dnd_end
+              - entity: input_datetime.dnd_start_weekdays
+              - entity: input_datetime.dnd_end_weekdays
           - type: custom:fold-entity-row
             head:
               type: section
-              label: Impostazione Volume di default durante il griorno
+              label: FESTIVI - Orario modo silenzioso
+            entities:
+              - entity: input_datetime.dnd_start_holidays
+              - entity: input_datetime.dnd_end_holidays
+          - type: custom:fold-entity-row
+            head:
+              type: section
+              label: VOLUME di default durante il griorno
             entities:
               - input_datetime.start_morning
-              - input_datetime.start_afternoon
-              - input_datetime.start_evening
-              - input_datetime.start_night
               - input_number.morning_volume
+              - input_datetime.start_afternoon
               - input_number.afternoon_volume
+              - input_datetime.start_evening
               - input_number.evening_volume
+              - input_datetime.start_night
               - input_number.night_volume
               - input_number.default_restore_volume
 
