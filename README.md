@@ -12,7 +12,7 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
 [![Hass.io][img-hassio]][link-hassio]
 [![GitHub issues](https://img.shields.io/github/issues/jumping2000/notifier)](https://github.com/jumping2000/notifier/issues)
 
-## Guide e info
+## Guides and info
 [AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)
 
 [Nuovo Centro notifiche](https://hassiohelp.eu/2019/12/25/notifer/)
@@ -24,11 +24,15 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
 
 ## Requirements
 
+  - [AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) - [Hassio-Addons](https://github.com/hassio-addons/repository)
   - [Sensor Workday](https://www.home-assistant.io/integrations/workday/)
   - [Input DateTime](https://www.home-assistant.io/integrations/input_datetime/)
+  
+## Extra
   - [Lovelace Card Mod](https://github.com/thomasloven/lovelace-card-mod)
   - [Lovelace Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
   - [Button Entity Row](https://github.com/custom-cards/button-entity-row)
+  - [Banner Card](https://github.com/nervetattoo/banner-card)
 
 
 ## [My Lovelace Card](./extra/personal_card.yaml)
@@ -57,7 +61,7 @@ Custom Cards: card-mod, banner-card, fold-entity-row
 <br><br>
 </p>
 
-Per conoscere tutte le entità, usa questo codice jinja in dev-tools modelli
+To know all the entities, use this jinja code in dev-tools models
 ```
 {% for state in states -%}
 {% if 'centro notifiche' in state.attributes.package|lower %}
@@ -65,7 +69,7 @@ Per conoscere tutte le entità, usa questo codice jinja in dev-tools modelli
 {% endif %}
 {%- endfor %} 
 ```
-Entità in file hub_main.yaml
+Ex. Entity in hub_main.yaml file
 ```
 {% for state in states -%}
 {% if 'centro notifiche' in state.attributes.package|lower and 'main' in state.attributes.version|lower%}
@@ -81,7 +85,7 @@ Alexa
 {% endif %}
 {%- endfor %} 
 ```
-Creare una card
+Create a Card
 ```
 type: entities
 title: Alexa
