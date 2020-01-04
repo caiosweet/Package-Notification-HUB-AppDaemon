@@ -14,7 +14,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Main 2.0
+        version: Main 2.2
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
@@ -51,6 +51,10 @@ homeassistant:
       friendly_name: Automazioni HUB
       icon: mdi:account-tie
   ## INPUT
+    input_boolean.holidays:
+      <<: *customize
+      friendly_name: Modo Vacanza
+      icon: mdi:beach
     input_boolean.guest_mode:
       <<: *customize
       friendly_name: Modo Ospite
@@ -75,14 +79,6 @@ homeassistant:
       <<: *customize
       friendly_name: Ultimo Messaggio
       icon: mdi:repeat-once
-    input_datetime.dnd_start:
-      <<: *customize
-      friendly_name: Non disturbare inizio
-      icon: mdi:clock-start
-    input_datetime.dnd_end:
-      <<: *customize
-      friendly_name: Non disturbare fine
-      icon: mdi:clock-end
     input_datetime.start_morning:
       <<: *customize
       friendly_name: Mattina
@@ -160,7 +156,14 @@ homeassistant:
     automation.*_hub:
       <<: *customize
       icon: mdi:alpha-a-circle-outline
-
+    input_datetime.dnd_start_*:
+      <<: *customize
+      friendly_name: Non disturbare inizio
+      icon: mdi:clock-start
+    input_datetime.dnd_end_*:
+      <<: *customize
+      friendly_name: Non disturbare fine
+      icon: mdi:clock-end
 ###############################################################################
 ## PACKAGE
 ###############################################################################
@@ -176,6 +179,7 @@ group:
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
+  holidays:
   guest_mode:
   priority_message:
   speech_notifications:
@@ -183,10 +187,16 @@ input_boolean:
   screen_notifications:
   last_message:
 input_datetime:
-  dnd_start:
+  dnd_start_weekdays:
     has_date: false
     has_time: true
-  dnd_end:
+  dnd_end_weekdays:
+    has_date: false
+    has_time: true
+  dnd_start_holidays:
+    has_date: false
+    has_time: true
+  dnd_end_holidays:
     has_date: false
     has_time: true
   start_morning:
@@ -256,14 +266,19 @@ binary_sensor:
   - platform: template
     sensors:
       dnd:
-        entity_id: sensor.time,input_datetime.dnd_start,input_datetime.dnd_end,input_boolean.speech_notifications,input_boolean.priority_message
+        entity_id: >
+          sensor.time,input_datetime.dnd_start_weekdays,input_datetime.dnd_end_weekdays,
+          input_datetime.dnd_start_holidays,input_datetime.dnd_end_holidays,
+          input_boolean.speech_notifications,input_boolean.priority_message,input_boolean.holidays
         value_template: >
           {%set speech=states('input_boolean.speech_notifications')%}
           {%set priority=states('input_boolean.priority_message')%}
           {%set t=now().time()%}
           {%set t=(t.hour*60+t.minute)*60+t.second%}
-          {%set start=state_attr('input_datetime.dnd_start','timestamp')%}
-          {%set stop=state_attr('input_datetime.dnd_end','timestamp')%}
+          {% set day = 'weekdays' if (is_state('binary_sensor.workday_sensor','on')
+            and is_state('input_boolean.holidays','off')) else 'holidays' %}
+          {%set start=state_attr('input_datetime.dnd_start_%s'%day,'timestamp')%}
+          {%set stop=state_attr('input_datetime.dnd_end_%s'%day,'timestamp')%}
           {%if speech=='on' and priority=='off'%} 
           {{(start<t<stop) if start<stop else (t>start or t<stop)}}
           {%elif speech=='off' and priority=='off'%}True{%else%}False{%endif%}
