@@ -1,4 +1,12 @@
 binary_sensor:
+  - platform: workday
+    country: IT
+    workdays: [mon,tue,wed,thu,fri]
+    excludes: [sat,sun,holiday]
+    add_holidays:
+      - '2020-08-31'
+      - '2021-08-31'
+
   - platform: template
     sensors:
       people_home:
