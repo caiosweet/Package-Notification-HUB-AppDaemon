@@ -13,7 +13,8 @@ entities:
       ha-card {
         border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
         #background: var(--primary-color);
-        background: content-box radial-gradient(var(--paper-item-icon-active-color), var(--primary-color));
+        #background: content-box radial-gradient(var(--paper-item-icon-active-color), var(--primary-color));
+        background: content-box radial-gradient(var(--light-primary-color), var(--primary-color));
         box-shadow: none;
       }
     content: >-
@@ -21,6 +22,9 @@ entities:
   - type: custom:button-entity-row
     buttons:
       - entity: binary_sensor.people_home
+        # state_icons:
+        #   "off": "mdi:home-export-outline"
+        #   "on": "mdi:home-import-outline"
       - entity: group.location_tracker
         state_icons:
           "not_home": "mdi:home-export-outline"
@@ -40,17 +44,19 @@ entities:
       - entity: input_boolean.screen_notifications
         state_icons:
           "off": "mdi:message-bulleted-off"
+          #"on": "mdi:message-bulleted"
       - entity: input_boolean.guest_mode
         state_icons:
-          "on": mdi:account-multiple-plus
-          "off": mdi:account-multiple-minus-outline
+          "on": "mdi:account-multiple-plus"
+          "off": "mdi:account-multiple-minus-outline"
       - entity: input_boolean.priority_message
         state_icons:
           "off": "mdi:alarm-light-outline"
+      - entity: input_boolean.holidays
       - entity: binary_sensor.dnd
         state_icons:
           "on": "mdi:do-not-disturb"
-          "off": mdi:do-not-disturb-off
+          "off": "mdi:do-not-disturb-off"
       - entity: input_boolean.last_message
   - type: divider
     style:
@@ -61,6 +67,8 @@ entities:
       ha-card {
         overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
       }
+    #title: "\U0001f935 Centro Notifiche"
+    #show_name: False
     columns: 3
     show_icon: false
     entities:
@@ -112,9 +120,11 @@ entities:
         name: Ariela
       - entity: input_boolean.google_switch
         name: Google
+      # - entity: input_select.notification_media_player_google
       - entity: input_boolean.tts_google_mode
         state_icons:
           "on": "mdi:google-assistant"
+        #name: TTS / Assistant
       - entity: input_boolean.alexa_switch
         name: Alexa
       - entity: input_select.default_alexa_type
@@ -131,7 +141,7 @@ entities:
   - type: custom:hui-entities-card
     style: |
       ha-card {
-        background:none; border-radius: 0px; box-shadow: none; 
+       background:none; border-radius: 0px; box-shadow: none; 
       }
       .card-content {
         padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
@@ -139,3 +149,4 @@ entities:
     entities:
       - type: custom:text-input-row
         entity: input_text.intercom_message_hub
+
