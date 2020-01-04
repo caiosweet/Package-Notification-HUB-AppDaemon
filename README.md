@@ -22,11 +22,14 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
 [![Chat on Facebook](https://img.shields.io/badge/Group-Facebook-blue?logo=Facebook)](https://www.facebook.com/groups/2062381507393179/)
 [![Forum](https://img.shields.io/badge/HassioHelp-Forum-blue?logo=Wordpress)](https://forum.hassiohelp.eu/showthread.php?tid=481&pid=1758#pid1758)
 
-## [Standard Lovelace Cards](./lovelace/)
-<p align="center">
-<img src="./extra/preview/CN_standard_cards.png">
-<br><br>
-</p>
+## Requirements
+
+  - [Sensor Workday](https://www.home-assistant.io/integrations/workday/)
+  - [Input DateTime](https://www.home-assistant.io/integrations/input_datetime/)
+  - [Lovelace Card Mod](https://github.com/thomasloven/lovelace-card-mod)
+  - [Lovelace Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
+  - [Button Entity Row](https://github.com/custom-cards/button-entity-row)
+
 
 ## [My Lovelace Card](./extra/personal_card.yaml)
 <p align="center">
@@ -48,8 +51,13 @@ Custom Cards: card-mod, button-entity-row, fold-entity-row
 Custom Cards: card-mod, banner-card, fold-entity-row
 </p>
 
+## [Standard Lovelace Cards](./lovelace/)
+<p align="center">
+<img src="./extra/preview/CN_standard_cards.png">
+<br><br>
+</p>
 
-Se volete conoscere tutte le entità potete usare jinja in modelli
+Per conoscere tutte le entità, usa questo codice jinja in dev-tools modelli
 ```
 {% for state in states -%}
 {% if 'centro notifiche' in state.attributes.package|lower %}
@@ -57,7 +65,7 @@ Se volete conoscere tutte le entità potete usare jinja in modelli
 {% endif %}
 {%- endfor %} 
 ```
-o ad esempio solo quelle del file hub_main
+Entità in file hub_main.yaml
 ```
 {% for state in states -%}
 {% if 'centro notifiche' in state.attributes.package|lower and 'main' in state.attributes.version|lower%}
@@ -73,7 +81,7 @@ Alexa
 {% endif %}
 {%- endfor %} 
 ```
-Oppure creare una card al volo e cancellare quello che non serve poi...
+Creare una card
 ```
 type: entities
 title: Alexa
