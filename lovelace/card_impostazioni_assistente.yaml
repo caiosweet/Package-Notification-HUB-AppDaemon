@@ -6,9 +6,13 @@ entities:
   - entity: input_select.default_notify
   - entity: input_number.tts_wait_time
   - type: section
-    label: Impostazione modo silenzioso (DND)
-  - entity: input_datetime.dnd_start
-  - entity: input_datetime.dnd_end
+    label: Impostazione modo silenzioso Feriali
+  - entity: input_datetime.dnd_start_weekdays
+  - entity: input_datetime.dnd_end_weekdays
+  - type: section
+    label: Impostazione modo silenzioso Festivi
+  - entity: input_datetime.dnd_start_holidays
+  - entity: input_datetime.dnd_end_holidays
   - type: section
     label: Impostazione orario e volume
   - entity: input_datetime.start_morning
