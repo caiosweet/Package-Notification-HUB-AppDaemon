@@ -1,0 +1,8 @@
+type: entities
+title: VoIP
+show_header_toggle: false
+entities:
+  - type: section
+    label: ''
+  - entity: input_text.phone_called_number
+  - entity: input_select.phone_notify
