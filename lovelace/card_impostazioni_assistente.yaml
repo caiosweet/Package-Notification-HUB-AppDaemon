@@ -5,31 +5,22 @@ entities:
   - entity: input_text.personal_assistant_name
   - entity: input_select.text_notify
   - entity: input_number.tts_wait_time
-  - type: custom:fold-entity-row
-    head:
-      type: section
-      label: FERIALI - Orario modo silenzioso
-    entities:
-      - entity: input_datetime.dnd_start_weekdays
-      - entity: input_datetime.dnd_end_weekdays
-  - type: custom:fold-entity-row
-    head:
-      type: section
-      label: FESTIVI - Orario modo silenzioso
-    entities:
-      - entity: input_datetime.dnd_start_holidays
-      - entity: input_datetime.dnd_end_holidays
-  - type: custom:fold-entity-row
-    head:
-      type: section
-      label: VOLUME di default durante il griorno
-    entities:
-      - input_datetime.start_morning
-      - input_number.morning_volume
-      - input_datetime.start_afternoon
-      - input_number.afternoon_volume
-      - input_datetime.start_evening
-      - input_number.evening_volume
-      - input_datetime.start_night
-      - input_number.night_volume
-      - input_number.default_restore_volume
+  - type: section
+    label: FERIALI - Orario modo silenzioso
+  - entity: input_datetime.dnd_start_weekdays
+  - entity: input_datetime.dnd_end_weekdays
+  - type: section
+    label: FESTIVI - Orario modo silenzioso
+  - entity: input_datetime.dnd_start_holidays
+  - entity: input_datetime.dnd_end_holidays
+  - type: section
+    label: VOLUME di default durante il griorno
+  - entity: input_datetime.start_morning
+  - entity: input_number.morning_volume
+  - entity: input_datetime.start_afternoon
+  - entity: input_number.afternoon_volume
+  - entity: input_datetime.start_evening
+  - entity: input_number.evening_volume
+  - entity: input_datetime.start_night
+  - entity: input_number.night_volume
+  - entity: input_number.default_restore_volume
