@@ -164,6 +164,7 @@ homeassistant:
     sensor.period_of_day_volume:
       <<: *customize
       friendly_name: Volume Notifica
+
 ############################################################################
 ##                             CUSTOMIZE GLOB                              
 ############################################################################
@@ -267,7 +268,10 @@ input_select:
   text_notify:
     options: !secret text_notify_hub
   phone_notify:
-    options: !secret phone_notify_hub
+    #options: !secret phone_notify_hub
+    options:
+      - Telegram Call
+      - Voip Call
 input_text:
   last_message:
     max: 255
@@ -401,6 +405,12 @@ script:
           # FILE DA INCLUDERE PER LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
           #-----------------------------------------------------------------------------#
           message: !include hub_build_message.yml
+
+#######################################-#######################################
+##                               SHELL COMMAND
+#######################################-#######################################
+shell_command:
+  telegram_call: '/usr/bin/wget {{ url }}'
 
 #######################################-#######################################
 ##                                 AUTOMATION
