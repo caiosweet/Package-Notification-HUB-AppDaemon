@@ -1,6 +1,6 @@
 ### INFO
   #   @author         :   Caio & Gianpi- www.hassiohelp.eu
-  #   @date           :   Started 01/11/2019 - Updated 08/01/2020
+  #   @date           :   01/11/2019
   #   @package        :   Notification HUB - Centro Notifiche
   #   @description    :   Package Appdaemon Notifier Center for Home Assistant
   ############################################################################
@@ -14,75 +14,71 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Main 2.3
+        version: Main 2.2
         author: Caio & Gianpi
         site: www.hassiohelp.eu
+
       expose: &expose
         <<: *customize
         haaska_hidden: false
         homebridge_hidden: false
 
   ## AUTOMATION
-    automation.create_notification_automation_group_hub:
-      <<: *customize
-      friendly_name: Crea Gruppo Automazioni HUB
-    automation.guest_mode_hub:
-      <<: *customize
-      friendly_name: Modo Ospite
-    automation.notification_repeat_last_message_hub:
-      <<: *customize
-      friendly_name: Ripete Ultimo Messaggio
     automation.send_intercom_message_hub:
       <<: *customize
       friendly_name: Invia Messaggio Con Iterfono
       icon: mdi:bullhorn
+    automation.notification_repeat_last_message_hub:
+      <<: *customize
+      friendly_name: Ripete Ultimo Messaggio
+    automation.guest_mode_hub:
+      <<: *customize
+      friendly_name: Modo Ospite
+    automation.create_notification_automation_group_hub:
+      <<: *customize
+      friendly_name: Crea Gruppo Automazioni HUB
   ## BINARY SENSOR
     binary_sensor.dnd:
       <<: *customize
       friendly_name: Modo Silenzioso
   ## GROUP
-    group.automations_notification_hub:
-      <<: *customize
-      friendly_name: Automazioni HUB
-      icon: mdi:account-tie
     group.location_tracker:
       <<: *customize
       friendly_name: Dispositivi tracciati
       icon: mdi:target-account
-  ## INPUT BOOLEAN
-    input_boolean.guest_mode:
+    group.automations_notification_hub:
       <<: *customize
-      friendly_name: Modo Ospite
-      icon: mdi:account-multiple-plus
+      friendly_name: Automazioni HUB
+      icon: mdi:account-tie
+  ## INPUT
     input_boolean.holidays:
       <<: *customize
       friendly_name: Modo Vacanza
       icon: mdi:beach
-    input_boolean.last_message:
+    input_boolean.guest_mode:
       <<: *customize
-      friendly_name: Ultimo Messaggio
-      icon: mdi:repeat-once
-    input_boolean.phone_notifications:
-      <<: *customize
-      friendly_name: Notifiche VoIP
-      icon: mdi:phone-in-talk
+      friendly_name: Modo Ospite
+      icon: mdi:account-multiple-plus
     input_boolean.priority_message:
       <<: *customize
       friendly_name: Modo Prioritario
       icon: mdi:alarm-light
-    input_boolean.screen_notifications:
-      <<: *customize
-      friendly_name: Notifiche Persistenti
-      icon: mdi:message-bulleted
     input_boolean.speech_notifications:
       <<: *customize
       friendly_name: Notifiche Vocali
       icon: mdi:voice
     input_boolean.text_notifications:
       <<: *customize
-      friendly_name: Notifiche Testo
+      friendly_name: Messaggio di Testo
       icon: mdi:cellphone-message
-  ## INPUT DATETIME
+    input_boolean.screen_notifications:
+      <<: *customize
+      friendly_name: Notifiche Persistenti
+      icon: mdi:message-bulleted
+    input_boolean.last_message:
+      <<: *customize
+      friendly_name: Ultimo Messaggio
+      icon: mdi:repeat-once
     input_datetime.start_morning:
       <<: *customize
       friendly_name: Mattina
@@ -99,7 +95,10 @@ homeassistant:
       <<: *customize
       friendly_name: Notte
       icon: mdi:timetable
-  ## INPUT NUMBER
+    input_number.intercom_message_volume:
+      <<: *customize
+      friendly_name: Volume
+      icon: mdi:volume-source
     input_number.morning_volume:
       <<: *customize
       friendly_name: Vol Mattina
@@ -120,28 +119,14 @@ homeassistant:
       <<: *customize
       friendly_name: Volume Rispristino
       icon: mdi:volume-source
-    input_number.intercom_message_volume:
-      <<: *customize
-      friendly_name: Volume
-      icon: mdi:volume-source
     input_number.tts_wait_time:
       <<: *customize
       friendly_name: Regolazione attesa TTS
       icon: mdi:av-timer
-  ## INPUT SELECT
-    input_select.phone_notify:
+    input_select.default_notify:
       <<: *customize
-      friendly_name: Notifica Telefonica
-      icon: mdi:phone-forward
-    input_select.text_notify:
-      <<: *customize
-      friendly_name: Notifica Testo
+      friendly_name: Notifica Predefinita
       icon: mdi:message-settings-variant
-    input_text.phone_called_number:
-      <<: *customize
-      friendly_name: N. Tel / @user
-      icon: mdi:phone-classic
-  ## INPUT TEXT
     input_text.last_message:
       <<: *customize
       friendly_name: Salva Ultimo Messaggio
@@ -194,14 +179,13 @@ group:
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
-  guest_mode:
   holidays:
-  last_message:
-  phone_notifications:
+  guest_mode:
   priority_message:
-  screen_notifications:
   speech_notifications:
   text_notifications:
+  screen_notifications:
+  last_message:
 input_datetime:
   dnd_start_weekdays:
     has_date: false
@@ -264,10 +248,8 @@ input_number:
     step: 0.1
     unit_of_measurement: 'sec'
 input_select:
-  text_notify:
-    options: !secret text_notify_hub
-  phone_notify:
-    options: !secret phone_notify_hub
+  default_notify:
+    options: !secret default_notify_hub
 input_text:
   last_message:
     max: 255
@@ -276,9 +258,7 @@ input_text:
     initial: ''
   personal_assistant_name:
     max: 255
-  phone_called_number:
-    max: 30
-    initial: ''
+
 #######################################-#######################################
 ##                               BINARY SENSOR
 #######################################-#######################################
@@ -359,8 +339,6 @@ script:
           # --------------------------------------------- #
           # VARIABILI
           # --------------------------------------------- #
-          called_number: >-
-            {{called_number}}
           title: >-
             {{title}}
           link: >-
