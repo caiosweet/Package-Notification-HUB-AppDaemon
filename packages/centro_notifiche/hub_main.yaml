@@ -77,7 +77,7 @@ homeassistant:
     input_boolean.speech_notifications:
       <<: *customize
       friendly_name: Notifiche Vocali
-      icon: mdi:voice
+      icon: mdi:voice # mdi:account-tie-voice
     input_boolean.text_notifications:
       <<: *customize
       friendly_name: Notifiche Testo
@@ -268,7 +268,6 @@ input_select:
   text_notify:
     options: !secret text_notify_hub
   phone_notify:
-    #options: !secret phone_notify_hub
     options:
       - Telegram Call
       - Voip Call
@@ -282,7 +281,7 @@ input_text:
     max: 255
   phone_called_number:
     max: 30
-    initial: ''
+    #initial: ''
 #######################################-#######################################
 ##                               BINARY SENSOR
 #######################################-#######################################
@@ -391,10 +390,10 @@ script:
             {{alexa_method}}
           alexa_push: >-
             {{alexa_push}}
-          media_player_google: >-
-            {{media_player_google}}
           media_player_alexa: >-
             {{media_player_alexa}}
+          media_player_google: >-
+            {{media_player_google}}
           language: >-
             {{language}}
           priority: >-
@@ -409,8 +408,9 @@ script:
 #######################################-#######################################
 ##                               SHELL COMMAND
 #######################################-#######################################
+# https://www.callmebot.com/blog/telegram-call-from-home-assistant/
 shell_command:
-  telegram_call: '/usr/bin/wget {{ url }}'
+  telegram_call: '/usr/bin/wget {{url}}'
 
 #######################################-#######################################
 ##                                 AUTOMATION
@@ -491,7 +491,7 @@ automation:
           title: >
             Modalità Ospite - {{trigger.to_state.state|upper}}
 #4-----------------------------------------------------------------------------------------------------#
-  # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "_hub"
+  # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
   #----------------------------------------------------------------------------------------------------#
   - id: create_notification_automation_group_hub
     alias: create_notification_automation_group_hub
