@@ -18,7 +18,7 @@ entities:
         box-shadow: none;
       }
     content: >-
-      <font size=5><center>🤵 Centro Notifiche</font>
+      <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</font>
   - type: custom:button-entity-row
     buttons:
       - entity: binary_sensor.people_home
@@ -40,7 +40,9 @@ entities:
           "off" : "mdi:phone-off"
       - entity: input_boolean.speech_notifications
         state_icons:
-          "off" : "mdi:voice-off"
+          # "on": "mdi:account-tie-voice"
+          # "off": "mdi:account-tie-voice-off"
+          "off": "mdi:voice-off"
       - entity: input_boolean.text_notifications
         state_icons:
           "off": "mdi:cellphone-message-off"
