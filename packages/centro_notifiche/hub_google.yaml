@@ -31,9 +31,6 @@ homeassistant:
       <<: *customize
       friendly_name: Sorgente Google
       icon: mdi:speaker-wireless
-    input_select.language:
-      <<: *customize
-      friendly_name: Lingua
   ## SENSOR
     sensor.media_player_google:
       <<: *customize
@@ -48,13 +45,6 @@ input_boolean:
 input_select:
   notification_media_player_google:
     options: !secret notification_media_player_google_hub
-  language:
-    options:
-      - It
-      - En
-      - Fr
-      - De
-      - Nl
 
 #######################################-#######################################
 ##                                  SENSOR

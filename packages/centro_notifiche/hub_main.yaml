@@ -1,6 +1,6 @@
 ### INFO
   #   @author         :   Caio & Gianpi- www.hassiohelp.eu
-  #   @date           :   01/11/2019
+  #   @date           :   Started 01/11/2019 - Updated 08/01/2020
   #   @package        :   Notification HUB - Centro Notifiche
   #   @description    :   Package Appdaemon Notifier Center for Home Assistant
   ############################################################################
@@ -14,71 +14,75 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Main 2.2
+        version: Main 2.3
         author: Caio & Gianpi
         site: www.hassiohelp.eu
-
       expose: &expose
         <<: *customize
         haaska_hidden: false
         homebridge_hidden: false
 
   ## AUTOMATION
+    automation.create_notification_automation_group_hub:
+      <<: *customize
+      friendly_name: Crea Gruppo Automazioni HUB
+    automation.guest_mode_hub:
+      <<: *customize
+      friendly_name: Modo Ospite
+    automation.notification_repeat_last_message_hub:
+      <<: *customize
+      friendly_name: Ripete Ultimo Messaggio
     automation.send_intercom_message_hub:
       <<: *customize
       friendly_name: Invia Messaggio Con Iterfono
       icon: mdi:bullhorn
-    automation.notification_repeat_last_message_hub:
-      <<: *customize
-      friendly_name: Ripete Ultimo Messaggio
-    automation.guest_mode_hub:
-      <<: *customize
-      friendly_name: Modo Ospite
-    automation.create_notification_automation_group_hub:
-      <<: *customize
-      friendly_name: Crea Gruppo Automazioni HUB
   ## BINARY SENSOR
     binary_sensor.dnd:
       <<: *customize
       friendly_name: Modo Silenzioso
   ## GROUP
-    group.location_tracker:
-      <<: *customize
-      friendly_name: Dispositivi tracciati
-      icon: mdi:target-account
     group.automations_notification_hub:
       <<: *customize
       friendly_name: Automazioni HUB
       icon: mdi:account-tie
-  ## INPUT
-    input_boolean.holidays:
+    group.location_tracker:
       <<: *customize
-      friendly_name: Modo Vacanza
-      icon: mdi:beach
+      friendly_name: Dispositivi tracciati
+      icon: mdi:target-account
+  ## INPUT BOOLEAN
     input_boolean.guest_mode:
       <<: *customize
       friendly_name: Modo Ospite
       icon: mdi:account-multiple-plus
-    input_boolean.priority_message:
+    input_boolean.holidays:
       <<: *customize
-      friendly_name: Modo Prioritario
-      icon: mdi:alarm-light
-    input_boolean.speech_notifications:
-      <<: *customize
-      friendly_name: Notifiche Vocali
-      icon: mdi:voice
-    input_boolean.text_notifications:
-      <<: *customize
-      friendly_name: Messaggio di Testo
-      icon: mdi:cellphone-message
-    input_boolean.screen_notifications:
-      <<: *customize
-      friendly_name: Notifiche Persistenti
-      icon: mdi:message-bulleted
+      friendly_name: Modo Vacanza
+      icon: mdi:beach
     input_boolean.last_message:
       <<: *customize
       friendly_name: Ultimo Messaggio
       icon: mdi:repeat-once
+    input_boolean.phone_notifications:
+      <<: *customize
+      friendly_name: Notifiche VoIP
+      icon: mdi:phone-in-talk
+    input_boolean.priority_message:
+      <<: *customize
+      friendly_name: Modo Prioritario
+      icon: mdi:alarm-light
+    input_boolean.screen_notifications:
+      <<: *customize
+      friendly_name: Notifiche Persistenti
+      icon: mdi:message-bulleted
+    input_boolean.speech_notifications:
+      <<: *customize
+      friendly_name: Notifiche Vocali
+      icon: mdi:voice # mdi:account-tie-voice
+    input_boolean.text_notifications:
+      <<: *customize
+      friendly_name: Notifiche Testo
+      icon: mdi:cellphone-message
+  ## INPUT DATETIME
     input_datetime.start_morning:
       <<: *customize
       friendly_name: Mattina
@@ -95,10 +99,7 @@ homeassistant:
       <<: *customize
       friendly_name: Notte
       icon: mdi:timetable
-    input_number.intercom_message_volume:
-      <<: *customize
-      friendly_name: Volume
-      icon: mdi:volume-source
+  ## INPUT NUMBER
     input_number.morning_volume:
       <<: *customize
       friendly_name: Vol Mattina
@@ -119,14 +120,31 @@ homeassistant:
       <<: *customize
       friendly_name: Volume Rispristino
       icon: mdi:volume-source
+    input_number.intercom_message_volume:
+      <<: *customize
+      friendly_name: Volume
+      icon: mdi:volume-source
     input_number.tts_wait_time:
       <<: *customize
       friendly_name: Regolazione attesa TTS
       icon: mdi:av-timer
-    input_select.default_notify:
+  ## INPUT SELECT
+    input_select.language:
       <<: *customize
-      friendly_name: Notifica Predefinita
+      friendly_name: Lingua
+    input_select.phone_notify:
+      <<: *customize
+      friendly_name: Notifica Telefonica
+      icon: mdi:phone-forward
+    input_select.text_notify:
+      <<: *customize
+      friendly_name: Notifica Testo
       icon: mdi:message-settings-variant
+    input_text.phone_called_number:
+      <<: *customize
+      friendly_name: N. Tel / @user
+      icon: mdi:phone-classic
+  ## INPUT TEXT
     input_text.last_message:
       <<: *customize
       friendly_name: Salva Ultimo Messaggio
@@ -149,6 +167,7 @@ homeassistant:
     sensor.period_of_day_volume:
       <<: *customize
       friendly_name: Volume Notifica
+
 ############################################################################
 ##                             CUSTOMIZE GLOB                              
 ############################################################################
@@ -179,13 +198,14 @@ group:
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
-  holidays:
   guest_mode:
+  holidays:
+  last_message:
+  phone_notifications:
   priority_message:
+  screen_notifications:
   speech_notifications:
   text_notifications:
-  screen_notifications:
-  last_message:
 input_datetime:
   dnd_start_weekdays:
     has_date: false
@@ -248,8 +268,19 @@ input_number:
     step: 0.1
     unit_of_measurement: 'sec'
 input_select:
-  default_notify:
-    options: !secret default_notify_hub
+  text_notify:
+    options: !secret text_notify_hub
+  phone_notify:
+    options:
+      - Telegram Call
+      - Voip Call
+  language:
+    options:
+      - It
+      - En
+      - Fr
+      - De
+      - Nl
 input_text:
   last_message:
     max: 255
@@ -258,7 +289,9 @@ input_text:
     initial: ''
   personal_assistant_name:
     max: 255
-
+  phone_called_number:
+    max: 30
+    #initial: ''
 #######################################-#######################################
 ##                               BINARY SENSOR
 #######################################-#######################################
@@ -339,6 +372,8 @@ script:
           # --------------------------------------------- #
           # VARIABILI
           # --------------------------------------------- #
+          called_number: >-
+            {{called_number}}
           title: >-
             {{title}}
           link: >-
@@ -365,10 +400,10 @@ script:
             {{alexa_method}}
           alexa_push: >-
             {{alexa_push}}
-          media_player_google: >-
-            {{media_player_google}}
           media_player_alexa: >-
             {{media_player_alexa}}
+          media_player_google: >-
+            {{media_player_google}}
           language: >-
             {{language}}
           priority: >-
@@ -376,9 +411,17 @@ script:
           message_tts: >-
             {{message_tts}}
           #-----------------------------------------------------------------------------#
-          # FILE DA INCLUDERE PER LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
+          # FILE DA INCLUDERE SE SI USANO LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
           #-----------------------------------------------------------------------------#
           message: !include hub_build_message.yml
+
+#######################################-#######################################
+##                               SHELL COMMAND
+#######################################-#######################################
+# https://www.callmebot.com/blog/telegram-call-from-home-assistant/
+shell_command:
+  telegram_call: '/usr/bin/wget {{url}} -O /dev/null'
+  #telegram_call: '/usr/bin/curl {{url}} -O /dev/null'
 
 #######################################-#######################################
 ##                                 AUTOMATION
@@ -459,7 +502,7 @@ automation:
           title: >
             Modalità Ospite - {{trigger.to_state.state|upper}}
 #4-----------------------------------------------------------------------------------------------------#
-  # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "_hub"
+  # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
   #----------------------------------------------------------------------------------------------------#
   - id: create_notification_automation_group_hub
     alias: create_notification_automation_group_hub

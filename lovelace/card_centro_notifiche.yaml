@@ -7,9 +7,13 @@ entities:
   - entity: group.location_tracker
   - entity: sensor.period_of_day
   - entity: sensor.period_of_day_volume
-  - entity: input_number.default_restore_volume
+    tap_action:
+      action: call-service
+      service: input_boolean.toggle
+      service_data:
+        entity_id: input_boolean.speech_notifications
+  - entity: binary_sensor.dnd
   - type: call-service
-    icon: 'mdi:power'
     name: Ultimo Messaggio
     action_name: Ascolta
     service: input_boolean.turn_on
@@ -17,11 +21,10 @@ entities:
       entity_id: input_boolean.last_message
   - type: section
     label: Modalità
-  - entity: binary_sensor.dnd
+  - entity: input_boolean.holidays
   - entity: input_boolean.guest_mode
   - entity: input_boolean.priority_message
-  - type: section
-    label: Opzioni
+  - entity: input_boolean.phone_notifications
   - entity: input_boolean.speech_notifications
   - entity: input_boolean.text_notifications
   - entity: input_boolean.screen_notifications
