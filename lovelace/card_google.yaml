@@ -6,7 +6,6 @@ entities:
     label: ''
   - entity: input_boolean.google_switch
   - entity: input_boolean.tts_google_mode
-  - entity: input_select.language
   - entity: input_select.notification_media_player_google
   - type: section
     label: 'Sensore'
