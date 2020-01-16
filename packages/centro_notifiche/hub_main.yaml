@@ -129,6 +129,9 @@ homeassistant:
       friendly_name: Regolazione attesa TTS
       icon: mdi:av-timer
   ## INPUT SELECT
+    input_select.language:
+      <<: *customize
+      friendly_name: Lingua
     input_select.phone_notify:
       <<: *customize
       friendly_name: Notifica Telefonica
@@ -271,6 +274,13 @@ input_select:
     options:
       - Telegram Call
       - Voip Call
+  language:
+    options:
+      - It
+      - En
+      - Fr
+      - De
+      - Nl
 input_text:
   last_message:
     max: 255
@@ -401,7 +411,7 @@ script:
           message_tts: >-
             {{message_tts}}
           #-----------------------------------------------------------------------------#
-          # FILE DA INCLUDERE PER LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
+          # FILE DA INCLUDERE SE SI USANO LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
           #-----------------------------------------------------------------------------#
           message: !include hub_build_message.yml
 
