@@ -3,6 +3,7 @@ title: Impostazioni Assistente
 show_header_toggle: false
 entities:
   - entity: input_text.personal_assistant_name
+  - entity: input_select.language
   - entity: input_select.text_notify
   - entity: input_number.tts_wait_time
   - type: section
