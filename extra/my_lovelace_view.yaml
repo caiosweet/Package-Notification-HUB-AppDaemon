@@ -23,7 +23,7 @@ views:
                 box-shadow: none;
               }
             content: >-
-              <font size=5><center>🤵 Centro Notifiche</font>
+              <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</font>
           - type: custom:button-entity-row
             buttons:
               - entity: binary_sensor.people_home
@@ -45,7 +45,9 @@ views:
                   "off" : "mdi:phone-off"
               - entity: input_boolean.speech_notifications
                 state_icons:
-                  "off" : "mdi:voice-off"
+                  # "on": "mdi:account-tie-voice"
+                  # "off": "mdi:account-tie-voice-off"
+                  "off": "mdi:voice-off"
               - entity: input_boolean.text_notifications
                 state_icons:
                   "off": "mdi:cellphone-message-off"
@@ -213,7 +215,6 @@ views:
               - entity: input_boolean.speech_notifications
               - entity: input_boolean.text_notifications
               - entity: input_boolean.screen_notifications
-              - entity: input_boolean.last_message
           - type: custom:fold-entity-row
             head: 
               type: section
@@ -230,6 +231,7 @@ views:
         show_header_toggle: false
         entities:
           - entity: input_text.personal_assistant_name
+          - entity: input_select.language
           - entity: input_select.text_notify
           - entity: input_number.tts_wait_time
           - type: custom:fold-entity-row
@@ -270,7 +272,6 @@ views:
             label: ''
           - entity: input_boolean.google_switch
           - entity: input_boolean.tts_google_mode
-          - entity: input_select.language
           - entity: input_select.notification_media_player_google
 
       # CARD Alexa
@@ -290,9 +291,14 @@ views:
         title: VoIP
         show_header_toggle: false
         entities:
-          - type: section
-            label: ''
-          - entity: input_text.phone_called_number
+          # - type: section
+          #   label: ''
+          - type: custom:fold-entity-row
+            head:
+              type: section
+              label: Rubrica
+            entities:
+              - entity: input_text.phone_called_number
           - entity: input_select.phone_notify
 
       # CARD Ariela
@@ -303,3 +309,5 @@ views:
           - type: section
             label: ''
           - entity: input_boolean.ariela_switch
+
+
