@@ -410,7 +410,8 @@ script:
 #######################################-#######################################
 # https://www.callmebot.com/blog/telegram-call-from-home-assistant/
 shell_command:
-  telegram_call: '/usr/bin/wget {{url}}'
+  telegram_call: '/usr/bin/wget {{url}} -O /dev/null'
+  #telegram_call: '/usr/bin/curl {{url}} -O /dev/null'
 
 #######################################-#######################################
 ##                                 AUTOMATION
