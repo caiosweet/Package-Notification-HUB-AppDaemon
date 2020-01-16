@@ -35,7 +35,7 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
   - [Banner Card](https://github.com/nervetattoo/banner-card)
 
 
-## [My Lovelace Card](./extra/personal_card.yaml)
+## [My Lovelace Card](./extra/my_lovelace_card.yaml)
 <p align="center">
 <img src="./extra/preview/CN_my_card.png">
 <br><br>
