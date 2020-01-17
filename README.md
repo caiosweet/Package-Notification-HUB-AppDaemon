@@ -26,7 +26,7 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
 
   - [AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) - [Hassio-Addons](https://github.com/hassio-addons/repository)
   - [Sensor Workday](https://www.home-assistant.io/integrations/workday/)
-  - [Sensor DateTime](https://www.home-assistant.io/integrations/time_date/)
+  - [Input DateTime](https://www.home-assistant.io/integrations/input_datetime/)
   
 ## Extra
   - [Lovelace Card Mod](https://github.com/thomasloven/lovelace-card-mod)
@@ -35,7 +35,7 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
   - [Banner Card](https://github.com/nervetattoo/banner-card)
 
 
-## [My Lovelace Card](./extra/my_lovelace_card.yaml)
+## [My Lovelace Card](./extra/personal_card.yaml)
 <p align="center">
 <img src="./extra/preview/CN_my_card.png">
 <br><br>
