@@ -1,6 +1,6 @@
 ### INFO
   #   @author         :   Caio & Gianpi- www.hassiohelp.eu
-  #   @date           :   Started 01/11/2019 - Updated 08/01/2020
+  #   @date           :   Started 01/11/2019 - Updated 18/01/2020
   #   @package        :   Notification HUB - Centro Notifiche
   #   @description    :   Package Appdaemon Notifier Center for Home Assistant
   ############################################################################
@@ -271,16 +271,9 @@ input_select:
   text_notify:
     options: !secret text_notify_hub
   phone_notify:
-    options:
-      - Telegram Call
-      - Voip Call
+    options: ["Telegram Call","Voip Call"]
   language:
-    options:
-      - It
-      - En
-      - Fr
-      - De
-      - Nl
+    options: ["It","En","Fr","De","Nl"]
 input_text:
   last_message:
     max: 255
@@ -452,9 +445,8 @@ automation:
             {{states('input_text.last_message')}}
       - service: input_boolean.turn_off
         entity_id:
-          - input_boolean.last_message
           - input_boolean.priority_message
-
+          - input_boolean.last_message
 #2-----------------------------------------------------------------------------------------------------#
   # INTERFONO
   #----------------------------------------------------------------------------------------------------#
@@ -514,7 +506,7 @@ automation:
         entity_id: automation.create_notification_automation_group_hub
         to: 'on'
     action:
-      - delay: 00:00:30
+      - delay: 00:00:10
       - service: group.set
         data_template:
           object_id: "automations_notification_hub"
