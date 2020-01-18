@@ -9,7 +9,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Ariela 2.0
+        version: Ariela 2.3
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
