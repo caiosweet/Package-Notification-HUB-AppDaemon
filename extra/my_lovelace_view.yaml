@@ -23,7 +23,7 @@ views:
                 box-shadow: none;
               }
             content: >-
-              <font size=5><center>🤵 Centro Notifiche</font>
+              <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</font>
           - type: custom:button-entity-row
             buttons:
               - entity: binary_sensor.people_home
@@ -40,9 +40,14 @@ views:
                     font-weight: bold
                   "home":
                     color: var(--paper-item-icon-active-color)
+              - entity: input_boolean.phone_notifications
+                state_icons:
+                  "off" : "mdi:phone-off"
               - entity: input_boolean.speech_notifications
                 state_icons:
-                  "off" : "mdi:voice-off"
+                  # "on": "mdi:account-tie-voice"
+                  # "off": "mdi:account-tie-voice-off"
+                  "off": "mdi:voice-off"
               - entity: input_boolean.text_notifications
                 state_icons:
                   "off": "mdi:cellphone-message-off"
@@ -62,7 +67,6 @@ views:
                 state_icons:
                   "on": "mdi:do-not-disturb"
                   "off": "mdi:do-not-disturb-off"
-              - entity: input_boolean.last_message
           - type: divider
             style:
               background-color: var(--primary-color)
@@ -104,17 +108,17 @@ views:
                     entity_id: input_select.notification_media_player_google
                 double_tap_action:
                   action: more-info
-              - entity:  input_select.default_notify
+              - entity:  input_select.text_notify
                 tap_action:
                   action: call-service
                   service: input_select.select_next
                   service_data: 
-                    entity_id: input_select.default_notify
+                    entity_id: input_select.text_notify
                 hold_action:
                   action: call-service
                   service: input_select.select_previous
                   service_data: 
-                    entity_id: input_select.default_notify
+                    entity_id: input_select.text_notify
                 double_tap_action:
                   action: more-info
           # - type: divider
@@ -143,6 +147,7 @@ views:
                 service: input_select.select_next
                 service_data:
                   entity_id: input_select.default_alexa_type
+              - entity: input_boolean.last_message
           - type: custom:hui-entities-card
             style: |
               ha-card {
@@ -153,9 +158,9 @@ views:
               }
             entities:
               - type: custom:text-input-row
-                entity: input_text.intercom_message_hub
+                entity: input_text.intercom_message_hub 
 
-      # CARD 99 Gruppo Automazioni
+      # CARD Gruppo Automazioni
       - type: entities
         title: Automazioni
         show_header_toggle: false
@@ -163,7 +168,7 @@ views:
           - type: custom:fold-entity-row
             head: group.automations_notification_hub
 
-      # CARD 01 Centro Notifiche
+      # CARD Centro Notifiche
       - type: entities
         title: Centro Notifiche
         show_header_toggle: false
@@ -206,24 +211,28 @@ views:
               - entity: input_boolean.holidays
               - entity: input_boolean.guest_mode
               - entity: input_boolean.priority_message
+              - entity: input_boolean.phone_notifications
               - entity: input_boolean.speech_notifications
               - entity: input_boolean.text_notifications
               - entity: input_boolean.screen_notifications
-              - entity: input_boolean.last_message
-          - type: section
-            label: Interfono
-          - entity: automation.send_intercom_message_hub
-            name: Off/On
-          - entity: input_number.intercom_message_volume
-          - entity: input_text.intercom_message_hub
+          - type: custom:fold-entity-row
+            head: 
+              type: section
+              label: Interfono
+            entities:
+              - entity: automation.send_intercom_message_hub
+                name: Off/On
+              - entity: input_number.intercom_message_volume
+              - entity: input_text.intercom_message_hub
 
-      # CARD 02 Impostazioni Assistente
+      # CARD Impostazioni Assistente
       - type: entities
         title: Impostazioni Assistente
         show_header_toggle: false
         entities:
           - entity: input_text.personal_assistant_name
-          - entity: input_select.default_notify
+          - entity: input_select.language
+          - entity: input_select.text_notify
           - entity: input_number.tts_wait_time
           - type: custom:fold-entity-row
             head:
@@ -254,7 +263,7 @@ views:
               - input_number.night_volume
               - input_number.default_restore_volume
 
-      # CARD 03 Google
+      # CARD Google
       - type: entities
         title: Google
         show_header_toggle: false
@@ -263,10 +272,9 @@ views:
             label: ''
           - entity: input_boolean.google_switch
           - entity: input_boolean.tts_google_mode
-          - entity: input_select.language
           - entity: input_select.notification_media_player_google
 
-      # CARD 04 Alexa
+      # CARD Alexa
       - type: entities
         title: Alexa
         show_header_toggle: false
@@ -278,7 +286,22 @@ views:
           - entity: input_select.default_alexa_type
           - entity: input_select.default_alexa_method
 
-      # CARD 05 Ariela
+      # CARD VOIP
+      - type: entities
+        title: VoIP
+        show_header_toggle: false
+        entities:
+          # - type: section
+          #   label: ''
+          - type: custom:fold-entity-row
+            head:
+              type: section
+              label: Rubrica
+            entities:
+              - entity: input_text.phone_called_number
+          - entity: input_select.phone_notify
+
+      # CARD Ariela
       - type: entities
         title: Ariela
         show_header_toggle: false
@@ -286,3 +309,5 @@ views:
           - type: section
             label: ''
           - entity: input_boolean.ariela_switch
+
+

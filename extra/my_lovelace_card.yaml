@@ -1,4 +1,4 @@
-type: entities
+type: entities # CARD PRINCIPALE
 style: |
   ha-card {
     borde-radius: var(--ha-card-border-radius); 
@@ -8,7 +8,7 @@ style: |
     padding: 0;
   }
 entities:
-  - type: custom:hui-markdown-card
+  - type: custom:hui-markdown-card # TESTATINA PRINCIPALE
     style: |
       ha-card {
         border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
@@ -18,7 +18,7 @@ entities:
         box-shadow: none;
       }
     content: >-
-      <font size=5><center>🤵 Centro Notifiche</font>
+      <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</font>
   - type: custom:button-entity-row
     buttons:
       - entity: binary_sensor.people_home
@@ -35,9 +35,14 @@ entities:
             font-weight: bold
           "home":
             color: var(--paper-item-icon-active-color)
+      - entity: input_boolean.phone_notifications
+        state_icons:
+          "off" : "mdi:phone-off"
       - entity: input_boolean.speech_notifications
         state_icons:
-          "off" : "mdi:voice-off"
+          # "on": "mdi:account-tie-voice"
+          # "off": "mdi:account-tie-voice-off"
+          "off": "mdi:voice-off"
       - entity: input_boolean.text_notifications
         state_icons:
           "off": "mdi:cellphone-message-off"
@@ -57,7 +62,6 @@ entities:
         state_icons:
           "on": "mdi:do-not-disturb"
           "off": "mdi:do-not-disturb-off"
-      - entity: input_boolean.last_message
   - type: divider
     style:
       background-color: var(--primary-color)
@@ -67,8 +71,6 @@ entities:
       ha-card {
         overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
       }
-    #title: "\U0001f935 Centro Notifiche"
-    #show_name: False
     columns: 3
     show_icon: false
     entities:
@@ -101,30 +103,32 @@ entities:
             entity_id: input_select.notification_media_player_google
         double_tap_action:
           action: more-info
-      - entity:  input_select.default_notify
+      - entity:  input_select.text_notify
         tap_action:
           action: call-service
           service: input_select.select_next
           service_data: 
-            entity_id: input_select.default_notify
+            entity_id: input_select.text_notify
         hold_action:
           action: call-service
           service: input_select.select_previous
           service_data: 
-            entity_id: input_select.default_notify
+            entity_id: input_select.text_notify
         double_tap_action:
           action: more-info
+  # - type: divider
+  #   style:
+  #     background-color: var(--primary-color)
+  #     height: 1px
   - type: custom:button-entity-row
     buttons:
       - entity: input_boolean.ariela_switch
         name: Ariela
       - entity: input_boolean.google_switch
         name: Google
-      # - entity: input_select.notification_media_player_google
       - entity: input_boolean.tts_google_mode
         state_icons:
           "on": "mdi:google-assistant"
-        #name: TTS / Assistant
       - entity: input_boolean.alexa_switch
         name: Alexa
       - entity: input_select.default_alexa_type
@@ -138,15 +142,15 @@ entities:
         service: input_select.select_next
         service_data:
           entity_id: input_select.default_alexa_type
+      - entity: input_boolean.last_message
   - type: custom:hui-entities-card
     style: |
       ha-card {
-       background:none; border-radius: 0px; box-shadow: none; 
+        background:none; border-radius: 0px; box-shadow: none; 
       }
       .card-content {
         padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
       }
     entities:
       - type: custom:text-input-row
-        entity: input_text.intercom_message_hub
-
+        entity: input_text.intercom_message_hub 
