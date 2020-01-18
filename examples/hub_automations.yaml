@@ -51,7 +51,7 @@ automation:
           call_spegni: 1
           alexa_type: "tts"
           volume: 0.3
-          #notify: 0
+          # notify: 0
 
   #----------------------------------------------------------------------------------------------------#
   # Accesso Fallito
@@ -70,15 +70,16 @@ automation:
         data_template:
           title: "Hassio Accesso Fallito. "
           message_tts: "Attenzione. Accesso Fallito"
-          #message: "{{ states.persistent_notification.http_login.attributes.message }}"
+          # message: "{{ states.persistent_notification.http_login.attributes.message }}"
           message: "Tentativo di accesso o richiesta con autenticazione non valida."
           link: >-
-            [Accesso Fallito](http://www.ip-tracker.org/locator/ip-lookup.php?ip={{states.persistent_notification.http_login.attributes.message.split('from ')[1]}})
-          #notify: alert
+            http://www.ip-tracker.org/locator/ip-lookup.php?ip={{states.persistent_notification.http_login.attributes.message.split('from ')[1]}}
+          # notify: alert
+          priority: 1
 
-      - service: persistent_notification.dismiss
-        data:
-          notification_id: 'http_login'
+      #- service: persistent_notification.dismiss
+        #data:
+          #notification_id: 'http_login'
       - service: notify.pushover
         data_template: 
           title: "Hassio Accesso Fallito"
