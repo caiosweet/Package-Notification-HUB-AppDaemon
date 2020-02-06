@@ -34,6 +34,11 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
   - [Button Entity Row](https://github.com/custom-cards/button-entity-row)
   - [Banner Card](https://github.com/nervetattoo/banner-card)
 
+## [My Lovelace Card New](./extra/my_lovelace_card_new.yaml)
+<p align="center">
+<img src="./extra/preview/CN_my_card_new.png">
+<br><br>
+</p>
 
 ## [My Lovelace Card](./extra/my_lovelace_card.yaml)
 <p align="center">
@@ -48,7 +53,7 @@ Notifier Centre for Home Assistant [jumping2000](https://github.com/jumping2000/
 Custom Cards: card-mod, button-entity-row, fold-entity-row
 </p>
 
-## [Ex. Banner Card](./extra/card_custom_banner_card.yaml)
+## [Example Banner Card](./extra/card_custom_banner_card.yaml)
 <p align="center">
 <img src="./extra/preview/CN_view_banner_card.png">
 <br><br>

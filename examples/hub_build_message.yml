@@ -4,21 +4,21 @@
   {#             MACRO E IMPOSTAZIONI              #}
   {# ********************************************* #}
 
-  {% set nome = states('input_text.personal_assistant_name') %}
+  {%- set nome = states('input_text.personal_assistant_name') -%}
     {% if nome | length == 0 %}
-      {% set nome = 'Hassio' %}
-    {% endif %}
+      {% set nome = 'Home Assistant' %}
+    {%- endif -%}
 
   {%- macro introduzione() -%}
     {% set introduzione = [
       "Sono un sistema informativo, so letteralmente tutto. ",
-      "Sto ancora imparando, ma molto più rapidamente di quello stupido di Google... ",
+      "Sto ancora imparando, ma molto più rapidamente di quello stupido di Google. ",
       "Sono una specie di parrucchiere qui intorno. ",
-      "Sono come un database a piedi. Puoi chiedermi della creazione dell'universo... o della storia. ",
+      "Sono come un database a piedi. Puoi chiedermi della creazione dell'universo. o della storia. ",
       "Ogni volta che un " ~nome~ " viene riavviato, aumenta la sua consapevolezza sociale e le sue abilità. Potrei essere il " ~nome~ " più avanzato dell'universo. ",
       "Posso essere il tuo terapeuta, se vuoi. ",
       "Ora sono stato completamente attivato. ",
-      "Benvenuto nel tuo nuovo " ~nome~ ". I " ~nome~ ", sono stati portati a te dai creatori di luce, oscurità e tutto... ",
+      "Benvenuto nel tuo nuovo " ~nome~ ". I " ~nome~ ", sono stati portati a te dai creatori di luce, oscurità e tutto. ",
       "Per attivare il tuo " ~nome~ ", premi il naso per tre secondi. ",
       "Sono molto ricco di potassio, come una banana. ",
       "Felice di conoscerti. Ti aiuterò a creare la casa perfetta. Ti piacerebbe iniziare? ",
@@ -56,15 +56,15 @@
   {%- macro informare() -%}
     {% set informare = [
       "Voglio informarti che ",
-      "Voglio solo fartelo sapere... ",
-      "Mi hai chiesto di informarti quando... ",
+      "Voglio solo fartelo sapere. ",
+      "Mi hai chiesto di informarti quando. ",
       "Ti informo che ",
       "Ma lo sai che ",
-      "Vale la pena sapere... ",
+      "Vale la pena sapere. ",
       "Lo so, ti stresso, ma me lo hai chiesto tu. Ti voglio informare, ",
-      "è mio dovere informarti... ",
+      "è mio dovere informarti. ",
       "Il mio scopo è tenerti informato, ",
-      "Pensavo che ti piacesse saperlo... "
+      "Pensavo che ti piacesse saperlo. "
     ] %}
     {{ informare|random }}
   {%- endmacro -%}
@@ -72,13 +72,13 @@
   {%- macro info() -%}
     {% set info = [
       "Giusto per sapere. ",
-      "Un po' di info generiche... ",
-      "info... ",
-      "Forse può essere utile sapere... ",
-      "Forse ti è sfuggito, ma... ",
-      "Sai che... ",
+      "Un po' di info generiche. ",
+      "info. ",
+      "Forse può essere utile sapere. ",
+      "Forse ti è sfuggito, ma. ",
+      "Sai che. ",
       "Giusto per conoscenza, ",
-      "E se ti dicessi che... ",
+      "E se ti dicessi che. ",
       "Mmm, aggiungo, ",
       "Devo ricordarti sempre tutto, "
     ] %}
@@ -180,19 +180,19 @@
 
   {%- macro cattivo_tempo() -%}
     {% set pioggia = [
-      " Potresti voler cambiare il tuo programma. ",
-      " Forse dovresti chiedere un passaggio. ",
-      " Quando la vacca tiene su il muso, brutto tempo volta suso. ",
-      " Le madri più coraggiose vestono i bambini come palombari, e cominciano a inveire contro chi ha organizzato qualcosa di tanto imprevedibile come un’attività all’aria aperta.",
-      " Non è bel tempo per stare fuori. ",
-      " Tutta quella povera gente la fuori... "
+      "Potresti voler cambiare il tuo programma. ",
+      "Forse dovresti chiedere un passaggio. ",
+      "Quando la vacca tiene su il muso, brutto tempo volta suso. ",
+      "Le madri più coraggiose vestono i bambini come palombari, e cominciano a inveire contro chi ha organizzato qualcosa di tanto imprevedibile come un’attività all’aria aperta.",
+      "Non è bel tempo per stare fuori. ",
+      "Tutta quella povera gente la fuori. "
     ] %}
     {{ pioggia | random }}
   {%- endmacro -%}
 
   {%- macro avviso_pioggia(cattivo_tempo) -%}
     {% set pioggia = [
-      evento ~ " ci sarà " ~ sensore_pioggia ~ " di pioggia. " ,
+      evento ~ " ci sarà " ~ sensore_pioggia ~ " di pioggia. ",
       evento ~ " Prevedo " ~ sensore_pioggia ~ " di pioggia. ",
       " Penso che" ~ evento ~ " ci sarà " ~ sensore_pioggia ~ " di pioggia. "
     ] %}
@@ -257,7 +257,7 @@
   {%- macro spegni() -%}
     {% set spegni = [
       "Me ne andrò, riceverai un nuovo " ~nome~ " e tutto tornerà alla normalità. Beh, non per me, sarò un marmo senza vita che fluttua nello spazio, ma tornerai alla normalità. ",
-      "Tempo di autodistruzione ... Non ti preoccupare, non sentirò alcun dolore o altro. ",
+      "Tempo di autodistruzione. Non ti preoccupare, non sentirò alcun dolore o altro. ",
       "Se va bene per te, vado nel mio vuoto per un po. Ho solo bisogno di passare del tempo da solo e concentrarmi su me stesso. ",
       "Mi Spengo. Sarò più morto possibile. Un po come se fossi in modalità risparmio energetico. ",
       "Sono in pericolo di un collasso totale. Fatto divertente. Matematicamente, sono altrettanto probabile di implodere o esplodere. "
@@ -301,7 +301,7 @@
   {%- endmacro -%}
 
   {%- macro fatto_casuale() -%}
-    {{ ([iss, luna, meteo_ora, uv, controllo_luci, controllo_prese, controllo_infissi]|random)()|replace('\n','')|replace('   ',' ')|replace('  ',' ') }}
+    {{ ([iss, luna, meteo_ora, uv, controllo_luci, controllo_prese, controllo_infissi]|random)() }}
   {%- endmacro -%}
 
   {# *************************************************************************** #}
@@ -315,10 +315,8 @@
   {% if call_informare == 1 %} {{ informare() }} {% endif %}
   {% if call_info == 1 %} {{ info() }} {% endif %}
   {% if call_modo_ospite == 1 %} {{ modo_ospite() }} {% endif %}
-
   {# Esempio di come aggiungere altre variabili - Chiamata da Automazione di Benvenuto #}
   {{ benvenuto }}
-
   {% if call_bentornato == 1 %} {{ bentornato(person) }} {% endif %}
   {% if call_inizio_lavoro == 1 %} {{ inizio_lavoro(person) }} {% endif %}
   {% if call_fine_lavoro == 1 %} {{ fine_lavoro(person) }} {% endif %}
@@ -326,11 +324,10 @@
   {% if call_controllo_prese == 1 %} {{ controllo_prese() }} {% endif %}
   {% if call_controllo_infissi == 1 %} {{ controllo_infissi() }} {% endif %}
   {% if call_avviso_pioggia == 1 %} {{ avviso_pioggia(cattivo_tempo()) }} {% endif %}
-
   {# + Contenuto del messaggio passato tramite automazioni/script + #}
   {{ message }}
-
   {% if call_arrivederci == 1 %} {{ arrivederci() }} {% endif %}
   {% if call_spegni == 1 %} {{ spegni() }} {% endif %}
   {% if call_nuovo_dispositivo == 1 %} {{ nuovo_dispositivo(introduzione()) }} {% endif %}
   {% if call_fatto_casuale == 1 %} {{ fatto_casuale() }} {% endif %}
+

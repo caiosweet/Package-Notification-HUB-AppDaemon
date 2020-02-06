@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------------------------#
 automation:
   #----------------------------------------------------------------------------------------------------#
-  # Hassio Start
+  # Home Assistant Start
   #----------------------------------------------------------------------------------------------------#
   - id: notifica_di_avvio_hub
     alias: Notifica di avvio
@@ -17,7 +17,7 @@ automation:
     - delay: 00:00:15
     - service: script.my_notify
       data_template:
-        title: "Hassio Start!"
+        title: "Home Assistant Start!"
         message: >-
           Il sistema è operativo!.
           {{states('sensor.ha_start')}}
@@ -25,7 +25,7 @@ automation:
           Il sistema è operativo!.
 
   #----------------------------------------------------------------------------------------------------#
-  # Hassio Shtudown
+  # Home Assistant Shutdown
   #----------------------------------------------------------------------------------------------------#
   - id: Shut Down HUB
     alias: Shut Down
@@ -33,8 +33,8 @@ automation:
     trigger:
       # - platform: homeassistant
       #   event: shutdown
-      # - event_type: homeassistant.restart
-      #   platform: event
+      # - platform: event
+      #   event_type: homeassistant.restart
 
       # Trigger su evento restart, per dare il tempo ad AppDaemon di notificare
       - platform: event
@@ -45,7 +45,7 @@ automation:
     action:
       - service: script.my_notify
         data:
-          title: "Hassio Shutdown!"
+          title: "Home Assistant Shutdown!"
           call_no_annuncio: 1
           call_arrivederci: 1
           call_spegni: 1
@@ -54,7 +54,7 @@ automation:
           # notify: 0
 
   #----------------------------------------------------------------------------------------------------#
-  # Accesso Fallito
+  # Accesso Fallito # Banned IP
   #----------------------------------------------------------------------------------------------------#
   - id: accesso_fallito_hub
     alias: "Accesso fallito"
@@ -68,7 +68,7 @@ automation:
     action:
       - service: script.my_notify
         data_template:
-          title: "Hassio Accesso Fallito. "
+          title: "Home Assistant Accesso Fallito. "
           message_tts: "Attenzione. Accesso Fallito"
           # message: "{{ states.persistent_notification.http_login.attributes.message }}"
           message: "Tentativo di accesso o richiesta con autenticazione non valida."
@@ -82,20 +82,21 @@ automation:
           #notification_id: 'http_login'
       - service: notify.pushover
         data_template: 
-          title: "Hassio Accesso Fallito"
+          title: "Home Assistant Accesso Fallito"
           message: "Accesso Fallito. "
-          url: >
-            https://whatismyipaddress.com/ip/{{states.persistent_notification.http_login.attributes.message.split('from ')[1]}}
-          priority: 1
-          #attachment: "http://example.com/image.png"
-          #sound: pianobar
-          #device: pixel
+          data:
+            url: >
+              https://whatismyipaddress.com/ip/{{states.persistent_notification.http_login.attributes.message.split('from ')[1]}}
+            priority: 1
+            #attachment: "http://example.com/image.png"
+            #sound: pianobar
+            #device: pixel
 
   #----------------------------------------------------------------------------------------------------#
-  # Nuova versione di Hass.io
+  # Nuova versione di Home Assistant
   #----------------------------------------------------------------------------------------------------#
-  - id: update_hassio_hub
-    alias: Update hassio hub
+  - id: update_home_assistant_hub
+    alias: Update Home Assistant hub
     initial_state: true
     trigger:
       # - platform: state
@@ -106,7 +107,7 @@ automation:
     action:
       - service: script.my_notify
         data_template:
-          title: "Nuovo Aggiornamento Hassio"
+          title: "Nuovo Aggiornamento Home Assistant"
           message: "Home Assistant {{state_attr('binary_sensor.updater','newest_version')}} è disponibile."
           link: "{{state_attr('binary_sensor.updater','release_notes')}}"
 
@@ -130,7 +131,7 @@ automation:
           alexa_method: "speak"
           title: Benvenuto
           benvenuto: >
-            {% set person = trigger.entity_id.split('.')[1]|replace('_', ' ') %}
+            {% set person = trigger.entity_id.split('.')[1]|replace('_', ' ')|capitalize %}
             {%- macro benvenuto(person) -%}
             {{ [
             "Bentornato a casa " ~person~" ",
@@ -319,9 +320,9 @@ automation:
       - service: script.my_notify
         data_template:
           alexa_type: "tts"
-          message: >-
+          message: >
             Sono le {{states('sensor.time')}},
-            ed è {{states('sensor.dark_sky_summary')}}. 
+            ed è {{states('sensor.dark_sky_summary')}}.
             La temperatura esterna è di {{states('sensor.dark_sky_apparent_temperature')|int|string }} gradi,
             mentre la temperatura interna è di {{states('sensor.temperatura_media') |int|string }} gradi. 
             *Previsioni.* {{ states.sensor.dark_sky_hourly_summary.state }}. 
