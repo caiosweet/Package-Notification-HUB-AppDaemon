@@ -86,7 +86,6 @@ automation:
   - id: alexa_volume_automatico_hub
     alias: "Alexa Volume Automatico"
     initial_state: false
-    hide_entity: true
     trigger:
       - platform: state
         entity_id: sensor.period_of_day_volume
