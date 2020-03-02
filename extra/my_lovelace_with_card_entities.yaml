@@ -43,20 +43,26 @@ entities:
     .card-content {padding: 0;}
   show_header_toggle: false
   state_color: true
-  header:  
-      type: buttons
-      state_color: true
-      entities:
-        - entity: binary_sensor.people_home
-        - entity: group.location_tracker
-        - entity: input_boolean.phone_notifications
-        - entity: input_boolean.speech_notifications
-        - entity: input_boolean.text_notifications
-        - entity: input_boolean.screen_notifications
-        - entity: input_boolean.guest_mode
-        - entity: input_boolean.priority_message
-        - entity: input_boolean.holidays
-        - entity: binary_sensor.dnd
+  header:
+    type: buttons
+    state_color: true
+    entities:
+      - entity: binary_sensor.people_home
+        tap_action:
+          action: more-info
+      - entity: group.location_tracker
+        tap_action:
+          action: more-info
+      - entity: input_boolean.phone_notifications
+      - entity: input_boolean.speech_notifications
+      - entity: input_boolean.text_notifications
+      - entity: input_boolean.screen_notifications
+      - entity: input_boolean.guest_mode
+      - entity: input_boolean.priority_message
+      - entity: input_boolean.holidays
+      - entity: binary_sensor.dnd
+        tap_action:
+          action: more-info
   entities:
     - type: divider
       style:
