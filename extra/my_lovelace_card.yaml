@@ -19,46 +19,58 @@ entities:
       }
     content: >-
       <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</font>
-  - type: custom:button-entity-row
+  # PAPER BUTTONS 1
+  - type: custom:paper-buttons-row
     buttons:
       - entity: binary_sensor.people_home
+        name: false
         # state_icons:
         #   "off": "mdi:home-export-outline"
         #   "on": "mdi:home-import-outline"
       - entity: group.location_tracker
+        name: false
+        tap_action:
+          action: more-info
         state_icons:
           "not_home": "mdi:home-export-outline"
           "home": "mdi:home-import-outline"
         state_styles:
           "not_home":
-            color: red
-            font-weight: bold
+            button:
+              color: red
           "home":
-            color: var(--paper-item-icon-active-color)
+            button:
+              color: var(--paper-item-icon-active-color)
       - entity: input_boolean.phone_notifications
+        name: false
         state_icons:
           "off" : "mdi:phone-off"
       - entity: input_boolean.speech_notifications
+        name: false
         state_icons:
-          # "on": "mdi:account-tie-voice"
-          # "off": "mdi:account-tie-voice-off"
-          "off": "mdi:voice-off"
+          "on": "mdi:account-tie-voice"
+          "off": "mdi:account-tie-voice-off"
       - entity: input_boolean.text_notifications
+        name: false
         state_icons:
           "off": "mdi:cellphone-message-off"
       - entity: input_boolean.screen_notifications
+        name: false
         state_icons:
           "off": "mdi:message-bulleted-off"
-          #"on": "mdi:message-bulleted"
       - entity: input_boolean.guest_mode
+        name: false
         state_icons:
           "on": "mdi:account-multiple-plus"
           "off": "mdi:account-multiple-minus-outline"
       - entity: input_boolean.priority_message
+        name: false
         state_icons:
           "off": "mdi:alarm-light-outline"
       - entity: input_boolean.holidays
+        name: false
       - entity: binary_sensor.dnd
+        name: false
         state_icons:
           "on": "mdi:do-not-disturb"
           "off": "mdi:do-not-disturb-off"
@@ -66,6 +78,7 @@ entities:
     style:
       background-color: var(--primary-color)
       height: 1px
+  # PAPER GLANCE
   - type: custom:hui-glance-card
     style: |
       ha-card {
@@ -73,6 +86,7 @@ entities:
       }
     columns: 3
     show_icon: false
+    state_color: true
     entities:
       - entity: sensor.period_of_day
       - entity: sensor.period_of_day_volume
@@ -116,11 +130,12 @@ entities:
             entity_id: input_select.text_notify
         double_tap_action:
           action: more-info
-  # - type: divider
-  #   style:
-  #     background-color: var(--primary-color)
-  #     height: 1px
-  - type: custom:button-entity-row
+  - type: divider
+    style:
+      background-color: var(--primary-color)
+      height: 1px
+  # PAPER BUTTONS 2
+  - type: custom:paper-buttons-row
     buttons:
       - entity: input_boolean.ariela_switch
         name: Ariela
@@ -129,20 +144,36 @@ entities:
       - entity: input_boolean.tts_google_mode
         state_icons:
           "on": "mdi:google-assistant"
+        state_text:
+          "on": "Assistant"
+          "off": "Say"
+        state_styles:
+          "on":
+            button:
+            icon:
+              color: var(--paper-item-icon-active-color)
+            ripple:
+              color: orange
       - entity: input_boolean.alexa_switch
         name: Alexa
       - entity: input_select.default_alexa_type
         state_icons:
           "TTS": "mdi:text-shadow"
+        state_text:
+          "TTS": "TTS"
+          "Announce": "Announce"
         state_styles:
-          "TTS":
-            color: var(--paper-item-icon-active-color)
           "Announce":
-            color: green
-        service: input_select.select_next
-        service_data:
-          entity_id: input_select.default_alexa_type
+            button:
+              color: var(--paper-item-icon-active-color)
+        tap_action:
+          action: call-service
+          service: input_select.select_next
+          service_data:
+            entity_id: input_select.default_alexa_type
       - entity: input_boolean.last_message
+        name: false
+  # TEXT INPUT ROW
   - type: custom:hui-entities-card
     style: |
       ha-card {
@@ -154,3 +185,7 @@ entities:
     entities:
       - type: custom:text-input-row
         entity: input_text.intercom_message_hub 
+      - type: custom:slider-entity-row
+        entity: input_number.intercom_message_volume
+        name: hide_state
+        full_row: true
