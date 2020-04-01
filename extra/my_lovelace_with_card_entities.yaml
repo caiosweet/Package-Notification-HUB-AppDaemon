@@ -5,6 +5,9 @@ style: |
     box-shadow: none;
   }
   .card-content {padding: 0;}
+  .card-content > div {
+    margin: 0 !important;
+  }
 show_header_toggle: false
 entities:
 - type: custom:banner-card
