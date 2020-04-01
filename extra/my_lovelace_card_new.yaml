@@ -7,6 +7,9 @@ style: |
   .card-content {
     padding: 0;
   }
+  .card-content > div {
+    margin: 0 !important;
+  }
 entities:
   # BANNER
   - type: custom:banner-card
