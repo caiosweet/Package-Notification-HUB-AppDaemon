@@ -9,7 +9,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Ariela 2.3
+        version: Ariela 2.5
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
@@ -35,4 +35,3 @@ homeassistant:
 input_boolean:
   ariela_switch:
   # ariela_push:
-
