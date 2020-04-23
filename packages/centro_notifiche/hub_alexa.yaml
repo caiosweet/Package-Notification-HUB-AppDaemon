@@ -85,7 +85,7 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   - id: alexa_volume_automatico_hub
     alias: "Alexa Volume Automatico"
-    initial_state: false
+    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.period_of_day_volume
@@ -105,4 +105,4 @@ automation:
         data_template:
           entity_id: input_number.default_restore_volume
           value: >
-            {{ states('sensor.period_of_day_volume') | float | round(2) }}
+            {{ states('sensor.period_of_day_volume') | float * 100 }}
