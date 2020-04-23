@@ -7,7 +7,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Alexa 2.3
+        version: Alexa 2.5
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
