@@ -306,7 +306,7 @@ binary_sensor:
           {%set start=state_attr('input_datetime.dnd_start_%s'%day,'timestamp')%}
           {%set stop=state_attr('input_datetime.dnd_end_%s'%day,'timestamp')%}
           {%if speech=='on' and priority=='off'%} 
-          {{(start<t<stop) if start<stop else (t>start or t<stop)}}
+          {{(start<t<stop) if start<stop else ((t>start or t<stop) and start != stop)}}
           {%elif speech=='off' and priority=='off'%}True{%else%}False{%endif%}
         icon_template: >
           {%if is_state('binary_sensor.dnd','off')%}mdi:do-not-disturb-off{%else%}mdi:do-not-disturb{%endif%}
