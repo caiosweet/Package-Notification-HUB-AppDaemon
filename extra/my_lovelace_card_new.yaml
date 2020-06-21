@@ -1,16 +1,10 @@
-type: entities # CARD PRINCIPALE CENTRO NOTIFICHE
+type: custom:vertical-stack-in-card # CARD PRINCIPALE CENTRO NOTIFICHE
 style: |
   ha-card {
-    borde-radius: var(--ha-card-border-radius); 
-    border: solid var(--primary-color); border-width: 0px 1px 1px 1px;
+      background-color: var(--paper-card-background-color); {# trasparent; #}
+      border: 1px solid var(--primary-color);
   }
-  .card-content {
-    padding: 0;
-  }
-  .card-content > div {
-    margin: 0 !important;
-  }
-entities:
+cards:
   # BANNER
   - type: custom:banner-card
     heading: [mdi:account-tie, Alfred, mdi:settings-transfer-outline]
@@ -86,7 +80,7 @@ entities:
       background-color: var(--primary-color)
       height: 1px
   # PAPER GLANCE
-  - type: custom:hui-glance-card
+  - type: glance
     style: |
       ha-card {
         overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
@@ -181,7 +175,7 @@ entities:
       - entity: input_boolean.last_message
         name: false
   # TEXT INPUT ROW
-  - type: custom:hui-entities-card
+  - type: entities
     style: |
       ha-card {
         background:none; border-radius: 0px; box-shadow: none; 
@@ -190,9 +184,35 @@ entities:
         padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
       }
     entities:
-      - type: custom:text-input-row
-        entity: input_text.intercom_message_hub 
-      - type: custom:slider-entity-row
-        entity: input_number.intercom_message_volume
-        name: hide_state
-        full_row: true
+    - type: custom:fold-entity-row
+      padding: 0
+      head: 
+        type: section
+        label: Interfono
+      entities:
+        - type: custom:lovelace-multiline-text-input-card
+          style: |
+            ha-card {
+              background:none; border-radius: 0px; box-shadow: none; 
+              color: var(--primary-text-color);
+            }
+            textarea.textarea {margin-top: 0;}
+            .card-content {padding-top: 0;}
+          # autosave: true
+          entity: input_text.intercom_message_hub
+          max_length: 255
+          min_length: 1
+          placeholder_text: 'Messaggio da inviare...'
+          title: ''
+          buttons:
+            save: true
+            paste: true
+            clear: true
+          icons:
+            save: mdi:send
+            paste: mdi:content-paste
+            clear: mdi:delete-forever
+        - type: custom:slider-entity-row
+          entity: input_number.intercom_message_volume
+          name: hide_state
+          full_row: true
