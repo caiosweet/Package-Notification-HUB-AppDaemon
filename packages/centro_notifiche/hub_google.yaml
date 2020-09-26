@@ -9,7 +9,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Google 2.5
+        version: Google 2.6
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
@@ -53,7 +53,6 @@ sensor:
   - platform: template
     sensors:
       media_player_google:
-        entity_id: input_select.notification_media_player_google
         value_template: >-
           {%set domains=['media_player','group']-%}
           {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_google')|lower-%}
