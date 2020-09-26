@@ -7,7 +7,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Alexa 2.5
+        version: Alexa 2.6
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
@@ -66,7 +66,6 @@ sensor:
   - platform: template
     sensors:
       media_player_alexa:
-        entity_id: input_select.notification_media_player_alexa, sensor.last_alexa
         value_template: >
           {%set domains=['media_player','group','sensor']-%}
           {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
@@ -91,18 +90,18 @@ automation:
         entity_id: sensor.period_of_day_volume
     action:
       - service: media_player.volume_set
-        data_template:
+        data:
           entity_id: >
             group.media_player_alexa
           volume_level: >
             {{ states('sensor.period_of_day_volume') | float | round(2) }}
       - service: input_number.set_value
-        data_template:
+        data:
           entity_id: input_number.intercom_message_volume
           value: >
             {{ states('sensor.period_of_day_volume') | float * 100 }}
       - service: input_number.set_value
-        data_template:
+        data:
           entity_id: input_number.default_restore_volume
           value: >
             {{ states('sensor.period_of_day_volume') | float * 100 }}
