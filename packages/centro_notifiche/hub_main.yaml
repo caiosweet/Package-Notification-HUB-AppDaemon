@@ -14,7 +14,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Main 2.3
+        version: Main 2.6
         author: Caio & Gianpi
         site: www.hassiohelp.eu
       expose: &expose
@@ -284,7 +284,7 @@ input_text:
     max: 255
   phone_called_number:
     max: 30
-    #initial: ''
+
 #######################################-#######################################
 ##                               BINARY SENSOR
 #######################################-#######################################
@@ -292,15 +292,12 @@ binary_sensor:
   - platform: template
     sensors:
       dnd:
-        entity_id: >
-          sensor.time,input_datetime.dnd_start_weekdays,input_datetime.dnd_end_weekdays,
-          input_datetime.dnd_start_holidays,input_datetime.dnd_end_holidays,
-          input_boolean.speech_notifications,input_boolean.priority_message,input_boolean.holidays
         value_template: >
+          {% set x = states('sensor.time') %}
           {%set speech=states('input_boolean.speech_notifications')%}
           {%set priority=states('input_boolean.priority_message')%}
           {%set t=now().time()%}
-          {%set t=(t.hour*60+t.minute)*60+t.second%}
+          {%set t=(t.hour*60+t.minute)*60+60%}
           {% set day = 'weekdays' if (is_state('binary_sensor.workday_sensor','on')
             and is_state('input_boolean.holidays','off')) else 'holidays' %}
           {%set start=state_attr('input_datetime.dnd_start_%s'%day,'timestamp')%}
@@ -318,8 +315,8 @@ sensor:
   - platform: template
     sensors:
       period_of_day:
-        entity_id: sensor.time
         value_template: >
+          {% set x = states('sensor.time') %}
           {%set nt=now().time()%}
           {%set nt=(nt.hour*60+nt.minute)*60+nt.second%}
           {%if state_attr('input_datetime.start_morning','timestamp')<=nt<state_attr('input_datetime.start_afternoon','timestamp')%}Mattino
@@ -334,7 +331,6 @@ sensor:
           {%elif is_state('sensor.period_of_day','Sera') %}mdi:weather-sunset-down
           {%else%} mdi:weather-night{%endif%}
       period_of_day_volume:
-        entity_id: sensor.time, sensor.period_of_day,input_number.morning_volume,input_number.afternoon_volume,input_number.evening_volume,input_number.night_volume
         value_template: >
           {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int/100}}
           {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int/100}}
@@ -426,26 +422,26 @@ automation:
   - id: notification_repeat_last_message_hub
     alias: notification_repeat_last_message_hub
     initial_state: true
+    mode: queued
     trigger:
       - platform: state
         entity_id: input_boolean.last_message
         to: 'on'
     action:
-      - service: input_boolean.turn_on
-        data:
-          entity_id: input_boolean.priority_message
+      # - service: input_boolean.turn_on
+      #   data:
+      #     entity_id: input_boolean.priority_message
       - service: script.my_notify
         data:
           call_no_annuncio: 1
           title: "Ultimo messaggio"
-        data_template:
           volume: >
             {{states('input_number.intercom_message_volume')|int/100}}
           message: >
             {{states('input_text.last_message')}}
       - service: input_boolean.turn_off
         entity_id:
-          - input_boolean.priority_message
+          # - input_boolean.priority_message
           - input_boolean.last_message
 #2-----------------------------------------------------------------------------------------------------#
   # INTERFONO
@@ -456,16 +452,12 @@ automation:
     trigger:
       - platform: state
         entity_id: input_text.intercom_message_hub
-    condition:
-      condition: template
-      value_template: >
-        {{states('input_text.intercom_message_hub')|length>0}}
+    condition: "{{states('input_text.intercom_message_hub')|length>0}}"
     action:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
           title: "Interfono"
-        data_template:
           volume: >
             {{states('input_number.intercom_message_volume')|int/100}}
           message: >
@@ -489,7 +481,6 @@ automation:
         data:
           call_no_annuncio: 1
           call_modo_ospite: 1
-        data_template:
           title: >
             Modalità Ospite - {{trigger.to_state.state|upper}}
 #4-----------------------------------------------------------------------------------------------------#
@@ -507,7 +498,7 @@ automation:
     action:
       - delay: 00:00:10
       - service: group.set
-        data_template:
+        data:
           object_id: "automations_notification_hub"
           name: "Automazioni Centro Notifiche"
           entities: >
