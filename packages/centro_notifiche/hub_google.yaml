@@ -9,7 +9,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Google 2.6
+        version: Google 3.0.0
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
@@ -60,4 +60,4 @@ sensor:
         icon_template: >-
           {%set domains=['media_player','group']-%}
           {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_google')|lower-%}
-          {%if x.domain=='group'%}mdi:speaker-multiple{%else%}mdi:speaker{%endif%}{%endfor%}
+          {%if x.domain=='group'%}mdi:speaker-multiple{%elif x.domain=='sensor'%}mdi:cast-audio{%else%}mdi:speaker{%endif%}{%endfor%}

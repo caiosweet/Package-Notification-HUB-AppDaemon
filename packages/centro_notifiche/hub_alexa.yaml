@@ -7,7 +7,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Alexa 2.6
+        version: Alexa 3.0.0
         author: Caio & Gianpi
         site: www.hassiohelp.eu
 
@@ -21,6 +21,31 @@ homeassistant:
       <<: *customize
       friendly_name: Alexa
       icon: mdi:amazon-alexa
+    input_boolean.alexa_ssml:
+      <<: *customize
+      friendly_name: Auto SSML
+      icon: mdi:waveform
+    input_number.alexa_prosody_rate:
+      <<: *customize
+      friendly_name: Rate
+      icon: mdi:alpha-r
+    input_number.alexa_prosody_pitch:
+      <<: *customize
+      friendly_name: Pitch
+      icon: mdi:alpha-p
+    input_number.alexa_prosody_volume:
+      <<: *customize
+      friendly_name: Volume
+      icon: mdi:alpha-v
+      unit_of_measurement: 'dB'
+    input_select.alexa_voice:
+      <<: *customize
+      friendly_name: Amazon Polly voice
+      icon: mdi:account-tie-voice-outline
+    # input_select.alexa_language:
+    #   <<: *customize
+    #   friendly_name: Amazon Polly language
+    #   icon: mdi:flag-variant
     input_select.notification_media_player_alexa:
       <<: *customize
       friendly_name: Sorgente Alexa
@@ -28,11 +53,16 @@ homeassistant:
     input_select.default_alexa_method:
       <<: *customize
       friendly_name: Metodo Predefinito Alexa
-      icon: mdi:speaker-multiple
+      icon: mdi:monitor-speaker
     input_select.default_alexa_type:
       <<: *customize
       friendly_name: Tipo Predefinito Alexa
-      icon: mdi:bullhorn-outline
+      icon: mdi:bugle
+  ## SCRIPT
+    script.ssml_reset:
+      <<: *customize
+      friendly_name: Ripristina SSML
+      icon: mdi:restore
   ## SENSOR
     sensor.last_alexa:
       <<: *customize
@@ -47,6 +77,21 @@ homeassistant:
 #######################################-#######################################
 input_boolean:
   alexa_switch:
+  alexa_ssml:
+input_number:
+  alexa_prosody_rate:
+    min: 20
+    max: 200
+    step: 0.1
+  alexa_prosody_pitch:
+    min: -33.3
+    max: 50
+    step: 0.1
+  alexa_prosody_volume:
+    min: -50
+    max: 4.08
+    step: 0.01
+  
 input_select:
   notification_media_player_alexa:
     options: !secret notification_media_player_alexa_hub
@@ -58,6 +103,43 @@ input_select:
     options:
       - TTS
       - Announce
+      - Push
+      - Dropin
+  alexa_voice:
+    options: [
+      'Alexa', 'Carla', 'Giorgio', 'Bianca',
+      'Ivy', 'Joanna', 'Joey', 'Justin', 'Kendra', 'Kimberly', 'Matthew', 'Salli',
+      'Nicole', 'Russell',
+      'Amy', 'Brian', 'Emma',
+      'Aditi', 'Raveena',
+      'Chantal',
+      'Celine', 'Lea', 'Mathieu',
+      'Hans', 'Marlene', 'Vicki',
+      'Aditi',
+      'Mizuki', 'Takumi',
+      'Vitoria', 'Camila', 'Ricardo',
+      'Penelope', 'Lupe', 'Miguel',
+      'Conchita', 'Enrique', 'Lucia',
+      'Mia']
+
+  # alexa_language:
+  #   options: [
+  #     "Master",
+  #     "it-IT",
+  #     "en-US", "en-CA",
+  #     "en-AU",
+  #     "en-GB",
+  #     "en-IN",
+  #     "fr-CA",
+  #     "fr-FR",
+  #     "de-DE",
+  #     "hi-IN",
+  #     "ja-JP",
+  #     "pt-BR",
+  #     "es-US",
+  #     "es-ES",
+  #     "es-MX",
+  #     ]
 
 #######################################-#######################################
 ##                                  SENSOR
@@ -73,35 +155,27 @@ sensor:
         icon_template: >-
           {%set domains=['media_player','group','sensor']-%}
           {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
-          {%if x.domain=='group'%}mdi:speaker-multiple{%else%}mdi:speaker{%endif%}{%endfor%}
+          {%if x.domain=='group'%}mdi:speaker-multiple{%elif x.domain=='sensor'%}mdi:cast-audio{%else%}mdi:speaker{%endif%}{%endfor%}
 
 #######################################-#######################################
-##                                 AUTOMATION
+##                                  SCRIPT
 #######################################-#######################################
-automation:
-  #----------------------------------------------------------------------------------------------------#
-  # Volume Automatico - Regolazione e livellamento di tutti i volumi in base al sensor.period_of_day_volume
-  #----------------------------------------------------------------------------------------------------#
-  - id: alexa_volume_automatico_hub
-    alias: "Alexa Volume Automatico"
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: sensor.period_of_day_volume
-    action:
-      - service: media_player.volume_set
-        data:
-          entity_id: >
-            group.media_player_alexa
-          volume_level: >
-            {{ states('sensor.period_of_day_volume') | float | round(2) }}
+script:
+  ssml_reset:
+    sequence:
       - service: input_number.set_value
         data:
-          entity_id: input_number.intercom_message_volume
-          value: >
-            {{ states('sensor.period_of_day_volume') | float * 100 }}
+          entity_id: input_number.alexa_prosody_pitch, input_number.alexa_prosody_volume
+          value: 0
       - service: input_number.set_value
         data:
-          entity_id: input_number.default_restore_volume
-          value: >
-            {{ states('sensor.period_of_day_volume') | float * 100 }}
+          entity_id: input_number.alexa_prosody_rate
+          value: 100
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.alexa_voice
+          option: Alexa
+      # - service: input_select.select_option
+      #   data:
+      #     entity_id: input_select.alexa_language
+      #     option: it-IT

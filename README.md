@@ -66,32 +66,9 @@ Custom Cards: card-mod, banner-card, fold-entity-row
 <br><br>
 </p>
 
-To know all the entities, use this jinja code in dev-tools models
-```
-{% for state in states -%}
-{% if 'centro notifiche' in state.attributes.package|lower %}
-- {{ state.entity_id -}}
-{% endif %}
-{%- endfor %} 
-```
-Ex. Entity in hub_main.yaml file
-```
-{% for state in states -%}
-{% if 'centro notifiche' in state.attributes.package|lower and 'main' in state.attributes.version|lower%}
-- {{ state.entity_id -}}
-{% endif %}
-{%- endfor %} 
-```
-Alexa
-```
-{% for state in states -%}
-{% if 'centro notifiche' in state.attributes.package|lower and 'alexa' in state.attributes.version|lower%}
-- {{ state.entity_id -}}
-{% endif %}
-{%- endfor %} 
-```
-Create a Card
-```
+#### Create a Card
+
+```yaml
 type: entities
 title: Alexa
 entities:
