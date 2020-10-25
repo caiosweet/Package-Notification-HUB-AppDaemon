@@ -16,9 +16,9 @@ homeassistant:
         homebridge_hidden: false
 
   ## AUTOMATION
-    # automation.auto_volume_hub:
-    #   <<: *customize
-    #   friendly_name: Volume Automatico Hub
+    automation.auto_volume_hub:
+      <<: *customize
+      friendly_name: Volume Automatico Hub
     automation.create_notification_automation_group_hub:
       <<: *customize
       friendly_name: Crea Gruppo Automazioni HUB

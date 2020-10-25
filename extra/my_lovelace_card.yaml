@@ -1,35 +1,39 @@
-type: entities # CARD PRINCIPALE
-style: |
-  ha-card {
-    borde-radius: var(--ha-card-border-radius); 
-    border: solid var(--primary-color); border-width: 0px 1px 1px 1px;
-  }
-  .card-content {
-    padding: 0;
-  }
-  .card-content > div {
-    margin: 0 !important;
-  }
-entities:
-  - type: custom:hui-markdown-card # TESTATINA PRINCIPALE
+type: custom:vertical-stack-in-card 
+cards:
+  # BANNER
+  - type: custom:banner-card
+    heading: [mdi:account-tie, Alfred]
+    link: centro_notifiche
     style: |
       ha-card {
-        border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
-        #background: var(--primary-color);
-        #background: content-box radial-gradient(var(--paper-item-icon-active-color), var(--primary-color));
+        overflow: hidden; 
+        --bc-font-size-heading: 2em;
+        --bc-font-size-entity-value: 1em;
+        font-size: 1em;
+        --paper-icon-button: var(--paper-item-icon-active-color);
+        border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px;
         background: content-box radial-gradient(var(--light-primary-color), var(--primary-color));
         box-shadow: none;
       }
-    content: >-
-      <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</font>
-  # PAPER BUTTONS 1
+  # MARKDOWN SENSOR NOTIFIER APP CONDITIONAL
+  - type: conditional
+    conditions:
+      - entity: sensor.centro_notifiche
+        state_not: 'on'
+    card:
+      type: markdown
+      style: |
+        ha-card {
+          border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
+          background: red; box-shadow: none; color: yellow;
+        }
+      content: >-
+        ⛔ {{states('sensor.centro_notifiche')}}
+  # PAPER BUTTONS Row 1
   - type: custom:paper-buttons-row
     buttons:
       - entity: binary_sensor.people_home
         name: false
-        # state_icons:
-        #   "off": "mdi:home-export-outline"
-        #   "on": "mdi:home-import-outline"
       - entity: group.location_tracker
         name: false
         tap_action:
@@ -82,18 +86,20 @@ entities:
       background-color: var(--primary-color)
       height: 1px
   # PAPER GLANCE
-  - type: custom:hui-glance-card
+  - type: glance
     style: |
       ha-card {
         overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
       }
     columns: 3
+    # show_name: false
     show_icon: false
     state_color: true
     entities:
       - entity: sensor.period_of_day
       - entity: sensor.period_of_day_volume
       - entity: input_number.default_restore_volume
+      # Second column
       - entity: input_select.notification_media_player_alexa
         tap_action:
           action: call-service
@@ -137,16 +143,15 @@ entities:
     style:
       background-color: var(--primary-color)
       height: 1px
-  # PAPER BUTTONS 2
+  # PAPER BUTTONS Row 2
   - type: custom:paper-buttons-row
     buttons:
-      - entity: input_boolean.ariela_switch
-        name: Ariela
       - entity: input_boolean.google_switch
         name: Google
       - entity: input_boolean.tts_google_mode
-        state_icons:
-          "on": "mdi:google-assistant"
+        icon: false
+        # state_icons:
+        #   "on": "mdi:google-assistant"
         state_text:
           "on": "Assistant"
           "off": "Say"
@@ -160,11 +165,17 @@ entities:
       - entity: input_boolean.alexa_switch
         name: Alexa
       - entity: input_select.default_alexa_type
-        state_icons:
-          "TTS": "mdi:text-shadow"
+        tooltip: false
+        icon: false
+        # state_icons:
+        #   "TTS": "mdi:text-shadow"
+        #   "Push": "mdi:cellphone-text"
+        #   "Dropin": "mdi:form-dropdown"
         state_text:
           "TTS": "TTS"
           "Announce": "Announce"
+          "Push": "Push"
+          "Dropin": "Dropin"
         state_styles:
           "Announce":
             button:
@@ -174,10 +185,16 @@ entities:
           service: input_select.select_next
           service_data:
             entity_id: input_select.default_alexa_type
-      - entity: input_boolean.last_message
-        name: false
-  # TEXT INPUT ROW
-  - type: custom:hui-entities-card
+      - entity: input_boolean.alexa_ssml
+        name: SSML
+      # - entity: input_boolean.last_message
+      #   name: false
+  # TEXT INPUT ROW #icon:
+  - type: divider
+    style:
+      background-color: var(--primary-color)
+      height: 1px
+  - type: entities
     style: |
       ha-card {
         background:none; border-radius: 0px; box-shadow: none; 
@@ -186,9 +203,42 @@ entities:
         padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
       }
     entities:
-      - type: custom:text-input-row
-        entity: input_text.intercom_message_hub 
-      - type: custom:slider-entity-row
-        entity: input_number.intercom_message_volume
-        name: hide_state
-        full_row: true
+    - type: custom:fold-entity-row
+      padding: 0
+      head: 
+        # type: section
+        # label: Interfono
+        type: call-service
+        name: Interfono
+        icon: mdi:bullhorn-outline #mdi:repeat-once
+        action_name: Last Message
+        service: input_boolean.turn_on
+        service_data:
+          entity_id: input_boolean.last_message
+      entities:
+        - type: custom:lovelace-multiline-text-input-card
+          style: |
+            ha-card {
+              background:none; border-radius: 0px; box-shadow: none; 
+              color: var(--primary-text-color);
+            }
+            textarea.textarea {margin-top: 0;}
+            .card-content {padding-top: 0;}
+          # autosave: true
+          entity: input_text.intercom_message_hub
+          max_length: 255
+          min_length: 1
+          placeholder_text: 'Messaggio da inviare...'
+          title: ''
+          buttons:
+            save: true
+            paste: true
+            clear: true
+          icons:
+            save: mdi:send
+            paste: mdi:content-paste
+            clear: mdi:delete-forever
+        - type: custom:slider-entity-row
+          entity: input_number.intercom_message_volume
+          name: hide_state
+          full_row: true

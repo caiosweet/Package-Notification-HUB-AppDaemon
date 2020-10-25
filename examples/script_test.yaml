@@ -5,28 +5,33 @@ script:
   centro_notifiche_test:
     alias: 'centro_notifiche_test'
     sequence:
-
+      # - variables:
+      #   notification_service: "{{states('input_select.text_notify')|lower}}"
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-          media_player_alexa: media_player.studio, media_player.sala
-          media_player_google: media_player.red, media_player.black2
-          volume: 0.4
-        data_template:
+          alexa: 
+            message_tts: >-
+              M0 - Messaggio TTS diverso da Testo e sono le {{now().strftime("%H:%M")}} e tutto va bene!
+            media_player: media_player.studio, media_player.sala
+            volume: 0.4
+          google: 
+            media_player: media_player.red, media_player.black2
+            volume: 0.4
           title: >-
             M0 - {{now().time()}} 
           message: >-
             M0 - Volume 4. Gruppo Media Player
-          message_tts: >-
-            M0 - Messaggio TTS diverso da Testo
 
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-          media_player_alexa: media_player.studio
-          media_player_google: media_player.red
-          volume: 0.5
-        data_template:
+          alexa:
+            media_player: media_player.studio
+            volume: 0.5
+          google:
+            media_player: media_player.red
+            volume: 0.5
           title: >-
             M1 - {{now().time()}} 
           message: >-
@@ -35,8 +40,10 @@ script:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-          volume: 0.4
-        data_template:
+          alexa: 
+            volume: 0.4
+          google:
+            volume: 0.4
           title: >-
             M2 - {{now().time()}} 
           message: >-
@@ -53,8 +60,10 @@ script:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-          volume: 0.3
-        data_template:
+          alexa: 
+            volume: 0.3
+          google:
+            volume: 0.3
           title: >-
             M3 - {{now().time()}} 
           message: >-
@@ -63,7 +72,10 @@ script:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-        data_template:
+          alexa:
+            mode: true
+          google:
+            mode: true
           title: >-
             M4 - {{now().time()}} 
           message: >-
@@ -73,13 +85,16 @@ script:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-        data_template:
+          alexa:
+            mode: true
+          google:
+            mode: true
           title: >-
             M5 - {{now().time()}} 
           message: >-
-            M5 è {{states('sensor.period_of_day')}}
+            M5 è {{states('sensor.period_of_day')}}!
             {% if states('input_boolean.alexa_switch') == 'on' %}
-            {% set alexa = '. Media player selezionato ' 
+            {% set alexa = 'Media player selezionato ' 
             + states('input_select.notification_media_player_alexa')
             + '. Tipo ' + states('input_select.default_alexa_type')
             + '. Metodo ' + ('Nessuno' if states('input_select.default_alexa_method5') == 'unknown' else states('input_select.default_alexa_method5')) %}
@@ -96,3 +111,45 @@ script:
             +', Notifiche testo ' + states('input_boolean.text_notifications')
             +', Notifiche persistenti ' + states('input_boolean.screen_notifications') %}
             {{(alexa ~ google ~ message)|replace(' off',' spento')|replace(' on',' acceso')}}
+
+  centro_notifiche_alexa_test:
+    alias: 'Centro Notifiche Alexa Test'
+    sequence:
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          alexa:
+            message: "Houston, we have a problem! "
+            language: en-US
+            voice: Matthew
+
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          alexa:
+            message: "Houston, we have a problem, here!"
+            language: en-US
+            voice: Joey
+
+      - service: script.my_notify
+        data:
+          alexa:
+            message: >
+              sono le {{now().strftime("%H:%M")}} 
+              e sogni d'oro. 
+              a ah, che bello!
+      - delay: "00:01:00"
+      - service: script.my_notify
+        data:
+          alexa:
+            media_content_id: Alexa.GoodMorning.Play
+            media_content_type: sequence
+
+            # media_content_id: Alexa.Traffic.Play
+            # media_content_id: Alexa.Weather.Play
+            # media_content_id: Alexa.FlashBriefing.Play
+            # NIENTE!! media_content_id: Alexa.FunFact.Play #Alexa.GoodNight.Play
+            # media_content_id: Alexa.SingASong.Play
+            # media_content_id: Alexa.TellStory.Play
+            # media_content_id: Alexa.Joke.Play
+            # media_content_id: Alexa.ImHome.Play
