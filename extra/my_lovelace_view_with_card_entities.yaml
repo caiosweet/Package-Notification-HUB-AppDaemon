@@ -1,0 +1,236 @@
+title: Centro Notifiche
+path: centro_notifiche
+icon: mdi:account-tie
+badges:
+cards:
+  - type: custom:vertical-stack-in-card 
+    cards:
+      - type: markdown
+        content: |
+          <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</center></font>
+
+          {% if not is_state('sensor.centro_notifiche', 'on') %}
+          ⛔ {{states('sensor.centro_notifiche')}} ⛔
+          {% endif %}
+      - type: divider
+        style:
+          background-color: var(--primary-color)
+          height: 1px
+      - type: entities
+        show_header_toggle: false
+        state_color: true
+        header:
+          type: buttons
+          state_color: true
+          entities:
+            - entity: binary_sensor.people_home
+              tap_action:
+                action: more-info
+            - entity: group.location_tracker
+              tap_action:
+                action: more-info
+            - entity: input_boolean.phone_notifications
+            - entity: input_boolean.speech_notifications
+            - entity: input_boolean.text_notifications
+            - entity: input_boolean.screen_notifications
+            - entity: input_boolean.guest_mode
+            - entity: input_boolean.priority_message
+            - entity: input_boolean.holidays
+            - entity: binary_sensor.dnd
+              tap_action:
+                action: more-info
+        entities: []
+      - type: divider
+        style:
+          background-color: var(--primary-color)
+          height: 1px
+      - type: glance
+        columns: 3
+        show_icon: false
+        entities:
+          - entity: sensor.period_of_day
+          - entity: sensor.period_of_day_volume
+          - entity: input_number.default_restore_volume
+          - entity: input_select.notification_media_player_alexa
+            tap_action:
+              action: call-service
+              service: input_select.select_next
+              service_data: 
+                entity_id: input_select.notification_media_player_alexa
+            hold_action:
+              action: call-service
+              service: input_select.select_previous
+              service_data: 
+                entity_id: input_select.notification_media_player_alexa
+            double_tap_action:
+              action: more-info
+          - entity:  input_select.notification_media_player_google
+            tap_action:
+              action: call-service
+              service: input_select.select_next
+              service_data: 
+                entity_id: input_select.notification_media_player_google
+            hold_action:
+              action: call-service
+              service: input_select.select_previous
+              service_data: 
+                entity_id: input_select.notification_media_player_google
+            double_tap_action:
+              action: more-info
+          - entity:  input_select.text_notify
+            tap_action:
+              action: call-service
+              service: input_select.select_next
+              service_data: 
+                entity_id: input_select.text_notify
+            hold_action:
+              action: call-service
+              service: input_select.select_previous
+              service_data: 
+                entity_id: input_select.text_notify
+            double_tap_action:
+              action: more-info
+      - type: divider
+        style:
+          background-color: var(--primary-color)
+          height: 1px
+      - type: entities
+        header:
+          type: buttons
+          state_color: true
+          entities:
+            - entity: input_boolean.google_switch
+              name: Google
+            - entity: input_boolean.tts_google_mode
+            - entity: input_boolean.alexa_switch
+              name: Alexa
+            - entity: input_select.default_alexa_type
+              name: Type
+              tap_action:
+                action: call-service
+                service: input_select.select_next
+                service_data:
+                  entity_id: input_select.default_alexa_type
+            - entity: input_boolean.last_message
+        entities:
+          - type: custom:text-input-row
+            entity: input_text.intercom_message_hub 
+          - type: custom:slider-entity-row
+            entity: input_number.intercom_message_volume
+            name: hide_state
+            full_row: true
+
+  - type: entities
+    title: Impostazioni Assistente
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - entity: input_text.personal_assistant_name
+      - entity: input_select.language
+      - entity: input_select.text_notify
+      - entity: input_number.tts_wait_time
+      - type: section
+        label: FERIALI - Orario modo silenzioso
+      - entity: input_datetime.dnd_start_weekdays
+      - entity: input_datetime.dnd_end_weekdays
+      - type: section
+        label: FESTIVI - Orario modo silenzioso
+      - entity: input_datetime.dnd_start_holidays
+      - entity: input_datetime.dnd_end_holidays
+      - type: section
+        label: VOLUME di default durante il griorno
+      - entity: input_datetime.start_morning
+      - entity: input_number.morning_volume
+      - entity: input_datetime.start_afternoon
+      - entity: input_number.afternoon_volume
+      - entity: input_datetime.start_evening
+      - entity: input_number.evening_volume
+      - entity: input_datetime.start_night
+      - entity: input_number.night_volume
+      - entity: input_number.default_restore_volume
+
+  - type: entities
+    title: Centro Notifiche
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: section
+        label: Monitor
+      - entity: group.location_tracker
+      - entity: sensor.period_of_day
+      - entity: sensor.period_of_day_volume
+        tap_action:
+          action: call-service
+          service: input_boolean.toggle
+          service_data:
+            entity_id: input_boolean.speech_notifications
+      - entity: binary_sensor.dnd
+      - type: call-service
+        name: Ultimo Messaggio
+        action_name: Ascolta
+        service: input_boolean.turn_on
+        service_data:
+          entity_id: input_boolean.last_message
+      - type: section
+        label: Modalità
+      - entity: input_boolean.holidays
+      - entity: input_boolean.guest_mode
+      - entity: input_boolean.priority_message
+      - entity: input_boolean.phone_notifications
+      - entity: input_boolean.speech_notifications
+      - entity: input_boolean.text_notifications
+      - entity: input_boolean.screen_notifications
+      - type: section
+        label: Interfono
+      - entity: automation.send_intercom_message_hub
+        name: Off/On
+      - entity: input_number.intercom_message_volume
+      - entity: input_text.intercom_message_hub
+
+  - type: entities
+    title: Alexa
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: section
+        label: ''
+      - entity: input_boolean.alexa_switch
+      - entity: input_select.notification_media_player_alexa
+      - entity: input_select.default_alexa_type
+      - entity: input_select.default_alexa_method
+      - type: section
+        label: 'Sensore'
+      - entity: sensor.media_player_alexa
+
+  - type: entities
+    title: Google
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: section
+        label: ''
+      - entity: input_boolean.google_switch
+      - entity: input_boolean.tts_google_mode
+      - entity: input_select.notification_media_player_google
+      - type: section
+        label: 'Sensore'
+      - entity: sensor.media_player_google
+
+  - type: entities
+    title: VoIP
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: section
+        label: ''
+      - entity: input_text.phone_called_number
+      - entity: input_select.phone_notify
+
+  - type: entities
+    title: Automazioni
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: section
+        label: ''
+      - entity: group.automations_notification_hub

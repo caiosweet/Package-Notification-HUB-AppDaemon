@@ -5,9 +5,16 @@ entities:
   - type: section
     label: ''
   - entity: input_boolean.alexa_switch
+  - entity: input_boolean.alexa_ssml
+  - entity: input_select.alexa_voice
+  # - entity: input_select.alexa_language
+  - entity: input_number.alexa_prosody_rate
+  - entity: input_number.alexa_prosody_pitch
+  - entity: input_number.alexa_prosody_volume
   - entity: input_select.notification_media_player_alexa
   - entity: input_select.default_alexa_type
   - entity: input_select.default_alexa_method
+  # - entity: group.media_player_alexa
   - type: section
     label: 'Sensore'
   - entity: sensor.media_player_alexa

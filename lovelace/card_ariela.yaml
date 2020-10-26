@@ -1,7 +1,0 @@
-type: entities
-title: Ariela
-show_header_toggle: false
-entities:
-  - type: section
-    label: ''
-  - entity: input_boolean.ariela_switch

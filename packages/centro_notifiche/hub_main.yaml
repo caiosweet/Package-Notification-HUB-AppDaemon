@@ -1,6 +1,6 @@
 ### INFO
   #   @author         :   Caio & Gianpi- www.hassiohelp.eu
-  #   @date           :   Started 01/11/2019 - Updated 18/01/2020
+  #   @date           :   Started 01/11/2019 - Updated 11/10/2020
   #   @package        :   Notification HUB - Centro Notifiche
   #   @description    :   Package Appdaemon Notifier Center for Home Assistant
   ############################################################################
@@ -14,7 +14,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: Centro Notifiche
-        version: Main 2.6
+        version: Main 3.0.0
         author: Caio & Gianpi
         site: www.hassiohelp.eu
       expose: &expose
@@ -23,9 +23,6 @@ homeassistant:
         homebridge_hidden: false
 
   ## AUTOMATION
-    automation.create_notification_automation_group_hub:
-      <<: *customize
-      friendly_name: Crea Gruppo Automazioni HUB
     automation.guest_mode_hub:
       <<: *customize
       friendly_name: Modo Ospite
@@ -128,10 +125,12 @@ homeassistant:
       <<: *customize
       friendly_name: Regolazione attesa TTS
       icon: mdi:av-timer
+      unit_of_measurement: 'sec'
   ## INPUT SELECT
     input_select.language:
       <<: *customize
       friendly_name: Lingua
+      icon: mdi:flag-variant
     input_select.phone_notify:
       <<: *customize
       friendly_name: Notifica Telefonica
@@ -139,12 +138,12 @@ homeassistant:
     input_select.text_notify:
       <<: *customize
       friendly_name: Notifica Testo
-      icon: mdi:message-settings-variant
+      icon: mdi:message-cog
+  ## INPUT TEXT
     input_text.phone_called_number:
       <<: *customize
       friendly_name: N. Tel / @user
       icon: mdi:phone-classic
-  ## INPUT TEXT
     input_text.last_message:
       <<: *customize
       friendly_name: Salva Ultimo Messaggio
@@ -152,7 +151,7 @@ homeassistant:
     input_text.intercom_message_hub:
       <<: *customize
       friendly_name: Messaggio
-      icon: mdi:bullhorn
+      icon: mdi:bullhorn-outline
     input_text.personal_assistant_name:
       <<: *customize
       friendly_name: Nome Assistente
@@ -183,6 +182,13 @@ homeassistant:
       <<: *customize
       friendly_name: Non disturbare fine
       icon: mdi:clock-end
+    input_number.*_volume:
+      <<: *customize
+      unit_of_measurement: '%'
+    sensor.*_volume:
+      <<: *customize
+      unit_of_measurement: '%'
+
 ###############################################################################
 ## PACKAGE
 ###############################################################################
@@ -236,44 +242,40 @@ input_number:
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: '%'
   afternoon_volume:
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: '%'
   evening_volume:
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: '%'
   night_volume:
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: '%'
   intercom_message_volume:
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: '%'
   default_restore_volume:
     min: 0
     max: 100
     step: 10
-    unit_of_measurement: '%'
   tts_wait_time:
     min: 0
     max: 5
     step: 0.1
-    unit_of_measurement: 'sec'
 input_select:
   text_notify:
     options: !secret text_notify_hub
   phone_notify:
     options: ["Telegram Call","Voip Call"]
   language:
-    options: ["It","En","Fr","De","Nl"]
+    options: [
+      "it-IT","en-GB","en-US","fr-FR","de-DE","es-ES","ja-JP",
+      #"en-CA","en-AU","en-IN","fr-CA","hi-IN","ja-JP","pt-BR","es-US","es-MX", # Uncomment if you want Extra language for Alexa
+    ]
 input_text:
   last_message:
     max: 255
@@ -332,19 +334,26 @@ sensor:
           {%else%} mdi:weather-night{%endif%}
       period_of_day_volume:
         value_template: >
-          {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int/100}}
-          {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int/100}}
-          {%elif is_state('sensor.period_of_day','Sera') %}{{states('input_number.evening_volume')|int/100}}
-          {%else%}{{states('input_number.night_volume')|int/100}}{%endif%}
+          {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int}}
+          {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int}}
+          {%elif is_state('sensor.period_of_day','Sera') %}{{states('input_number.evening_volume')|int}}
+          {%else%}{{states('input_number.night_volume')|int}}{%endif%}
         icon_template: >
-          {%if is_state('sensor.period_of_day_volume','0.0')%}mdi:volume-off
-          {%elif is_state('sensor.period_of_day_volume','0.1')%}mdi:volume-low
-          {%elif is_state('sensor.period_of_day_volume','0.2')%}mdi:volume-low
-          {%elif is_state('sensor.period_of_day_volume','0.3')%}mdi:volume-low
-          {%elif is_state('sensor.period_of_day_volume','0.4')%}mdi:volume-medium
-          {%elif is_state('sensor.period_of_day_volume','0.5')%}mdi:volume-medium
-          {%elif is_state('sensor.period_of_day_volume','0.6')%}mdi:volume-medium
+          {%if is_state('sensor.period_of_day_volume','0')%}mdi:volume-off
+          {%elif is_state('sensor.period_of_day_volume','10')%}mdi:volume-low
+          {%elif is_state('sensor.period_of_day_volume','20')%}mdi:volume-low
+          {%elif is_state('sensor.period_of_day_volume','30')%}mdi:volume-low
+          {%elif is_state('sensor.period_of_day_volume','40')%}mdi:volume-medium
+          {%elif is_state('sensor.period_of_day_volume','50')%}mdi:volume-medium
+          {%elif is_state('sensor.period_of_day_volume','60')%}mdi:volume-medium
           {%else%}mdi:volume-high{%endif%}
+        attribute_templates:
+          vol: >
+            {%if is_state('sensor.period_of_day','Mattino') %}{{(states('input_number.morning_volume')|float)/100}}
+            {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{(states('input_number.afternoon_volume')|float)/100}}
+            {%elif is_state('sensor.period_of_day','Sera') %}{{(states('input_number.evening_volume')|float)/100}}
+            {%else%}{{(states('input_number.night_volume')|float)/100}}{%endif%}
+
 
 #######################################-#######################################
 ##                                  SCRIPT
@@ -355,53 +364,40 @@ script:
   #----------------------------------------------------------------------------------------------------#
   my_notify:
     alias: HUB
+    mode: queued
     sequence:
       - event: hub
-        event_data_template:
+        event_data:
           # --------------------------------------------- #
           # VARIABILI
           # --------------------------------------------- #
+          alexa: >-
+            {{alexa}}
           called_number: >-
             {{called_number}}
-          title: >-
-            {{title}}
+          caption: >-
+            {{caption}}
+          file: >-
+            {{file}}
+          google: >-
+            {{google}}
           link: >-
             {{link}}
-          volume: >-
-            {{volume}}
-          mute: >-
-            {{mute}}
+          location: >-
+            {{location}}
           no_show: >-
             {{no_show}}
           notify: >-
             {{notify}}
-          location: >-
-            {{location}}
-          url: >-
-            {{url}}
-          file: >-
-            {{file}}
-          caption: >-
-            {{caption}}
-          alexa_type: >-
-            {{alexa_type}}
-          alexa_method: >-
-            {{alexa_method}}
-          alexa_push: >-
-            {{alexa_push}}
-          media_player_alexa: >-
-            {{media_player_alexa}}
-          media_player_google: >-
-            {{media_player_google}}
-          language: >-
-            {{language}}
           priority: >-
             {{priority}}
-          message_tts: >-
-            {{message_tts}}
-          #-----------------------------------------------------------------------------#
+          title: >-
+            {{title}}
+          url: >-
+            {{url}}
+          #-------------------------------------------------------------------------------#
           # FILE DA INCLUDERE SE SI USANO LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
-          #-----------------------------------------------------------------------------#
+          #-------------------------------------------------------------------------------#
           message: !include hub_build_message.yml
 
 #######################################-#######################################
@@ -410,7 +406,7 @@ script:
 # https://www.callmebot.com/blog/telegram-call-from-home-assistant/
 shell_command:
   telegram_call: '/usr/bin/wget {{url}} -O /dev/null'
-  #telegram_call: '/usr/bin/curl {{url}} -O /dev/null'
+  #telegram_call: '/usr/bin/curl {{url}} -O /dev/null' # alternative
 
 #######################################-#######################################
 ##                                 AUTOMATION
@@ -419,8 +415,7 @@ automation:
 #1-----------------------------------------------------------------------------------------------------#
   # LAST MESSAGE - Ripete l'ultimo messaggio inviato
   #----------------------------------------------------------------------------------------------------#
-  - id: notification_repeat_last_message_hub
-    alias: notification_repeat_last_message_hub
+  - alias: Notification Repeat Last Message Hub
     initial_state: true
     mode: queued
     trigger:
@@ -433,12 +428,16 @@ automation:
       #     entity_id: input_boolean.priority_message
       - service: script.my_notify
         data:
-          call_no_annuncio: 1
           title: "Ultimo messaggio"
-          volume: >
-            {{states('input_number.intercom_message_volume')|int/100}}
           message: >
             {{states('input_text.last_message')}}
+          <<: &comune
+            call_no_annuncio: true
+            alexa:
+              volume: &intercom_volume >
+                {{states('input_number.intercom_message_volume')|int/100}}
+            google:
+              volume: *intercom_volume
       - service: input_boolean.turn_off
         entity_id:
           # - input_boolean.priority_message
@@ -446,22 +445,20 @@ automation:
 #2-----------------------------------------------------------------------------------------------------#
   # INTERFONO
   #----------------------------------------------------------------------------------------------------#
-  - id: send_intercom_message_hub
-    alias: send_intercom_message_hub
+  - alias: Send Intercom Message Hub
     initial_state: true
+    mode: queued
     trigger:
       - platform: state
         entity_id: input_text.intercom_message_hub
-    condition: "{{states('input_text.intercom_message_hub')|length>0}}"
+    condition: "{{states('input_text.intercom_message_hub')|trim != ''}}" 
     action:
       - service: script.my_notify
         data:
-          call_no_annuncio: 1
           title: "Interfono"
-          volume: >
-            {{states('input_number.intercom_message_volume')|int/100}}
           message: >
             {{states('input_text.intercom_message_hub')~' '}}
+          <<: *comune
       - service: input_text.set_value
         data:
           entity_id: input_text.intercom_message_hub
@@ -470,37 +467,20 @@ automation:
   # GUEST - Modalità ospite On e Off - Il TTS funziona anche se si è fuori casa.
   #         Utile anche se si volgiono escludere delle automazioni se ci sono ospiti in casa
   #----------------------------------------------------------------------------------------------------#
-  - id: guest_mode_hub
-    alias: guest_mode_hub
+  - alias: Guest Mode Hub
     initial_state: true
+    mode: queued
     trigger:
       platform: state
       entity_id: input_boolean.guest_mode
     action:
       - service: script.my_notify
         data:
-          call_no_annuncio: 1
-          call_modo_ospite: 1
           title: >
             Modalità Ospite - {{trigger.to_state.state|upper}}
-#4-----------------------------------------------------------------------------------------------------#
-  # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
-  #----------------------------------------------------------------------------------------------------#
-  - id: create_notification_automation_group_hub
-    alias: create_notification_automation_group_hub
-    initial_state: true
-    trigger:
-      - platform: homeassistant
-        event: start
-      - platform: state
-        entity_id: automation.create_notification_automation_group_hub
-        to: 'on'
-    action:
-      - delay: 00:00:10
-      - service: group.set
-        data:
-          object_id: "automations_notification_hub"
-          name: "Automazioni Centro Notifiche"
-          entities: >
-            {%for item in states.automation if ((item.attributes.id|lower).endswith('hub'))%}
-            {{-item.entity_id}}{%if not loop.last%},{%endif-%}{%endfor%}
+          call_no_annuncio: true
+          call_modo_ospite: true
+          alexa:
+            mode: true
+          google:
+            mode: true

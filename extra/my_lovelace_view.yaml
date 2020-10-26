@@ -1,17 +1,9 @@
 title: Centro Notifiche
 path: centro_notifiche
-icon: mdi:account-tie
+icon: mdi:account-tie-voice
 # panel: true
 cards:
-  - !include cards/card_menu_centro_notifiche.yaml
-
-  # CARD Gruppo Automazioni
-  - type: entities
-    title: Automazioni
-    show_header_toggle: false
-    entities:
-      - type: custom:fold-entity-row
-        head: group.automations_notification_hub
+  - !include ../cards/card_menu_centro_notifiche.yaml
 
   # CARD Centro Notifiche
   - type: entities
@@ -77,6 +69,9 @@ cards:
     show_header_toggle: false
     state_color: true
     entities:
+      - entity: sensor.centro_notifiche
+        name: Centro Notifiche
+        icon: mdi:alert
       - entity: input_text.personal_assistant_name
       - entity: input_select.language
       - entity: input_select.text_notify
@@ -110,6 +105,34 @@ cards:
           - entity: input_number.night_volume
           - entity: input_number.default_restore_volume
 
+  # CARD Alexa
+  - type: entities
+    title: Alexa
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - type: section
+        label: ''
+      - entity: input_boolean.alexa_switch
+      - type: custom:fold-entity-row
+        # padding: 0
+        head: #input_boolean.alexa_ssml
+          type: section
+          label: SSML
+        entities:
+          - entity: input_boolean.alexa_ssml
+          - entity: input_select.alexa_voice
+          # - entity: input_select.alexa_language
+          - entity: input_number.alexa_prosody_rate
+          - entity: input_number.alexa_prosody_pitch
+          - entity: input_number.alexa_prosody_volume
+          - entity: script.ssml_reset
+      - entity: input_select.notification_media_player_alexa
+      - entity: input_select.default_alexa_type
+      - entity: input_select.default_alexa_method
+      - entity: group.media_player_alexa
+      - entity: sensor.media_player_alexa
+
   # CARD Google
   - type: entities
     title: Google
@@ -121,19 +144,16 @@ cards:
       - entity: input_boolean.google_switch
       - entity: input_boolean.tts_google_mode
       - entity: input_select.notification_media_player_google
+      - entity: group.media_player_google
+      - entity: sensor.media_player_google
 
-  # CARD Alexa
+  # CARD Gruppo Automazioni
   - type: entities
-    title: Alexa
+    title: Automazioni
     show_header_toggle: false
-    state_color: true
     entities:
-      - type: section
-        label: ''
-      - entity: input_boolean.alexa_switch
-      - entity: input_select.notification_media_player_alexa
-      - entity: input_select.default_alexa_type
-      - entity: input_select.default_alexa_method
+      - type: custom:fold-entity-row
+        head: group.automations_notification_hub
 
   # CARD VOIP
   - type: entities
@@ -150,13 +170,3 @@ cards:
         entities:
           - entity: input_text.phone_called_number
       - entity: input_select.phone_notify
-
-  # CARD Ariela
-  - type: entities
-    title: Ariela
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - type: section
-        label: ''
-      - entity: input_boolean.ariela_switch

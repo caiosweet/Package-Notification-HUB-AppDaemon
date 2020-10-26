@@ -4,6 +4,7 @@ show_header_toggle: false
 entities:
   - type: section
     label: Monitor
+  - entity: sensor.centro_notifiche
   - entity: group.location_tracker
   - entity: sensor.period_of_day
   - entity: sensor.period_of_day_volume

@@ -1,0 +1,162 @@
+#######################################-#######################################
+##                                 CUSTOMIZE                                   
+#######################################-#######################################
+homeassistant:
+  customize:
+  ## NODE ANCHORS
+    package.node_anchors:
+      customize: &customize
+        package: Centro Notifiche
+        version: Extra 3.0.0
+        author: Caio & Gianpi
+        site: www.hassiohelp.eu
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+  ## AUTOMATION
+    automation.auto_volume_hub:
+      <<: *customize
+      friendly_name: Volume Automatico Hub
+    automation.create_notification_automation_group_hub:
+      <<: *customize
+      friendly_name: Crea Gruppo Automazioni HUB
+ 
+  ## BINARY SENSOR
+    binary_sensor.people_home:
+      <<: *customize
+      friendly_name: Persone in casa # People at Home
+
+  ## GROUP
+    group.media_player_alexa:
+      <<: *customize
+      friendly_name: Gruppo Alexa
+      icon: mdi:speaker-multiple
+
+    group.media_player_google:
+      <<: *customize
+      friendly_name: Gruppo Google
+      icon: mdi:speaker-multiple
+#######################################-#######################################
+##                                 AUTOMATION
+#######################################-#######################################
+automation:
+  #----------------------------------------------------------------------------------------------------#
+  # Volume Automatico - Regolazione del volume dei media player, su base del sensore period_of_day_volume
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Auto Volume Hub
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.period_of_day_volume
+      - platform: homeassistant
+        event: start
+    action:
+      - variables:
+          group_alexa: "{{state_attr('group.media_player_alexa', 'entity_id')|join(', ')}}"
+          group_google: "{{state_attr('group.media_player_google', 'entity_id')|join(', ')}}"
+          list_alexa: "{{ group_alexa if states.input_boolean.alexa_switch else 'none'}}" # return string!!
+          list_google: "{{group_google if states.input_boolean.google_switch else 'none'}}" 
+          all_entity: "{{(list_alexa, list_google)|reject('sameas','none')|join(', ')}}"
+          volume: "{{states('sensor.period_of_day_volume')|float}}"
+      - choose:
+        - conditions: "{{list_alexa is not none}}"
+          sequence:
+            - service: notify.alexa_media
+              data:
+                data:
+                  type: tts
+                target: "{{list_alexa}}"
+                message: >
+                  <speak>
+                  <break time="4s"/>
+                  <prosody volume="silent">volume</prosody>
+                  </speak>
+            - delay: "00:00:02"
+      - choose:
+        - conditions: "{{list_alexa is not none or list_google is not none}}"
+          sequence:
+            - service: media_player.volume_set
+              data:
+                entity_id: >
+                  {{all_entity}}
+                volume_level: "{{(volume|round(2))/100}}"
+            - service: input_number.set_value
+              data:
+                entity_id: 
+                  - input_number.intercom_message_volume
+                  - input_number.default_restore_volume
+                value: "{{volume}}"
+
+  #----------------------------------------------------------------------------------------------------#
+  # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Create Notification Automation Group Hub
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: automation.create_notification_automation_group_hub
+        to: 'on'
+    action:
+      # Crea un Gruppo location_tracker da entity Person #TODO
+      # - service: group.set
+      #   data:
+      #     object_id: location_tracker
+      #     entities: >-
+      #       {{states.person|join(',','entity_id')}}
+      # Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
+      - service: group.set
+        data:
+          object_id: "automations_notification_hub"
+          entities: >
+            {%for item in states.automation if ((item.attributes.id|lower).endswith('hub'))
+            or ((item.attributes.friendly_name|lower).endswith('hub')) %}
+            {{-item.entity_id}}{%if not loop.last%},{%endif-%}{%endfor%}
+
+  # ATTENZIONE! 
+  # Se le automazioni sono create manualmente con id, la loro eliminazione va fatta manualmente dalla UI 
+  # Interfaccia grafica --> impostazioni/entità cerca le entità per "ripristinato" o "non disponibile".
+  # O in Stati metti "automation." in Filter entities e "unavailable" Filter States.
+
+#######################################-#######################################
+##                               BINARY SENSOR
+#######################################-#######################################
+binary_sensor:
+  - platform: template
+    sensors:
+      people_home:
+        device_class: presence
+        value_template: "{{is_state('group.location_tracker','home')}}"
+        icon_template: >-
+          {% set people = expand('group.location_tracker')|selectattr('state','eq','home')
+            |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0) %}
+          {% set icon = {0 :'mdi:account-off',
+                         1 :'mdi:account',
+                         2 :'mdi:account-multiple',
+                         3 :'mdi:account-multiple-check'} %}
+          {{icon[people] if people in icon else 'mdi:account-group'}}
+        attribute_templates:
+          number: >-
+            {% if is_state('group.location_tracker','home')%}
+            {{expand('group.location_tracker')|selectattr('state','eq','home')
+            |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0)}}
+            {%endif%}
+          name: >-
+            {% if is_state('group.location_tracker','home')%}
+            {{expand('group.location_tracker')|selectattr('state','eq','home')
+            |join(', ',attribute='name')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
+            {%endif%}
+
+#######################################-#######################################
+##                                   GROUP
+#######################################-#######################################
+group:
+  media_player_alexa:
+    entities: !secret media_player_alexa
+
+  media_player_google:
+    entities: !secret media_player_google
