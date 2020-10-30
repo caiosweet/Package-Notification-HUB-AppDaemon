@@ -1,39 +1,37 @@
 #######################################-#######################################
-##                                 CUSTOMIZE                                   
+##                                 CUSTOMIZE
 #######################################-#######################################
 homeassistant:
   customize:
-  ## NODE ANCHORS
+    ## NODE ANCHORS
     package.node_anchors:
       customize: &customize
-        package: Centro Notifiche
-        version: Extra 3.0.0
+        package: Centro Notifiche 🔔
+        site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        site: www.hassiohelp.eu
+        version: Extra 3.0.0
+
       expose: &expose
         <<: *customize
         haaska_hidden: false
         homebridge_hidden: false
 
-  ## AUTOMATION
+    ## AUTOMATION
     automation.auto_volume_hub:
       <<: *customize
       friendly_name: Volume Automatico Hub
     automation.create_notification_automation_group_hub:
       <<: *customize
       friendly_name: Crea Gruppo Automazioni HUB
- 
-  ## BINARY SENSOR
+    ## BINARY SENSOR
     binary_sensor.people_home:
       <<: *customize
       friendly_name: Persone in casa # People at Home
-
-  ## GROUP
+    ## GROUP
     group.media_player_alexa:
       <<: *customize
       friendly_name: Gruppo Alexa
       icon: mdi:speaker-multiple
-
     group.media_player_google:
       <<: *customize
       friendly_name: Gruppo Google
@@ -58,37 +56,37 @@ automation:
           group_alexa: "{{state_attr('group.media_player_alexa', 'entity_id')|join(', ')}}"
           group_google: "{{state_attr('group.media_player_google', 'entity_id')|join(', ')}}"
           list_alexa: "{{ group_alexa if states.input_boolean.alexa_switch else 'none'}}" # return string!!
-          list_google: "{{group_google if states.input_boolean.google_switch else 'none'}}" 
+          list_google: "{{group_google if states.input_boolean.google_switch else 'none'}}"
           all_entity: "{{(list_alexa, list_google)|reject('sameas','none')|join(', ')}}"
           volume: "{{states('sensor.period_of_day_volume')|float}}"
       - choose:
-        - conditions: "{{list_alexa is not none}}"
-          sequence:
-            - service: notify.alexa_media
-              data:
+          - conditions: "{{list_alexa is not none}}"
+            sequence:
+              - service: notify.alexa_media
                 data:
-                  type: tts
-                target: "{{list_alexa}}"
-                message: >
-                  <speak>
-                  <break time="4s"/>
-                  <prosody volume="silent">volume</prosody>
-                  </speak>
-            - delay: "00:00:02"
+                  data:
+                    type: tts
+                  target: "{{list_alexa}}"
+                  message: >
+                    <speak>
+                    <break time="4s"/>
+                    <prosody volume="silent">volume</prosody>
+                    </speak>
+              - delay: "00:00:02"
       - choose:
-        - conditions: "{{list_alexa is not none or list_google is not none}}"
-          sequence:
-            - service: media_player.volume_set
-              data:
-                entity_id: >
-                  {{all_entity}}
-                volume_level: "{{(volume|round(2))/100}}"
-            - service: input_number.set_value
-              data:
-                entity_id: 
-                  - input_number.intercom_message_volume
-                  - input_number.default_restore_volume
-                value: "{{volume}}"
+          - conditions: "{{list_alexa is not none or list_google is not none}}"
+            sequence:
+              - service: media_player.volume_set
+                data:
+                  entity_id: >
+                    {{all_entity}}
+                  volume_level: "{{(volume|round(2))/100}}"
+              - service: input_number.set_value
+                data:
+                  entity_id:
+                    - input_number.intercom_message_volume
+                    - input_number.default_restore_volume
+                  value: "{{volume}}"
 
   #----------------------------------------------------------------------------------------------------#
   # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
@@ -100,7 +98,7 @@ automation:
         event: start
       - platform: state
         entity_id: automation.create_notification_automation_group_hub
-        to: 'on'
+        to: "on"
     action:
       # Crea un Gruppo location_tracker da entity Person #TODO
       # - service: group.set
@@ -117,8 +115,8 @@ automation:
             or ((item.attributes.friendly_name|lower).endswith('hub')) %}
             {{-item.entity_id}}{%if not loop.last%},{%endif-%}{%endfor%}
 
-  # ATTENZIONE! 
-  # Se le automazioni sono create manualmente con id, la loro eliminazione va fatta manualmente dalla UI 
+  # ATTENZIONE!
+  # Se le automazioni sono create manualmente con id, la loro eliminazione va fatta manualmente dalla UI
   # Interfaccia grafica --> impostazioni/entità cerca le entità per "ripristinato" o "non disponibile".
   # O in Stati metti "automation." in Filter entities e "unavailable" Filter States.
 

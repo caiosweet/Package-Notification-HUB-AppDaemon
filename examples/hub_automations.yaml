@@ -71,10 +71,10 @@ automation:
                     google: 
                       media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
                       # media_content_type: sound
-      default:
-        - service: "notify.{{notification_service}}"
-          data:
-            message: " DEFAULT: {{icon}} {{title}}"
+      # default:
+      #   - service: "notify.{{notification_service}}"
+      #     data:
+      #       message: " DEFAULT: {{icon}} {{title}}"
 
       # default:
       #   - service: script.my_notify
