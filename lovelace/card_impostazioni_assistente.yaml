@@ -5,6 +5,7 @@ entities:
   - entity: input_text.personal_assistant_name
   - entity: input_select.language
   - entity: input_select.text_notify
+  - entity: input_boolean.html_mode
   - entity: input_number.tts_wait_time
   - type: section
     label: FERIALI - Orario modo silenzioso

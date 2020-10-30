@@ -25,7 +25,7 @@
 [![Chat on Telegram](https://img.shields.io/badge/Chat-Telegram-blue?logo=Telegram)](https://t.me/HassioHelp)
 [![Chat on Facebook](https://img.shields.io/badge/Group-Facebook-blue?logo=Facebook)](https://www.facebook.com/groups/2062381507393179/)
 [![Forum](https://img.shields.io/badge/HassioHelp-Forum-blue?logo=Wordpress)](https://forum.hassiohelp.eu/showthread.php?tid=481&pid=1758#pid1758)
-
+[![Don't buy me a coffee](https://img.shields.io/static/v1.svg?label=Don't%20buy%20me%20a%20coffee&message=🔔&color=black&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=6f4e37)](https://paypal.me/hassiohelp)
 
 # Requirements
 
@@ -55,7 +55,7 @@
 <br><br>
 </p>
 
-# [Standard Lovelace Cards](./lovelace/)
+# [Standard Lovelace View and Cards](./lovelace/)
 <p align="center">
 <img src="./extra/preview/CN_standard_cards.png">
 <br><br>

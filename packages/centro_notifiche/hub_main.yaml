@@ -1,28 +1,29 @@
 ### INFO
-  #   @author         :   Caio & Gianpi- www.hassiohelp.eu
-  #   @date           :   Started 01/11/2019 - Updated 11/10/2020
-  #   @package        :   Notification HUB - Centro Notifiche
-  #   @description    :   Package Appdaemon Notifier Center for Home Assistant
-  ############################################################################
+#   @author         :   Caio & Gianpi - hassiohelp.eu
+#   @date           :   Started 01/11/2019 - Updated 31/10/2020
+#   @package        :   Notification HUB - Centro Notifiche
+#   @description    :   Package Appdaemon Notifier Center for Home Assistant
+############################################################################
 
 #######################################-#######################################
-##                                 CUSTOMIZE                                   
+##                                 CUSTOMIZE
 #######################################-#######################################
 homeassistant:
   customize:
-  ## NODE ANCHORS
+    ## NODE ANCHORS
     package.node_anchors:
       customize: &customize
-        package: Centro Notifiche
-        version: Main 3.0.0
+        package: Centro Notifiche 🔔
+        site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        site: www.hassiohelp.eu
+        version: Main 3.0.0
+
       expose: &expose
         <<: *customize
         haaska_hidden: false
         homebridge_hidden: false
 
-  ## AUTOMATION
+    ## AUTOMATION
     automation.guest_mode_hub:
       <<: *customize
       friendly_name: Modo Ospite
@@ -33,11 +34,11 @@ homeassistant:
       <<: *customize
       friendly_name: Invia Messaggio Con Iterfono
       icon: mdi:bullhorn
-  ## BINARY SENSOR
+    ## BINARY SENSOR
     binary_sensor.dnd:
       <<: *customize
       friendly_name: Modo Silenzioso
-  ## GROUP
+    ## GROUP
     group.automations_notification_hub:
       <<: *customize
       friendly_name: Automazioni HUB
@@ -46,7 +47,7 @@ homeassistant:
       <<: *customize
       friendly_name: Dispositivi tracciati
       icon: mdi:target-account
-  ## INPUT BOOLEAN
+    ## INPUT BOOLEAN
     input_boolean.guest_mode:
       <<: *customize
       friendly_name: Modo Ospite
@@ -55,6 +56,10 @@ homeassistant:
       <<: *customize
       friendly_name: Modo Vacanza
       icon: mdi:beach
+    input_boolean.html_mode:
+      <<: *customize
+      friendly_name: "Modo Md/Html"
+      icon: mdi:language-html5 #language-markdown
     input_boolean.last_message:
       <<: *customize
       friendly_name: Ultimo Messaggio
@@ -79,7 +84,7 @@ homeassistant:
       <<: *customize
       friendly_name: Notifiche Testo
       icon: mdi:cellphone-message
-  ## INPUT DATETIME
+    ## INPUT DATETIME
     input_datetime.start_morning:
       <<: *customize
       friendly_name: Mattina
@@ -96,7 +101,7 @@ homeassistant:
       <<: *customize
       friendly_name: Notte
       icon: mdi:timetable
-  ## INPUT NUMBER
+    ## INPUT NUMBER
     input_number.morning_volume:
       <<: *customize
       friendly_name: Vol Mattina
@@ -125,8 +130,8 @@ homeassistant:
       <<: *customize
       friendly_name: Regolazione attesa TTS
       icon: mdi:av-timer
-      unit_of_measurement: 'sec'
-  ## INPUT SELECT
+      unit_of_measurement: "sec"
+    ## INPUT SELECT
     input_select.language:
       <<: *customize
       friendly_name: Lingua
@@ -139,7 +144,7 @@ homeassistant:
       <<: *customize
       friendly_name: Notifica Testo
       icon: mdi:message-cog
-  ## INPUT TEXT
+    ## INPUT TEXT
     input_text.phone_called_number:
       <<: *customize
       friendly_name: N. Tel / @user
@@ -155,11 +160,15 @@ homeassistant:
     input_text.personal_assistant_name:
       <<: *customize
       friendly_name: Nome Assistente
-  ## SCRIPT
+    ## SCRIPT
     script.my_notify:
       <<: *customize
       friendly_name: HUB
-  ## SENSOR
+    ## SENSOR
+    sensor.centro_notifiche:
+      <<: *customize
+      friendly_name: Centro Notifiche
+      icon: mdi:account-tie-voice-outline
     sensor.period_of_day:
       <<: *customize
       friendly_name: Periodo del Giorno
@@ -167,9 +176,9 @@ homeassistant:
       <<: *customize
       friendly_name: Volume Notifica
 
-############################################################################
-##                             CUSTOMIZE GLOB                              
-############################################################################
+  ############################################################################
+  ##                             CUSTOMIZE GLOB
+  ############################################################################
   customize_glob:
     automation.*_hub:
       <<: *customize
@@ -184,10 +193,10 @@ homeassistant:
       icon: mdi:clock-end
     input_number.*_volume:
       <<: *customize
-      unit_of_measurement: '%'
+      unit_of_measurement: "%"
     sensor.*_volume:
       <<: *customize
-      unit_of_measurement: '%'
+      unit_of_measurement: "%"
 
 ###############################################################################
 ## PACKAGE
@@ -206,6 +215,7 @@ group:
 input_boolean:
   guest_mode:
   holidays:
+  html_mode:
   last_message:
   phone_notifications:
   priority_message:
@@ -270,18 +280,32 @@ input_select:
   text_notify:
     options: !secret text_notify_hub
   phone_notify:
-    options: ["Telegram Call","Voip Call"]
-  language:
+    options: ["Telegram Call", "Voip Call"]
+  language: # Uncomment if you want Extra language for Alexa
     options: [
-      "it-IT","en-GB","en-US","fr-FR","de-DE","es-ES","ja-JP",
-      #"en-CA","en-AU","en-IN","fr-CA","hi-IN","ja-JP","pt-BR","es-US","es-MX", # Uncomment if you want Extra language for Alexa
-    ]
+        "it-IT",
+        "en-GB",
+        "en-US",
+        "fr-FR",
+        "de-DE",
+        "es-ES",
+        "ja-JP",
+        # "en-CA",
+        # "en-AU",
+        # "en-IN",
+        # "fr-CA",
+        # "hi-IN",
+        # "ja-JP",
+        # "pt-BR",
+        # "es-US",
+        # "es-MX", 
+      ]
 input_text:
   last_message:
     max: 255
   intercom_message_hub:
     max: 255
-    initial: ''
+    initial: ""
   personal_assistant_name:
     max: 255
   phone_called_number:
@@ -295,7 +319,6 @@ binary_sensor:
     sensors:
       dnd:
         value_template: >
-          {% set x = states('sensor.time') %}
           {%set speech=states('input_boolean.speech_notifications')%}
           {%set priority=states('input_boolean.priority_message')%}
           {%set t=now().time()%}
@@ -318,7 +341,6 @@ sensor:
     sensors:
       period_of_day:
         value_template: >
-          {% set x = states('sensor.time') %}
           {%set nt=now().time()%}
           {%set nt=(nt.hour*60+nt.minute)*60+nt.second%}
           {%if state_attr('input_datetime.start_morning','timestamp')<=nt<state_attr('input_datetime.start_afternoon','timestamp')%}Mattino
@@ -354,13 +376,12 @@ sensor:
             {%elif is_state('sensor.period_of_day','Sera') %}{{(states('input_number.evening_volume')|float)/100}}
             {%else%}{{(states('input_number.night_volume')|float)/100}}{%endif%}
 
-
 #######################################-#######################################
 ##                                  SCRIPT
 #######################################-#######################################
 script:
   #----------------------------------------------------------------------------------------------------#
-  # SCRIPT PRINCIPALE - Variabili da passare all'evento HUB + file template se incluso
+  # MAIN SCRIPT - Variabili da passare all'evento HUB + file template se incluso
   #----------------------------------------------------------------------------------------------------#
   my_notify:
     alias: HUB
@@ -369,7 +390,7 @@ script:
       - event: hub
         event_data:
           # --------------------------------------------- #
-          # VARIABILI
+          # VARIABLES
           # --------------------------------------------- #
           alexa: >-
             {{alexa}}
@@ -381,6 +402,8 @@ script:
             {{file}}
           google: >-
             {{google}}
+          html: >-
+            {{html}}
           link: >-
             {{link}}
           location: >-
@@ -405,14 +428,14 @@ script:
 #######################################-#######################################
 # https://www.callmebot.com/blog/telegram-call-from-home-assistant/
 shell_command:
-  telegram_call: '/usr/bin/wget {{url}} -O /dev/null'
+  telegram_call: "/usr/bin/wget {{url}} -O /dev/null"
   #telegram_call: '/usr/bin/curl {{url}} -O /dev/null' # alternative
 
 #######################################-#######################################
 ##                                 AUTOMATION
 #######################################-#######################################
 automation:
-#1-----------------------------------------------------------------------------------------------------#
+  #1-----------------------------------------------------------------------------------------------------#
   # LAST MESSAGE - Ripete l'ultimo messaggio inviato
   #----------------------------------------------------------------------------------------------------#
   - alias: Notification Repeat Last Message Hub
@@ -421,7 +444,7 @@ automation:
     trigger:
       - platform: state
         entity_id: input_boolean.last_message
-        to: 'on'
+        to: "on"
     action:
       # - service: input_boolean.turn_on
       #   data:
@@ -431,7 +454,7 @@ automation:
           title: "Ultimo messaggio"
           message: >
             {{states('input_text.last_message')}}
-          <<: &comune
+          <<: &common
             call_no_annuncio: true
             alexa:
               volume: &intercom_volume >
@@ -442,8 +465,8 @@ automation:
         entity_id:
           # - input_boolean.priority_message
           - input_boolean.last_message
-#2-----------------------------------------------------------------------------------------------------#
-  # INTERFONO
+  #2-----------------------------------------------------------------------------------------------------#
+  # INTERCOM
   #----------------------------------------------------------------------------------------------------#
   - alias: Send Intercom Message Hub
     initial_state: true
@@ -451,19 +474,19 @@ automation:
     trigger:
       - platform: state
         entity_id: input_text.intercom_message_hub
-    condition: "{{states('input_text.intercom_message_hub')|trim != ''}}" 
+    condition: "{{states('input_text.intercom_message_hub')|trim != ''}}"
     action:
       - service: script.my_notify
         data:
           title: "Interfono"
           message: >
             {{states('input_text.intercom_message_hub')~' '}}
-          <<: *comune
+          <<: *common
       - service: input_text.set_value
         data:
           entity_id: input_text.intercom_message_hub
-          value: ''
-#3-----------------------------------------------------------------------------------------------------#
+          value: ""
+  #3-----------------------------------------------------------------------------------------------------#
   # GUEST - Modalità ospite On e Off - Il TTS funziona anche se si è fuori casa.
   #         Utile anche se si volgiono escludere delle automazioni se ci sono ospiti in casa
   #----------------------------------------------------------------------------------------------------#

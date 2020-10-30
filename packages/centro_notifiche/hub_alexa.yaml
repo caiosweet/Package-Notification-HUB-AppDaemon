@@ -1,22 +1,22 @@
 #######################################-#######################################
-##                                 CUSTOMIZE                                   
+##                                 CUSTOMIZE
 #######################################-#######################################
 homeassistant:
   customize:
-  ## NODE ANCHORS
+    ## NODE ANCHORS
     package.node_anchors:
       customize: &customize
-        package: Centro Notifiche
-        version: Alexa 3.0.0
+        package: Centro Notifiche 🔔
+        site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        site: www.hassiohelp.eu
+        version: Alexa 3.0.0
 
       expose: &expose
         <<: *customize
         haaska_hidden: false
         homebridge_hidden: false
 
-  ## INPUT 
+    ## INPUT
     input_boolean.alexa_switch:
       <<: *customize
       friendly_name: Alexa
@@ -37,7 +37,7 @@ homeassistant:
       <<: *customize
       friendly_name: Volume
       icon: mdi:alpha-v
-      unit_of_measurement: 'dB'
+      unit_of_measurement: "dB"
     input_select.alexa_voice:
       <<: *customize
       friendly_name: Amazon Polly voice
@@ -58,12 +58,12 @@ homeassistant:
       <<: *customize
       friendly_name: Tipo Predefinito Alexa
       icon: mdi:bugle
-  ## SCRIPT
+    ## SCRIPT
     script.ssml_reset:
       <<: *customize
       friendly_name: Ripristina SSML
       icon: mdi:restore
-  ## SENSOR
+    ## SENSOR
     sensor.last_alexa:
       <<: *customize
       friendly_name: Last Alexa
@@ -91,7 +91,7 @@ input_number:
     min: -50
     max: 4.08
     step: 0.01
-  
+
 input_select:
   notification_media_player_alexa:
     options: !secret notification_media_player_alexa_hub
@@ -106,21 +106,48 @@ input_select:
       - Push
       - Dropin
   alexa_voice:
-    options: [
-      'Alexa', 'Carla', 'Giorgio', 'Bianca',
-      'Ivy', 'Joanna', 'Joey', 'Justin', 'Kendra', 'Kimberly', 'Matthew', 'Salli',
-      'Nicole', 'Russell',
-      'Amy', 'Brian', 'Emma',
-      'Aditi', 'Raveena',
-      'Chantal',
-      'Celine', 'Lea', 'Mathieu',
-      'Hans', 'Marlene', 'Vicki',
-      'Aditi',
-      'Mizuki', 'Takumi',
-      'Vitoria', 'Camila', 'Ricardo',
-      'Penelope', 'Lupe', 'Miguel',
-      'Conchita', 'Enrique', 'Lucia',
-      'Mia']
+    options:
+      [
+        "Alexa",
+        "Carla",
+        "Giorgio",
+        "Bianca",
+        "Ivy",
+        "Joanna",
+        "Joey",
+        "Justin",
+        "Kendra",
+        "Kimberly",
+        "Matthew",
+        "Salli",
+        "Nicole",
+        "Russell",
+        "Amy",
+        "Brian",
+        "Emma",
+        "Aditi",
+        "Raveena",
+        "Chantal",
+        "Celine",
+        "Lea",
+        "Mathieu",
+        "Hans",
+        "Marlene",
+        "Vicki",
+        "Aditi",
+        "Mizuki",
+        "Takumi",
+        "Vitoria",
+        "Camila",
+        "Ricardo",
+        "Penelope",
+        "Lupe",
+        "Miguel",
+        "Conchita",
+        "Enrique",
+        "Lucia",
+        "Mia",
+      ]
 
   # alexa_language:
   #   options: [
