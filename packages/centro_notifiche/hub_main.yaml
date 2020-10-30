@@ -281,7 +281,7 @@ input_select:
     options: !secret text_notify_hub
   phone_notify:
     options: ["Telegram Call", "Voip Call"]
-  language:
+  language: # Uncomment if you want Extra language for Alexa
     options: [
         "it-IT",
         "en-GB",
@@ -290,15 +290,15 @@ input_select:
         "de-DE",
         "es-ES",
         "ja-JP",
-        "en-CA",
-        "en-AU",
-        "en-IN",
-        "fr-CA",
-        "hi-IN",
-        "ja-JP",
-        "pt-BR",
-        "es-US",
-        "es-MX", # Uncomment if you want Extra language for Alexa
+        # "en-CA",
+        # "en-AU",
+        # "en-IN",
+        # "fr-CA",
+        # "hi-IN",
+        # "ja-JP",
+        # "pt-BR",
+        # "es-US",
+        # "es-MX", 
       ]
 input_text:
   last_message:
