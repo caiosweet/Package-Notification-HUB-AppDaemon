@@ -1,6 +1,6 @@
 ### INFO
 #   @author         :   Caio & Gianpi - hassiohelp.eu
-#   @date           :   Started 01/11/2019 - Updated 31/10/2020
+#   @date           :   Started 01/11/2019 - Updated 07/11/2020
 #   @package        :   Notification HUB - Centro Notifiche
 #   @description    :   Package Appdaemon Notifier Center for Home Assistant
 ############################################################################
@@ -58,7 +58,7 @@ homeassistant:
       icon: mdi:beach
     input_boolean.html_mode:
       <<: *customize
-      friendly_name: "Modo Md/Html"
+      friendly_name: "Modo Markdown/Html"
       icon: mdi:language-html5 #language-markdown
     input_boolean.last_message:
       <<: *customize
@@ -168,7 +168,7 @@ homeassistant:
     sensor.centro_notifiche:
       <<: *customize
       friendly_name: Centro Notifiche
-      icon: mdi:account-tie-voice-outline
+      icon: mdi:account-tie-outline
     sensor.period_of_day:
       <<: *customize
       friendly_name: Periodo del Giorno
@@ -282,24 +282,17 @@ input_select:
   phone_notify:
     options: ["Telegram Call", "Voip Call"]
   language: # Uncomment if you want Extra language for Alexa
-    options: [
-        "it-IT",
-        "en-GB",
-        "en-US",
-        "fr-FR",
-        "de-DE",
-        "es-ES",
-        "ja-JP",
-        # "en-CA",
-        # "en-AU",
-        # "en-IN",
-        # "fr-CA",
-        # "hi-IN",
-        # "ja-JP",
-        # "pt-BR",
-        # "es-US",
-        # "es-MX", 
-      ]
+    options:
+      ["it-IT", "en-GB", "en-US", "fr-FR", "de-DE", "es-ES", "ja-JP"]
+      # "en-CA",
+      # "en-AU",
+      # "en-IN",
+      # "fr-CA",
+      # "hi-IN",
+      # "ja-JP",
+      # "pt-BR",
+      # "es-US",
+      # "es-MX",
 input_text:
   last_message:
     max: 255
@@ -310,6 +303,7 @@ input_text:
     max: 255
   phone_called_number:
     max: 30
+    mode: password
 
 #######################################-#######################################
 ##                               BINARY SENSOR
@@ -381,7 +375,7 @@ sensor:
 #######################################-#######################################
 script:
   #----------------------------------------------------------------------------------------------------#
-  # MAIN SCRIPT - Variabili da passare all'evento HUB + file template se incluso
+  # MAIN SCRIPT - Variables to be passed to the HUB + template file event if included
   #----------------------------------------------------------------------------------------------------#
   my_notify:
     alias: HUB
@@ -419,7 +413,7 @@ script:
           url: >-
             {{url}}
           #-------------------------------------------------------------------------------#
-          # FILE DA INCLUDERE SE SI USANO LE MACRO - NOTA: NON MODIFICARE L'ESTENSIONE .yml
+          # FILE TO BE INCLUDED IF MACROS ARE USED - NOTE: DO NOT MODIFY THE .yml EXTENSION
           #-------------------------------------------------------------------------------#
           message: !include hub_build_message.yml
 
@@ -435,8 +429,8 @@ shell_command:
 ##                                 AUTOMATION
 #######################################-#######################################
 automation:
-  #1-----------------------------------------------------------------------------------------------------#
-  # LAST MESSAGE - Ripete l'ultimo messaggio inviato
+  #----------------------------------------------------------------------------------------------------#
+  # LAST MESSAGE - Repeat the last text sent (Excluding tts messages)
   #----------------------------------------------------------------------------------------------------#
   - alias: Notification Repeat Last Message Hub
     initial_state: true
@@ -465,8 +459,8 @@ automation:
         entity_id:
           # - input_boolean.priority_message
           - input_boolean.last_message
-  #2-----------------------------------------------------------------------------------------------------#
-  # INTERCOM
+  #----------------------------------------------------------------------------------------------------#
+  # INTERCOM - To send messages from the GUI (graphical user interface)
   #----------------------------------------------------------------------------------------------------#
   - alias: Send Intercom Message Hub
     initial_state: true
@@ -486,9 +480,9 @@ automation:
         data:
           entity_id: input_text.intercom_message_hub
           value: ""
-  #3-----------------------------------------------------------------------------------------------------#
-  # GUEST - Modalità ospite On e Off - Il TTS funziona anche se si è fuori casa.
-  #         Utile anche se si volgiono escludere delle automazioni se ci sono ospiti in casa
+  #----------------------------------------------------------------------------------------------------#
+  # GUEST - On and Off guest mode - The TTS works even if you are away from home.
+  #         Useful even if you want to exclude automations if there are guests in the house
   #----------------------------------------------------------------------------------------------------#
   - alias: Guest Mode Hub
     initial_state: true
@@ -503,7 +497,5 @@ automation:
             Modalità Ospite - {{trigger.to_state.state|upper}}
           call_no_annuncio: true
           call_modo_ospite: true
-          alexa:
-            mode: true
-          google:
-            mode: true
+          alexa: true
+          google: true
