@@ -9,7 +9,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Extra 3.0.0
+        version: Extra 3.0.2
 
       expose: &expose
         <<: *customize

@@ -16,7 +16,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Main 3.0.0
+        version: Main 3.0.2
 
       expose: &expose
         <<: *customize
