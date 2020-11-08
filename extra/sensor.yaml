@@ -27,7 +27,6 @@ sensor:
       day_of_week:
         friendly_name: 'Giorno della settimana'
         value_template: >
-          {% set x = states('sensor.date') %}
           {{ ['lun','mar','mer','gio','ven','sab','dom'][now().weekday()] }}
         icon_template: >-
           mdi:{{['emoticon-dead-outline', 'emoticon-angry-outline', 'emoticon-sad-outline','emoticon-neutral-outline','emoticon-cool-outline','emoticon-excited-outline','emoticon-happy-outline'][now().weekday()] }}
@@ -36,7 +35,6 @@ sensor:
       tomorrow_day_of_week:
         friendly_name: 'Domani'
         value_template: >
-          {% set x = states('sensor.date') %}
           {{ ['mar','mer','gio','ven','sab','dom','lun'][now().weekday()] }}
         icon_template: >-
           mdi:{{['emoticon-angry-outline', 'emoticon-sad-outline','emoticon-neutral-outline','emoticon-cool-outline','emoticon-excited-outline','emoticon-happy-outline','emoticon-dead-outline'][now().weekday()] }}

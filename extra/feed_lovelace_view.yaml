@@ -1,0 +1,77 @@
+title: News
+path: news
+icon: mdi:newspaper
+cards:
+  - type: vertical-stack
+    cards:
+      - type: custom:home-feed-card
+        title: "\U0001F5E3 Citazione del Giorno"
+        show_empty: false
+        id_filter: nessuno
+        entities:
+          - entity: sensor.feed_wikiquote
+            multiple_items: true
+            list_attribute: entries
+            remove_repeats: true
+            max_items: 1
+            content_template: >-
+              {{title}}
+              {{summary}}
+
+      - type: custom:list-card
+        feed_attribute: entries
+        entity: sensor.feed_hassiohelp_articoli
+        title: "\U0001F4F0 Articoli HassioHelp"
+        row_limit: 10
+        columns:
+          - title: "Titolo"
+            add_link: link
+            field: title
+          - title: Data
+            field: published
+            style:
+              - white-space: nowrap
+
+      - type: custom:list-card
+        feed_attribute: entries
+        entity: sensor.feed_hassiohelp_articoli_tutti
+        title: "\U0001F4F0 Articoli HassioHelp"
+        row_limit: 10
+        columns:
+          - title: "Titolo"
+            add_link: link
+            field: title
+          - title: Data
+            field: published
+            style:
+              - white-space: nowrap
+          - title: "Autore"
+            field: author
+
+      - type: custom:list-card
+        feed_attribute: entries
+        entity: sensor.feed_news_ansa
+        title: "\U0001F4F0 News ANSA"
+        row_limit: 20
+        columns:
+          - title: "Titolo"
+            add_link: link
+            field: title
+          - title: Data
+            field: published
+            style:
+              - white-space: nowrap
+
+      - type: custom:list-card
+        feed_attribute: entries
+        entity: sensor.feed_dpc
+        title: "Bollettini DPC"
+        row_limit: 20
+        columns:
+          - title: "Titolo"
+            add_link: link
+            field: title
+          - title: Data
+            field: published
+            style:
+              - white-space: nowrap

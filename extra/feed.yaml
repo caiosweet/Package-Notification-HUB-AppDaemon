@@ -1,0 +1,155 @@
+# Requirement
+# https://github.com/custom-components/feedparser
+# https://github.com/iantrich/list-card
+
+#######################################-#######################################
+##                                 CUSTOMIZE
+#######################################-#######################################
+homeassistant:
+  customize:
+    ## NODE ANCHORS
+    package.node_anchors:
+      customize: &customize
+        package: "Feed 📰"
+        site: "hassiohelp.eu 🌐"
+        author: "Caio"
+        version: "2.0.0"
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+    ## AUTOMATION
+    automation.feed:
+      <<: *customize
+    ## SENSOR
+    sensor.feed_hassiohelp_articoli:
+      <<: *customize
+      friendly_name: "Articoli HassioHelp"
+    sensor.feed_hassiohelp_commenti:
+      <<: *customize
+      friendly_name: "Commenti HassioHelp"
+    sensor.feed_news_ansa:
+      <<: *customize
+      friendly_name: "Ansa"
+    sensor.feed_wikiquote:
+      <<: *customize
+      friendly_name: "Wikiquote"
+    sensor.feed_dpc:
+      <<: *customize
+      friendly_name: "Feed DPC"
+###############################################################################
+## COMPONENT
+###############################################################################
+feedreader:
+  urls:
+    - &feed_hassiohelp_articoli https://hassiohelp.eu/feed/
+    - &feed_hassiohelp_commenti https://hassiohelp.eu/comments/feed/
+    - &feed_news_ansa https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml
+    - &feed_wikiquote https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd
+    - &feed_dpc http://www.protezionecivile.gov.it/web/guest/dettaglio/-/journal/rss/351565?doAsGroupId=20182&refererPlid=42041&controlPanelCategory=current_site.content&_15_groupId=20182
+  scan_interval:
+    minutes: 30
+  max_entries: 20
+#######################################-#######################################
+##                                  SENSOR
+#######################################-#######################################
+sensor:
+  - platform: feedparser
+    name: feed_hassiohelp_articoli
+    feed_url: *feed_hassiohelp_articoli
+    date_format: &data "%d/%m/%Y"
+    inclusions: &title_link_pub
+      - title
+      - link
+      - published
+  - platform: feedparser
+    name: feed_hassiohelp_commenti
+    feed_url: *feed_hassiohelp_commenti
+    date_format: *data
+    inclusions: *title_link_pub
+  - platform: feedparser
+    name: feed_news_ansa
+    feed_url: *feed_news_ansa
+    date_format: *data
+    inclusions: *title_link_pub
+  - platform: feedparser
+    name: feed_wikiquote
+    feed_url: *feed_wikiquote
+    date_format: *data
+    inclusions:
+      - title
+      - summary
+      - published
+  - platform: feedparser
+    name: feed_dpc
+    feed_url: *feed_dpc
+    date_format: *data
+    inclusions: *title_link_pub
+#######################################-#######################################
+##                                 AUTOMATION
+#######################################-#######################################
+automation:
+  - alias: Feed
+    initial_state: true
+    mode: queued
+    max_exceeded: silent
+    max: 20
+    trigger:
+      platform: event
+      event_type: feedreader
+    variables:
+      feed_hassiohelp_articoli: *feed_hassiohelp_articoli
+      feed_hassiohelp_commenti: *feed_hassiohelp_commenti
+      feed_news_ansa: *feed_news_ansa
+      feed_wikiquote: *feed_wikiquote
+      feed_dpc: *feed_dpc
+    action:
+      - variables:
+          feed_url: "{{trigger.event.data.feed_url}}"
+          feed_link: "{{trigger.event.data.link}}"
+          feed_title: "{{trigger.event.data.title}}"
+      - choose:
+          - conditions: "{{feed_url == feed_hassiohelp_articoli}}"
+            sequence:
+              - service: &notify script.my_notify
+                data:
+                  title: "🆕 Articolo HassioHElp"
+                  message: "Nuovo Articolo su Hassio Help. {{feed_title}}"
+                  alexa:
+                    voice: giorgio
+                    message_tts: &tts1 "è stato pubblicato un nuovo articolo su Hassio Help"
+                  google:
+                    message_tts: *tts1
+                  link: "[Articolo HassioHelp]({{feed_link}})"
+          - conditions: "{{feed_url == feed_hassiohelp_commenti}}"
+            sequence:
+              - service: *notify
+                data:
+                  title: "🗣 Commento HassioHelp"
+                  message: "{{feed_title}}"
+                  link: "[Commento HassioHelp]({{feed_link}})"
+          - conditions: "{{feed_url == feed_news_ansa}}"
+            sequence:
+              - service: *notify
+                data:
+                  call_no_annuncio: 1
+                  notify: news # è un gruppo telegram creato ad hoc per le notizie (notify.news meglio se notify.telegram_news)
+                  title: "📰 Ansa"
+                  message: "Notizia Ansa. {{feed_title}}"
+                  link: "[Ansa News]({{feed_link}})"
+                  alexa:
+                    voice: giorgio
+          - conditions: "{{feed_url == feed_wikiquote}}"
+            sequence:
+              - service: *notify
+                data:
+                  title: "📑 WikiQuote"
+                  message: "Aforisma del giorno. {{trigger.event.data.summary|striptags}}"
+                  link: "[Aforisma]({{feed_link}})"
+          - conditions: "{{feed_url == feed_dpc}}"
+            sequence:
+              - service: *notify
+                data:
+                  title: "⛈️ Protezione Civile"
+                  message: "{{feed_title}}"
+                  link: "[Bollettini di criticità]({{feed_link}})"

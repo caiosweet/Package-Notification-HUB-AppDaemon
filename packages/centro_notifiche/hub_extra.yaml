@@ -41,7 +41,7 @@ homeassistant:
 #######################################-#######################################
 automation:
   #----------------------------------------------------------------------------------------------------#
-  # Volume Automatico - Regolazione del volume dei media player, su base del sensore period_of_day_volume
+  # Automatic Volume - Media player volume adjustment, based on period_of_day_volume sensor
   #----------------------------------------------------------------------------------------------------#
   - alias: Auto Volume Hub
     mode: queued
@@ -89,7 +89,7 @@ automation:
                   value: "{{volume}}"
 
   #----------------------------------------------------------------------------------------------------#
-  # AUTO GROUP TTS - Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
+  # SET GROUP - Create an automation group if the "id:" attribute or the "name" of the automations ends with "hub"
   #----------------------------------------------------------------------------------------------------#
   - alias: Create Notification Automation Group Hub
     initial_state: true
@@ -106,7 +106,7 @@ automation:
       #     object_id: location_tracker
       #     entities: >-
       #       {{states.person|join(',','entity_id')}}
-      # Crea un Gruppo Notifiche se l'attributo "id:" dell'automazione finisce con "hub"
+      # Crea un Gruppo Notifiche se l'attributo "id:" o il "nome" delle automazioni finiscono con "hub"
       - service: group.set
         data:
           object_id: "automations_notification_hub"
@@ -119,6 +119,11 @@ automation:
   # Se le automazioni sono create manualmente con id, la loro eliminazione va fatta manualmente dalla UI
   # Interfaccia grafica --> impostazioni/entità cerca le entità per "ripristinato" o "non disponibile".
   # O in Stati metti "automation." in Filter entities e "unavailable" Filter States.
+
+  # ATTENTION!
+  # If automations are created manually with id, their deletion must be done manually from the UI
+  # Graphical interface -> settings/entities searches for entities for "restored" or "unavailable".
+  # Or in States put "automation." in the entities filter and "unavailable" in the states filter
 
 #######################################-#######################################
 ##                               BINARY SENSOR
