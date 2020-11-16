@@ -1,7 +1,8 @@
 type: entities
 title: Automazioni
 show_header_toggle: false
+state_color: true
 entities:
   - type: section
-    label: ''
+    label: ""
   - entity: group.automations_notification_hub
