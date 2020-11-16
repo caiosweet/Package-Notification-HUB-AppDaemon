@@ -54,7 +54,7 @@ cards:
           - entity: input_boolean.text_notifications
           - entity: input_boolean.screen_notifications
       - type: custom:fold-entity-row
-        head: 
+        head:
           type: section
           label: Interfono
         entities:
@@ -71,10 +71,10 @@ cards:
     entities:
       - entity: sensor.centro_notifiche
         name: Centro Notifiche
-        icon: mdi:alert
       - entity: input_text.personal_assistant_name
       - entity: input_select.language
       - entity: input_select.text_notify
+      - entity: input_boolean.html_mode
       - entity: input_number.tts_wait_time
       - type: custom:fold-entity-row
         head:
@@ -97,12 +97,16 @@ cards:
         entities:
           - entity: input_datetime.start_morning
           - entity: input_number.morning_volume
+          - type: divider
           - entity: input_datetime.start_afternoon
           - entity: input_number.afternoon_volume
+          - type: divider
           - entity: input_datetime.start_evening
           - entity: input_number.evening_volume
+          - type: divider
           - entity: input_datetime.start_night
           - entity: input_number.night_volume
+          - type: divider
           - entity: input_number.default_restore_volume
 
   # CARD Alexa
@@ -112,7 +116,7 @@ cards:
     state_color: true
     entities:
       - type: section
-        label: ''
+        label: ""
       - entity: input_boolean.alexa_switch
       - type: custom:fold-entity-row
         # padding: 0
@@ -140,9 +144,9 @@ cards:
     state_color: true
     entities:
       - type: section
-        label: ''
+        label: ""
       - entity: input_boolean.google_switch
-      - entity: input_boolean.tts_google_mode
+      - entity: input_select.tts_notify
       - entity: input_select.notification_media_player_google
       - entity: group.media_player_google
       - entity: sensor.media_player_google
@@ -170,3 +174,4 @@ cards:
         entities:
           - entity: input_text.phone_called_number
       - entity: input_select.phone_notify
+
