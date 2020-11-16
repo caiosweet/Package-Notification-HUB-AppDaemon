@@ -1,3 +1,4 @@
+---
 #----------------------------------------------------------------------------------------------------#
 # ESEMPI DI COME CREARE DELLE AUTOMAZIONI CON I RICHIAMI ALLE MACRO
 #----------------------------------------------------------------------------------------------------#
@@ -6,91 +7,84 @@ automation:
   # Home Assistant Start/Final Write/Close/Stop/Restart
   #----------------------------------------------------------------------------------------------------#
   - alias: Home Assistant Start Stop Hub
-    description: 'Notification Home Assistant Start/Final Write/Close/Stop/Restart'
+    description: "Notification Home Assistant Start/Final Write/Close/Stop/Restart"
     initial_state: true
     mode: queued
     max_exceeded: silent
     trigger:
-    - platform: homeassistant
-      event: start
-    - platform: homeassistant
-      event: shutdown
-    - platform: event
-      event_type: homeassistant_final_write
-    - platform: event
-      event_type: homeassistant_close
-    - platform: event
-      event_type: call_service
-      event_data:
-        domain: homeassistant
-        service: restart
+      - platform: homeassistant
+        event: start
+      - platform: homeassistant
+        event: shutdown
+      - platform: event
+        event_type: homeassistant_final_write
+      - platform: event
+        event_type: homeassistant_close
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: homeassistant
+          service: restart
+      - platform: event
+        event_type: core_config_updated
     variables:
       notification_service: "{{states('input_select.text_notify')|lower}}"
     action:
-    - variables:
-        title: '{{trigger.description|regex_replace(find="\W|_|event", replace=" ")|trim|capitalize}}'
-        time: "{{(now().time()|string)[:-4]}}"
-        icon: >
-          {% if 'stop' in title %}🛑
-          {% elif 'final' in title %}🛡️
-          {% elif 'close' in title %}⛔
-          {% elif 'start' in title %}👍
-          {% else %}📞
-          {% endif %}
-    - choose:
-      - conditions: "{{title is defined}}"
-        sequence:
+      - variables:
+          title: '{{trigger.description|regex_replace(find="\W|_|event", replace=" ")|trim|capitalize}}'
+          time: "{{(now().time()|string)[:-4]}}"
+          icon: >
+            {% if 'stop' in title %}🛑
+            {% elif 'final' in title %}🛡️
+            {% elif 'close' in title %}⛔
+            {% elif 'start' in title %}👍
+            {% else %}📞
+            {% endif %}
+      - choose:
+          - conditions: "{{title is defined}}"
+            sequence:
+              - service: "notify.{{notification_service}}"
+                data:
+                  title: "{{icon}} {{title}}"
+                  message: |
+                    ➡️ {{time}}
+              - choose:
+                  - conditions: "{{'start' in title}}"
+                    sequence:
+                      - service: homeassistant.update_entity
+                        entity_id: sensor.ha_start
+                      - wait_for_trigger:
+                          - platform: state
+                            entity_id: sensor.centro_notifiche
+                            to: "on"
+                        timeout: 60
+                        continue_on_timeout: true
+                      - service: script.my_notify
+                        data:
+                          title: "HomeAssistant Start!"
+                          notify: "{{notification_service}}"
+                          message: |
+                            Centro Notifiche operativo! 👍
+                            {{states('sensor.ha_start')}}
+                          alexa:
+                            message_tts: >-
+                              Il sistema è operativo!.
+                            voice: Giorgio
+                            type: tts
+                          google:
+                            media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
+                            # media_content_type: sound
+        default:
           - service: "notify.{{notification_service}}"
             data:
-              title: "{{icon}} {{title}}"
-              message: |
-                ➡️ {{time}}
-          - choose:
-            - conditions: "{{'start' in title}}"
-              sequence:
-                - service: homeassistant.update_entity
-                  entity_id: sensor.ha_start
-                - wait_for_trigger:
-                    - platform: state
-                      entity_id: sensor.centro_notifiche
-                      to: 'on'
-                  timeout: 60
-                  continue_on_timeout: true
-                - service: script.my_notify
-                  data:
-                    title: "HomeAssistant Start!"
-                    notify: "{{notification_service}}"
-                    message: |
-                      Centro Notifiche operativo! 👍
-                      {{states('sensor.ha_start')}}
-                    alexa:
-                      message_tts: >-
-                        Il sistema è operativo!.
-                      voice: Giorgio
-                      type: tts
-                    google: 
-                      media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
-                      # media_content_type: sound
-      # default:
-      #   - service: "notify.{{notification_service}}"
-      #     data:
-      #       message: " DEFAULT: {{icon}} {{title}}"
+              message: " DEFAULT: {{icon}} {{title}}"
 
-      # default:
-      #   - service: script.my_notify
-      #     data: #trigger.event.data.service == restart
-      #       title: "👋 Home Assistant!"
-      #       message: "{{time}}"
-      #       call_no_annuncio: 1
-      #       call_arrivederci: 1
-      #       call_spegni: 1
-      
   #----------------------------------------------------------------------------------------------------#
   # Accesso Fallito # Banned IP persistent_notification.ip_ban title: Banning IP address
   # message: Too many login attempts from xxx.xxx.xxx.xxx
   #----------------------------------------------------------------------------------------------------#
   - alias: Accesso Fallito Hub
-    description: 'Notification Message Too many login attempts'
+    description: "Notification Message Too many login attempts"
     mode: queued
     initial_state: true
     trigger:
@@ -112,7 +106,7 @@ automation:
             message_tts: *tts_login
 
       - service: notify.pushover
-        data: 
+        data:
           title: "⛔ Home Assistant Accesso Fallito"
           message: "Accesso Fallito. "
           data:
@@ -125,27 +119,27 @@ automation:
             #device: pixel
 
       #- service: persistent_notification.dismiss
-        #data:
-          #notification_id: 'http_login'
+      #data:
+      #notification_id: 'http_login'
 
   #----------------------------------------------------------------------------------------------------#
   # Nuova versione di Home Assistant
   #----------------------------------------------------------------------------------------------------#
   - alias: Update Home Assistant Hub
-    description: 'Notification New Update for Home Assistant'
+    description: "Notification New Update for Home Assistant"
     initial_state: true
     trigger:
       # - platform: state
       #   entity_id: updater.updater
       - platform: state
         entity_id: binary_sensor.updater
-        to: 'on'
+        to: "on"
     action:
       - service: script.my_notify
         data:
           title: "🆕 Nuovo Aggiornamento Home Assistant"
           message: "Home Assistant {{state_attr('binary_sensor.updater','newest_version')}} è disponibile."
-          link: "{{state_attr('binary_sensor.updater','release_notes')}}"
+          link: "[Release Notes]({{state_attr('binary_sensor.updater','release_notes')}})"
 
   #----------------------------------------------------------------------------------------------------#
   # Benvenuto # Esempio Macro elaborata al di fuori di build_message, dove al suo interno va inserito {{ benvenuto }}
@@ -156,10 +150,10 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: !secret location_tracker_hub
-        from: 'not_home'
-        to: 'home'
-        for: '00:02:00'
+        entity_id: person.claudio
+        from: "not_home"
+        to: "home"
+        for: "00:02:00"
     action:
       - service: script.my_notify
         data:
@@ -205,10 +199,10 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: !secret location_tracker_hub
-        from: 'not_home'
-        to: 'home'
-        for: '00:02:00'
+        entity_id: person.claudio
+        from: "not_home"
+        to: "home"
+        for: "00:02:00"
     action:
       - service: script.my_notify
         data:
@@ -227,7 +221,7 @@ automation:
     initial_state: true
     trigger:
       platform: state
-      entity_id: !secret location_tracker_hub
+      entity_id: person.claudio
       to: "Lavoro"
     action:
       - service: script.my_notify
@@ -244,7 +238,7 @@ automation:
     initial_state: true
     trigger:
       platform: state
-      entity_id: !secret location_tracker_hub
+      entity_id: person.claudio
       from: "Lavoro"
       to: "not_home"
     action:
@@ -296,16 +290,14 @@ automation:
     trigger:
       platform: state
       entity_id: switch.computer
-      to: 'on'
+      to: "on"
     action:
       service: script.my_notify
       data:
         title: "Computer attivo"
         message: "Roger! Il computer è attivo. "
-        alexa:
-          mode: true
-        google:
-          mode: true
+        alexa: True
+        google: True
 
   #----------------------------------------------------------------------------------------------------#
   # Condizioni Climatiche
@@ -314,7 +306,7 @@ automation:
     initial_state: true
     trigger:
       - platform: time
-        at: '16:00:00'
+        at: "16:00:00"
     condition:
       - condition: time
         weekday:
@@ -326,7 +318,7 @@ automation:
       - condition: and
         conditions:
           - condition: numeric_state
-            entity_id: 'sensor.dark_sky_precip_intensity'
+            entity_id: "sensor.dark_sky_precip_intensity"
             above: 0.5
     action:
       - service: script.my_notify
@@ -345,7 +337,7 @@ automation:
     initial_state: true
     trigger:
       - platform: time
-        at: '07:45:00'
+        at: "07:45:00"
     condition:
       - condition: time
         weekday:
@@ -364,7 +356,7 @@ automation:
             La temperatura esterna è di {{states('sensor.dark_sky_apparent_temperature')|int}} gradi, 
             mentre la temperatura interna è di {{states('sensor.temperatura_media') |int}} gradi. 
             *Previsioni.* {{states.sensor.dark_sky_hourly_summary.state}} 
-            *Citazione.* {{state_attr('sensor.wikiquote', 'entries')[-1].summary|striptags}}.
+            *Citazione.* {{state_attr('sensor.feed_wikiquote', 'entries')[-1].summary|striptags}}.
       - delay: "00:01:00"
       - service: script.my_notify
         data:
@@ -407,7 +399,7 @@ automation:
             {% elif is_state("binary_sensor.cam_sala", "on") %}
             Black
             {% elif is_state("binary_sensor.motion_sensor_158d0001e5cfdd", "on") %}
-            Black2
+            Black due
             {% endif %}
 
   #----------------------------------------------------------------------------------------------------#
@@ -426,45 +418,42 @@ automation:
     max: 50
     action:
       - choose:
-        - conditions:
-            - "{{trigger.entity_id is defined}}"
-            - "{{states(trigger.entity_id) != 'unknown'}}"
-            - "{{(states(trigger.entity_id) | float) != 0}}"
-          sequence:
-            - service: script.my_notify
-              data:
-                call_no_annuncio: 1
-                title: >-
-                  Aggiornamenti HACS ({{states('sensor.hacs')}})
-                message: >-
-                  Nuovi Aggiornamenti HACS: 
-                alexa:
-                  message_tts: >-
-                    Ci sono {{states('sensor.hacs')}} aggiornamenti in HACS.
-                link: |-
-                  {% for repo in state_attr(trigger.entity_id, 'repositories') %}
-                  [{{repo.display_name}}](https://github.com/{{repo.name}}) {{repo["installed_version"]}} -> {{repo["available_version"]}}
-                  {% endfor %}
-      # - choose:
-        - conditions:
-            - "{{ trigger.event is defined }}"
-            - "{{ trigger.event.data.repository is defined }}"
-          sequence:
-            - service: script.my_notify
-              data:
-                title: Nuovo repository in HACS
-                message: |
-                  Nuovo Repository aggiunto. 
-                link: |
-                  {% set repo = trigger.event.data.repository %}
-                  [{{repo}}](https://github.com/{{repo}})
-                #{% set id = trigger.event.data.repository_id %}
-        default:
-          - service: script.my_notify
-            data:
-              message: " HACS: {{trigger.description}}"
-
-#            https://github.com/{{repo.name|replace("_","--")}}
+          - conditions:
+              - "{{trigger.entity_id is defined}}"
+              - "{{states(trigger.entity_id) != 'unknown'}}"
+              - "{{(states(trigger.entity_id) | float) != 0}}"
+            sequence:
+              - service: script.my_notify
+                data:
+                  call_no_annuncio: 1
+                  title: >-
+                    Aggiornamenti HACS ({{states('sensor.hacs')}})
+                  message: |
+                    Nuovi Aggiornamenti HACS:
+                  alexa:
+                    message_tts: >-
+                      Ci sono {{states('sensor.hacs')}} aggiornamenti in HACS.
+                  link: |
+                    {{"\n"}}
+                    {% for repo in state_attr(trigger.entity_id, 'repositories') %}
+                    [{{repo.display_name}}](https://github.com/{{repo.name}}) {{repo["installed_version"]}} -> {{repo["available_version"]}}
+                    {% endfor %}
+          - conditions:
+              - "{{ trigger.event is defined }}"
+              - "{{ trigger.event.data.repository is defined }}"
+            sequence:
+              - service: script.my_notify
+                data:
+                  title: Nuovo repository in HACS
+                  message: |
+                    Nuovo Repository aggiunto.
+                  link: |
+                    {% set repo = trigger.event.data.repository %}
+                    [{{repo}}](https://github.com/{{repo}})
+        # default:
+        #   - service: script.my_notify
+        #     data:
+        #       message: " HACS: {{trigger.description}}"
 
   #----------------------------------------------------------------------------------------------------#
   # ALEXA - Riautenticazione - Login
@@ -474,10 +463,70 @@ automation:
       platform: event
       event_type: alexa_media_relogin_required
     action:
-    - service: script.my_notify
-      data:
-        call_no_annuncio: 1
-        title: 🔑 Alexa Media Integrazione
-        message: Autenticazione Richiesta
-        notify: pushover
-        link: "[Integrazioni](http://192.168.1.3:8123/config/integrations)"
+      - variables:
+          external_url: !secret external_url
+      - service: script.my_notify
+        data:
+          call_no_annuncio: 1
+          title: 🔑 Alexa Media Integrazione
+          message: Autenticazione Richiesta
+          notify: pushover
+          link: "[Integrazioni]({{external_url}}/config/integrations)"
+  # link Markdown --> [Nome link](LINK)
+  # link html     --> <a href="LINK">"Nome link"</a>
+
+  #----------------------------------------------------------------------------------------------------#
+  # Test trigger event - Notifica location
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Notifica location
+    initial_state: true
+    trigger:
+      # - platform: state
+      #   entity_id:
+      #     - person.claudio
+      - platform: event
+        event_type: state_changed
+    condition:
+      # - "{{ trigger.to_state is not none
+      #   and (trigger.from_state is none or trigger.to_state.state != trigger.from_state.state) }}"
+
+      - "{{ trigger.event.data.entity_id.startswith('person') }}"
+      - "{{trigger.event.data.old_state is not none
+        and (trigger.event.data.old_state is none or trigger.event.data.new_state.state != trigger.event.data.old_state.state)
+      }}"
+    action:
+      - variables:
+          # lat: "{{trigger.to_state.attributes.latitude}}"
+          # long: "{{trigger.to_state.attributes.longitude}}"
+          # from: "{{trigger.from_state.state if trigger.from_state is not none else 'sconosciuto'}}"
+          # to: "{{trigger.to_state.state}}"
+          # name: "{{trigger.to_state.name}}"
+          
+          lat: "{{trigger.event.data.new_state.attributes.latitude}}"
+          long: "{{trigger.event.data.new_state.attributes.longitude}}"
+          from: "{{trigger.event.data.old_state.state if trigger.event.data.old_state is not none else 'sconosciuto'}}"
+          to: "{{trigger.event.data.new_state.state}}"
+          name: "{{trigger.event.data.new_state.attributes.friendly_name}}"
+
+      - service: script.my_notify
+        data:
+          alexa: true
+          title: "📍 Location {{name}}"
+          message: >
+            {% set state_dict = {'home': 'Casa', 'not_home': 'Fuori Casa'} %}
+            {% set from = state_dict.get(from, from) %}
+            {% set to = state_dict.get(to, to) %}
+            {{ name }} si è spostato da {{ from }} a {{ to }}
+          # link: >
+          #   {% if lat and not to in 'home' %}
+          #   [Mappa](https://www.openstreetmap.org/?mlat={{lat}}&mlon={{long}}#map=8/{{lat}}/{{long}})
+          #   {% endif %}
+      - choose:
+          - conditions: "{{not to in 'home' and lat != ''}}"
+            sequence:
+              - service: telegram_bot.send_location
+                data_template:
+                  disable_notification: true
+                  latitude: "{{lat}}"
+                  longitude: "{{long}}"
+                  # target: target
