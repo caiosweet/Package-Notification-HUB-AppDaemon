@@ -17,7 +17,7 @@
 
 # Advice and useful information
 
-- [Wiki][Wiki]<br>
+- **[Wiki][Wiki]**<br>
 - [AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)<br>
 - [Nuovo Centro notifiche](https://hassiohelp.eu/2019/12/25/notifer/)<br>
 
@@ -45,19 +45,19 @@
   > + [vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card)
 
 <p align="center">
-<img src="./extra/preview/CN_my_card.png">
+<img src="./assets/images/CN_my_card.png">
 <br><br>
 </p>
 
 # [My Lovelace view](./extra/my_lovelace_view.yaml)
 <p align="center">
-<img src="./extra/preview/CN_my_view.png">
+<img src="./assets/images/CN_my_view.png">
 <br><br>
 </p>
 
 # [Standard Lovelace View and Cards](./lovelace/)
 <p align="center">
-<img src="./extra/preview/CN_standard_cards.png">
+<img src="./assets/images/CN_standard_cards.png">
 <br><br>
 </p>
 

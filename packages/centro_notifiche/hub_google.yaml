@@ -9,7 +9,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Google 3.0.2
+        version: Google 3.1.0
 
       expose: &expose
         <<: *customize
@@ -17,14 +17,16 @@ homeassistant:
         homebridge_hidden: false
 
     ## INPUT
-    input_boolean.tts_google_mode:
-      <<: *customize
-      friendly_name: Google Say / Google Assistant
-      icon: mdi:google
     input_boolean.google_switch:
       <<: *customize
       friendly_name: Google
       icon: mdi:google-home
+
+    input_select.tts_notify:
+      <<: *customize
+      friendly_name: Srvizio TTS
+      icon: mdi:form-select
+
     input_select.notification_media_player_google:
       <<: *customize
       friendly_name: Sorgente Google
@@ -38,9 +40,11 @@ homeassistant:
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
-  tts_google_mode:
   google_switch:
+
 input_select:
+  tts_notify:
+    options: ["Google Say", "Google Cloud", "Google Assistant", "Reverso"]
   notification_media_player_google:
     options: !secret notification_media_player_google_hub
 

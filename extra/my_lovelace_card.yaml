@@ -1,4 +1,4 @@
-type: custom:vertical-stack-in-card 
+type: custom:vertical-stack-in-card
 cards:
   # BANNER
   - type: custom:banner-card
@@ -19,7 +19,7 @@ cards:
   - type: conditional
     conditions:
       - entity: sensor.centro_notifiche
-        state_not: 'on'
+        state_not: "on"
     card:
       type: markdown
       style: |
@@ -51,7 +51,7 @@ cards:
       - entity: input_boolean.phone_notifications
         name: false
         state_icons:
-          "off" : "mdi:phone-off"
+          "off": "mdi:phone-off"
       - entity: input_boolean.speech_notifications
         name: false
         state_icons:
@@ -85,7 +85,7 @@ cards:
     style:
       background-color: var(--primary-color)
       height: 1px
-  # PAPER GLANCE
+  # GLANCE
   - type: glance
     style: |
       ha-card {
@@ -104,38 +104,38 @@ cards:
         tap_action:
           action: call-service
           service: input_select.select_next
-          service_data: 
+          service_data:
             entity_id: input_select.notification_media_player_alexa
         hold_action:
           action: call-service
           service: input_select.select_previous
-          service_data: 
+          service_data:
             entity_id: input_select.notification_media_player_alexa
         double_tap_action:
           action: more-info
-      - entity:  input_select.notification_media_player_google
+      - entity: input_select.notification_media_player_google
         tap_action:
           action: call-service
           service: input_select.select_next
-          service_data: 
+          service_data:
             entity_id: input_select.notification_media_player_google
         hold_action:
           action: call-service
           service: input_select.select_previous
-          service_data: 
+          service_data:
             entity_id: input_select.notification_media_player_google
         double_tap_action:
           action: more-info
-      - entity:  input_select.text_notify
+      - entity: input_select.text_notify
         tap_action:
           action: call-service
           service: input_select.select_next
-          service_data: 
+          service_data:
             entity_id: input_select.text_notify
         hold_action:
           action: call-service
           service: input_select.select_previous
-          service_data: 
+          service_data:
             entity_id: input_select.text_notify
         double_tap_action:
           action: more-info
@@ -148,29 +148,40 @@ cards:
     buttons:
       - entity: input_boolean.google_switch
         name: Google
-      - entity: input_boolean.tts_google_mode
+      - entity: input_select.tts_notify
         icon: false
-        # state_icons:
-        #   "on": "mdi:google-assistant"
+        state_icons:
+          "Google Say": "mdi:google"
+          "Google Cloud": "mdi:google-cloud"
+          "Google Assistant": "mdi:google-assistant"
+          "Reverso": "mdi:cached"
         state_text:
-          "on": "Assistant"
-          "off": "Say"
-        state_styles:
-          "on":
-            button:
-            icon:
-              color: var(--paper-item-icon-active-color)
-            ripple:
-              color: orange
+          "Google Say": "Say"
+          "Google Cloud": "Cloud"
+          "Google Assistant": "Assistant"
+          "Reverso": "Reverso"
+        # state_styles:
+        #   "on":
+        #     button:
+        #     icon:
+        #       color: var(--paper-item-icon-active-color)
+        #     ripple:
+        #       color: orange
+        tap_action:
+          action: call-service
+          service: input_select.select_next
+          service_data:
+            entity_id: input_select.tts_notify
+
       - entity: input_boolean.alexa_switch
         name: Alexa
       - entity: input_select.default_alexa_type
         tooltip: false
         icon: false
-        # state_icons:
-        #   "TTS": "mdi:text-shadow"
-        #   "Push": "mdi:cellphone-text"
-        #   "Dropin": "mdi:form-dropdown"
+        state_icons:
+          "TTS": "mdi:text-shadow"
+          "Push": "mdi:cellphone-text"
+          "Dropin": "mdi:form-dropdown"
         state_text:
           "TTS": "TTS"
           "Announce": "Announce"
@@ -187,9 +198,7 @@ cards:
             entity_id: input_select.default_alexa_type
       - entity: input_boolean.alexa_ssml
         name: SSML
-      # - entity: input_boolean.last_message
-      #   name: false
-  # TEXT INPUT ROW #icon:
+  # TEXT INPUT ROW
   - type: divider
     style:
       background-color: var(--primary-color)
@@ -203,42 +212,63 @@ cards:
         padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
       }
     entities:
-    - type: custom:fold-entity-row
-      padding: 0
-      head: 
-        # type: section
-        # label: Interfono
-        type: call-service
-        name: Interfono
-        icon: mdi:bullhorn-outline #mdi:repeat-once
-        action_name: Last Message
-        service: input_boolean.turn_on
-        service_data:
-          entity_id: input_boolean.last_message
-      entities:
-        - type: custom:lovelace-multiline-text-input-card
-          style: |
-            ha-card {
-              background:none; border-radius: 0px; box-shadow: none; 
-              color: var(--primary-text-color);
-            }
-            textarea.textarea {margin-top: 0;}
-            .card-content {padding-top: 0;}
-          # autosave: true
-          entity: input_text.intercom_message_hub
-          max_length: 255
-          min_length: 1
-          placeholder_text: 'Messaggio da inviare...'
-          title: ''
+      - type: custom:fold-entity-row
+        padding: 0
+        head:
+          # type: section
+          # label: Interfono
+          type: call-service
+          name: Interfono
+          icon: mdi:bullhorn-outline #mdi:repeat-once
+          action_name: Last Message
+          service: input_boolean.turn_on
+          service_data:
+            entity_id: input_boolean.last_message
+        # - entity: sensor.centro_notifiche
+        extend_paper_buttons_row:
           buttons:
-            save: true
-            paste: true
-            clear: true
-          icons:
-            save: mdi:send
-            paste: mdi:content-paste
-            clear: mdi:delete-forever
-        - type: custom:slider-entity-row
-          entity: input_number.intercom_message_volume
-          name: hide_state
-          full_row: true
+            - entity: input_boolean.html_mode
+              # name: false
+              tap_action:
+                action: toggle
+              state_icons:
+                "off": "mdi:language-markdown"
+                "on": "mdi:language-html5"
+              state_text:
+                "off": "Modo Markdown"
+                "on": "Modo HTML"
+              state_styles:
+                # "off":
+                #   button:
+                #     color: red
+                "on":
+                  button:
+                    color: var(--paper-item-icon-active-color)
+
+        entities:
+          - type: custom:lovelace-multiline-text-input-card
+            style: |
+              ha-card {
+                background:none; border-radius: 0px; box-shadow: none; 
+                color: var(--primary-text-color);
+              }
+              textarea.textarea {margin-top: 0;}
+              .card-content {padding-top: 0;}
+            # autosave: true
+            entity: input_text.intercom_message_hub
+            max_length: 255
+            min_length: 1
+            placeholder_text: "Messaggio da inviare..."
+            title: ""
+            buttons:
+              save: true
+              paste: true
+              clear: true
+            icons:
+              save: mdi:send
+              paste: mdi:content-paste
+              clear: mdi:delete-forever
+          - type: custom:slider-entity-row
+            entity: input_number.intercom_message_volume
+            name: hide_state
+            full_row: true

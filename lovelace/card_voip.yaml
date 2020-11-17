@@ -1,8 +1,9 @@
 type: entities
 title: VoIP
 show_header_toggle: false
+state_color: true
 entities:
   - type: section
-    label: ''
+    label: ""
   - entity: input_text.phone_called_number
   - entity: input_select.phone_notify

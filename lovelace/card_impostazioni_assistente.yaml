@@ -1,6 +1,7 @@
 type: entities
 title: Impostazioni Assistente
 show_header_toggle: false
+state_color: true
 entities:
   - entity: input_text.personal_assistant_name
   - entity: input_select.language

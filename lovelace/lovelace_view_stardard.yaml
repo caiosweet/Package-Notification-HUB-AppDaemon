@@ -7,9 +7,8 @@ cards:
       - type: markdown
         content: |
           <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</center></font>
-
           {% if not is_state('sensor.centro_notifiche', 'on') %}
-          ⛔ {{states('sensor.centro_notifiche')}} ⛔
+          <center>⚠️ {{states('sensor.centro_notifiche')}} ⚠️</center>
           {% endif %}
       - type: divider
         style:
@@ -21,6 +20,7 @@ cards:
         header:
           type: buttons
           state_color: true
+          icon_height: 24px
           entities:
             - entity: binary_sensor.people_home
               tap_action:
@@ -93,24 +93,64 @@ cards:
         style:
           background-color: var(--primary-color)
           height: 1px
+      - type: horizontal-stack
+        cards:
+          - type: button
+            state_color: true
+            show_name: false
+            icon_height: 24px
+            entity: input_boolean.google_switch
+            tap_action:
+              action: toggle
+          - type: button
+            state_color: true
+            show_name: false
+            show_icon: false
+            show_state: true
+            entity: input_select.tts_notify
+            tap_action:
+              action: call-service
+              service: input_select.select_next
+              service_data:
+                entity_id: input_select.tts_notify
+          - type: button
+            state_color: true
+            show_name: false
+            icon_height: 24px
+            entity: input_boolean.alexa_switch
+            tap_action:
+              action: toggle
+          - type: button
+            show_icon: false
+            show_name: false
+            show_state: true
+            entity: input_select.default_alexa_type
+            tap_action:
+              action: call-service
+              service: input_select.select_next
+              service_data:
+                entity_id: input_select.default_alexa_type
+          - type: button
+            state_color: true
+            show_name: false
+            icon_height: 24px
+            entity: input_boolean.alexa_ssml
+            tap_action:
+              action: toggle
+          - type: button
+            state_color: true
+            show_name: false
+            icon_height: 24px
+            entity: input_boolean.last_message
+            tap_action:
+              action: toggle
+      - type: divider
+        style:
+          background-color: var(--primary-color)
+          height: 1px
       - type: entities
-        header:
-          type: buttons
-          state_color: true
-          entities:
-            - entity: input_boolean.google_switch
-              name: Google
-            - entity: input_boolean.tts_google_mode
-            - entity: input_boolean.alexa_switch
-              name: Alexa
-            - entity: input_select.default_alexa_type
-              name: Type
-              tap_action:
-                action: call-service
-                service: input_select.select_next
-                service_data:
-                  entity_id: input_select.default_alexa_type
-            - entity: input_boolean.last_message
+        show_header_toggle: false
+        state_color: true
         entities:
           - entity: input_text.intercom_message_hub
           - entity: input_number.intercom_message_volume
@@ -206,7 +246,7 @@ cards:
       - type: section
         label: ""
       - entity: input_boolean.google_switch
-      - entity: input_boolean.tts_google_mode
+      - entity: input_select.tts_notify
       - entity: input_select.notification_media_player_google
       - type: section
         label: "Sensore"
