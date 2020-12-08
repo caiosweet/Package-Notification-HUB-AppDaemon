@@ -16,7 +16,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Main 3.1.0
+        version: Main 3.2.0
 
       expose: &expose
         <<: *customize
@@ -38,15 +38,9 @@ homeassistant:
     binary_sensor.dnd:
       <<: *customize
       friendly_name: Modo Silenzioso
-    ## GROUP
-    group.automations_notification_hub:
+    binary_sensor.people_home:
       <<: *customize
-      friendly_name: Automazioni HUB
-      icon: mdi:account-tie
-    group.location_tracker:
-      <<: *customize
-      friendly_name: Dispositivi tracciati
-      icon: mdi:target-account
+      friendly_name: Persone in casa # People at Home
     ## INPUT BOOLEAN
     input_boolean.guest_mode:
       <<: *customize
@@ -210,9 +204,9 @@ media_extractor:
 #######################################-#######################################
 ##                                   GROUP
 #######################################-#######################################
-group:
-  location_tracker:
-    entities: !secret location_tracker_hub
+# group:
+#   location_tracker:
+#     entities: !secret location_tracker_hub
 
 #######################################-#######################################
 ##                                   INPUT
@@ -331,6 +325,25 @@ binary_sensor:
           {%elif speech=='off' and priority=='off'%}True{%else%}False{%endif%}
         icon_template: >
           {%if is_state('binary_sensor.dnd','off')%}mdi:do-not-disturb-off{%else%}mdi:do-not-disturb{%endif%}
+
+      people_home:
+        device_class: presence
+        value_template: "{{expand(states.person)|selectattr('state','eq','home')|list|count > 0}}"
+        icon_template: >-
+          {% set people = expand(states.person)|selectattr('state','eq','home')
+            |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0) %}
+          {% set icon = {0 :'mdi:account-off', 1 :'mdi:account', 2 :'mdi:account-multiple', 3 :'mdi:account-multiple-check'} %}
+          {{icon[people] if people in icon else 'mdi:account-group'}}
+        attribute_templates:
+          number: >-
+            {{expand(states.person)|selectattr('state','eq','home')
+            |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0)}}
+          name: >-
+            {{expand(states.person)|selectattr('state','eq','home')
+            |join(', ',attribute='name')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
+          entity: >-
+            {{expand(states.person)|selectattr('state','eq','home')
+            |join(', ',attribute='entity_id')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
 
 #######################################-#######################################
 ##                                  SENSOR
