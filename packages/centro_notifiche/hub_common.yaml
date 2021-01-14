@@ -1,0 +1,150 @@
+#######################################-#######################################
+##                                 CUSTOMIZE
+#######################################-#######################################
+homeassistant:
+  customize:
+    ## NODE ANCHORS
+    package.node_anchors:
+      customize: &customize
+        package: Centro Notifiche 🔔
+        site: hassiohelp.eu 🌐
+        author: Caio & Gianpi
+        version: Common 3.2.0
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ## AUTOMATION
+    automation.auto_volume_hub:
+      <<: *customize
+      friendly_name: Volume Automatico Hub
+    automation.hub_initialization_at_startup:
+      <<: *customize
+      friendly_name: Startup HUB
+    ## GROUP
+    group.automations_notification_hub:
+      <<: *customize
+      friendly_name: Automazioni HUB
+      icon: mdi:account-tie
+    group.location_tracker:
+      <<: *customize
+      friendly_name: Dispositivi tracciati
+      icon: mdi:target-account
+    group.media_player_alexa:
+      <<: *customize
+      friendly_name: Gruppo Alexa
+      icon: mdi:speaker-multiple
+    group.media_player_google:
+      <<: *customize
+      friendly_name: Gruppo Google
+      icon: mdi:speaker-multiple
+#######################################-#######################################
+##                                 AUTOMATION
+#######################################-#######################################
+automation:
+  #----------------------------------------------------------------------------------------------------#
+  # INITIALIZE
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Hub initialization at startup
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    action:
+      # Crea un Gruppo location_tracker da entity Person.
+      - service: group.set
+        data:
+          object_id: location_tracker
+          entities: >-
+            {{states.person|join(',','entity_id')}}
+
+      - choose:
+          - conditions: "{{state_attr('input_select.notification_media_player_alexa', 'options') is not none }}"
+            sequence:
+              # Crea un Gruppo media_player_alexa da entity input_select.notification_media_player_alexa.
+              - service: group.set
+                data:
+                  object_id: media_player_alexa
+                  entities: >-
+                    {% set lista_alexa = expand('input_select.notification_media_player_alexa')|join(',','attributes.options') %}
+                    {{ states.media_player 
+                    | selectattr('attributes.friendly_name', 'defined')
+                    | selectattr('attributes.friendly_name', 'in', lista_alexa)
+                    | map(attribute='entity_id')|list
+                    }}
+
+      - choose:
+          - conditions: "{{state_attr('input_select.notification_media_player_google', 'options') is not none }}"
+            sequence:
+              # Crea un Gruppo media_player_google da entity input_select.notification_media_player_google.
+              - service: group.set
+                data:
+                  object_id: media_player_google
+                  entities: >-
+                    {% set lista_google = expand('input_select.notification_media_player_google')|join(',','attributes.options') %}
+                    {{ states.media_player 
+                    | selectattr('attributes.friendly_name', 'defined')
+                    | selectattr('attributes.friendly_name', 'in', lista_google)
+                    | map(attribute='entity_id')|list
+                    }}
+
+      # Crea un Gruppo automations_notification_hub se l'attributo "id:" o il "nome" delle automazioni finiscono con "hub".
+      - service: group.set
+        data:
+          object_id: "automations_notification_hub"
+          entities: >
+            {%for item in states.automation if ((item.attributes.id|lower).endswith('hub'))
+            or ((item.attributes.friendly_name|lower).endswith('hub')) %}
+            {{-item.entity_id}}{%if not loop.last%},{%endif-%}{%endfor%}
+
+      # Execute auto_volume_hub Automation.
+      - service: automation.trigger
+        entity_id: automation.auto_volume_hub
+        # skip_condition: true
+
+  #----------------------------------------------------------------------------------------------------#
+  # Automatic Volume - Media player volume adjustment, based on period_of_day_volume sensor
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Auto Volume Hub
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.period_of_day_volume
+    action:
+      - variables:
+          list_alexa: "{{expand('group.media_player_alexa')|map(attribute='entity_id')|list}}"
+          list_google: "{{expand('group.media_player_google')|map(attribute='entity_id')|list}}"
+          all_entity: "{{list_alexa + list_google}}"
+          volume: "{{states('sensor.period_of_day_volume')|float}}"
+      - choose:
+          - conditions: "{{list_alexa|length > 0}}"
+            sequence:
+              - service: notify.alexa_media
+                data:
+                  data:
+                    type: tts
+                  target: "{{list_alexa}}"
+                  message: >
+                    <speak>
+                    <break time="4s"/>
+                    <prosody volume="silent">volume</prosody>
+                    </speak>
+              - delay: "00:00:02"
+      - choose:
+          - conditions: "{{all_entity|length > 0}}"
+            sequence:
+              - service: media_player.volume_set
+                data:
+                  entity_id: "{{all_entity}}"
+                  volume_level: "{{(volume|round(2))/100}}"
+              - service: input_number.set_value
+                data:
+                  entity_id:
+                    - input_number.intercom_message_volume
+                    - input_number.default_restore_volume
+                  value: "{{volume}}"
