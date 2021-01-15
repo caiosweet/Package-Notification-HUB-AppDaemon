@@ -1,7 +1,7 @@
 ### INFO
-#   @author         :   Caio & Gianpi - hassiohelp.eu
-#   @date           :   Started 01/11/2019 - Updated 07/11/2020
-#   @package        :   Notification HUB - Centro Notifiche
+#   @author         :   Caio & Gianpi - hassiohelp.eu 🌐
+#   @date           :   Started 01/11/2019 - Updated 15/01/2021
+#   @package        :   Notification HUB - Centro Notifiche 🔔
 #   @description    :   Package Appdaemon Notifier Center for Home Assistant
 ############################################################################
 
@@ -18,12 +18,13 @@ homeassistant:
         author: Caio & Gianpi
         version: Main 3.2.0
 
-      expose: &expose
-        <<: *customize
-        haaska_hidden: false
-        homebridge_hidden: false
-
     ## AUTOMATION
+    automation.auto_volume_hub:
+      <<: *customize
+      friendly_name: Volume Automatico Hub
+    automation.hub_initialization_at_startup:
+      <<: *customize
+      friendly_name: Startup HUB
     automation.guest_mode_hub:
       <<: *customize
       friendly_name: Modo Ospite
@@ -41,6 +42,23 @@ homeassistant:
     binary_sensor.people_home:
       <<: *customize
       friendly_name: Persone in casa # People at Home
+    ## GROUP
+    group.automations_notification_hub:
+      <<: *customize
+      friendly_name: Automazioni HUB
+      icon: mdi:account-tie
+    group.location_tracker:
+      <<: *customize
+      friendly_name: Dispositivi tracciati
+      icon: mdi:target-account
+    group.media_player_alexa:
+      <<: *customize
+      friendly_name: Gruppo Alexa
+      icon: mdi:speaker-multiple
+    group.media_player_google:
+      <<: *customize
+      friendly_name: Gruppo Google
+      icon: mdi:speaker-multiple
     ## INPUT BOOLEAN
     input_boolean.guest_mode:
       <<: *customize
@@ -202,13 +220,6 @@ homeassistant:
 media_extractor:
 
 #######################################-#######################################
-##                                   GROUP
-#######################################-#######################################
-# group:
-#   location_tracker:
-#     entities: !secret location_tracker_hub
-
-#######################################-#######################################
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
@@ -280,18 +291,25 @@ input_select:
     options: !secret text_notify_hub
   phone_notify:
     options: ["Telegram Call", "Voip Call"]
-  language: # Uncomment if you want Extra language for Alexa
+  language:
     options:
-      ["it-IT", "en-GB", "en-US", "fr-FR", "de-DE", "es-ES", "ja-JP"]
-      # "en-CA",
-      # "en-AU",
-      # "en-IN",
-      # "fr-CA",
-      # "hi-IN",
-      # "ja-JP",
-      # "pt-BR",
-      # "es-US",
-      # "es-MX",
+      - it-IT
+      - en-GB
+      - en-US
+      - fr-FR
+      - de-DE
+      - es-ES
+      - ja-JP
+      # Extra Only For Alexa
+      - en-CA
+      - en-AU
+      - en-IN
+      - fr-CA
+      - hi-IN
+      - ja-JP
+      - pt-BR
+      - es-US
+      - es-MX
 input_text:
   last_message:
     max: 255
@@ -448,6 +466,115 @@ shell_command:
 #######################################-#######################################
 automation:
   #----------------------------------------------------------------------------------------------------#
+  # INITIALIZE
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Hub initialization at startup
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    action:
+      # Automatic creation of the location_tracker Group from Domain Person.
+      # {{expand(states.person)|map(attribute='entity_id')|list}}
+      - service: group.set
+        data:
+          object_id: location_tracker
+          entities: >-
+            {{states.person|join(',','entity_id')}}
+
+      - choose:
+          - conditions: "{{state_attr('input_select.notification_media_player_alexa', 'options') is not none }}"
+            sequence:
+              # Automatic creation of the media_player_alexa Group
+              # from entity input_select.notification_media_player_alexa if it exists.
+              - service: group.set
+                data:
+                  object_id: media_player_alexa
+                  entities: >-
+                    {% set lista_alexa = expand('input_select.notification_media_player_alexa')|join(',','attributes.options') %}
+                    {{ states.media_player 
+                    | selectattr('attributes.friendly_name', 'defined')
+                    | selectattr('attributes.friendly_name', 'in', lista_alexa)
+                    | map(attribute='entity_id')|list
+                    }}
+
+      - choose:
+          - conditions: "{{state_attr('input_select.notification_media_player_google', 'options') is not none }}"
+            sequence:
+              # Automatic creation of the media_player_google Group
+              # from entity input_select.notification_media_player_google if it exists.
+              - service: group.set
+                data:
+                  object_id: media_player_google
+                  entities: >-
+                    {% set lista_google = expand('input_select.notification_media_player_google')|join(',','attributes.options') %}
+                    {{ states.media_player 
+                    | selectattr('attributes.friendly_name', 'defined')
+                    | selectattr('attributes.friendly_name', 'in', lista_google)
+                    | map(attribute='entity_id')|list
+                    }}
+
+      # Automatic creation of an automations_notification_hub Group
+      # if the "id:" attribute or the "name" of the automations ends with "hub".
+      - service: group.set
+        data:
+          object_id: "automations_notification_hub"
+          entities: >
+            {%for item in states.automation if ((item.attributes.id|lower).endswith('hub'))
+            or ((item.attributes.friendly_name|lower).endswith('hub')) %}
+            {{-item.entity_id}}{%if not loop.last%},{%endif-%}{%endfor%}
+
+      # Execute auto_volume_hub Automation.
+      - service: automation.trigger
+        entity_id: automation.auto_volume_hub
+        # skip_condition: true
+
+  #----------------------------------------------------------------------------------------------------#
+  # Automatic Volume - Media player volume adjustment, based on period_of_day_volume sensor
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Auto Volume Hub
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.period_of_day_volume
+    action:
+      - variables:
+          list_alexa: "{{expand('group.media_player_alexa')|map(attribute='entity_id')|list}}"
+          list_google: "{{expand('group.media_player_google')|map(attribute='entity_id')|list}}"
+          all_entity: "{{list_alexa + list_google}}"
+          volume: "{{states('sensor.period_of_day_volume')|float}}"
+      - choose:
+          - conditions: "{{list_alexa|length > 0}}"
+            sequence:
+              - service: notify.alexa_media
+                data:
+                  data:
+                    type: tts
+                  target: "{{list_alexa}}"
+                  message: >
+                    <speak>
+                    <break time="4s"/>
+                    <prosody volume="silent">volume</prosody>
+                    </speak>
+              - delay: "00:00:02"
+      - choose:
+          - conditions: "{{all_entity|length > 0}}"
+            sequence:
+              - service: media_player.volume_set
+                data:
+                  entity_id: "{{all_entity}}"
+                  volume_level: "{{(volume|round(2))/100}}"
+              - service: input_number.set_value
+                data:
+                  entity_id:
+                    - input_number.intercom_message_volume
+                    - input_number.default_restore_volume
+                  value: "{{volume}}"
+
+  #----------------------------------------------------------------------------------------------------#
   # LAST MESSAGE - Repeat the last text sent (Excluding tts messages)
   #----------------------------------------------------------------------------------------------------#
   - alias: Notification Repeat Last Message Hub
@@ -477,6 +604,7 @@ automation:
         entity_id:
           # - input_boolean.priority_message
           - input_boolean.last_message
+
   #----------------------------------------------------------------------------------------------------#
   # INTERCOM - To send messages from the GUI (graphical user interface)
   #----------------------------------------------------------------------------------------------------#
@@ -498,6 +626,7 @@ automation:
         data:
           entity_id: input_text.intercom_message_hub
           value: ""
+
   #----------------------------------------------------------------------------------------------------#
   # GUEST - On and Off guest mode - The TTS works even if you are away from home.
   #         Useful even if you want to exclude automations if there are guests in the house
