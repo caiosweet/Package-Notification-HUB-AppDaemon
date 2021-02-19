@@ -33,9 +33,9 @@ cards:
   - type: custom:paper-buttons-row
     buttons:
       - entity: binary_sensor.people_home
-        name: false
+        layout: icon
       - entity: group.location_tracker
-        name: false
+        layout: icon
         tap_action:
           action: more-info
         state_icons:
@@ -49,35 +49,35 @@ cards:
             button:
               color: var(--paper-item-icon-active-color)
       - entity: input_boolean.phone_notifications
-        name: false
+        layout: icon
         state_icons:
           "off": "mdi:phone-off"
       - entity: input_boolean.speech_notifications
-        name: false
+        layout: icon
         state_icons:
           "on": "mdi:account-tie-voice"
           "off": "mdi:account-tie-voice-off"
       - entity: input_boolean.text_notifications
-        name: false
+        layout: icon
         state_icons:
           "off": "mdi:cellphone-message-off"
       - entity: input_boolean.screen_notifications
-        name: false
+        layout: icon
         state_icons:
           "off": "mdi:message-bulleted-off"
       - entity: input_boolean.guest_mode
-        name: false
+        layout: icon
         state_icons:
           "on": "mdi:account-multiple-plus"
           "off": "mdi:account-multiple-minus-outline"
       - entity: input_boolean.priority_message
-        name: false
+        layout: icon
         state_icons:
           "off": "mdi:alarm-light-outline"
       - entity: input_boolean.holidays
-        name: false
+        layout: icon
       - entity: binary_sensor.dnd
-        name: false
+        layout: icon
         state_icons:
           "on": "mdi:do-not-disturb"
           "off": "mdi:do-not-disturb-off"
@@ -92,14 +92,12 @@ cards:
         overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
       }
     columns: 3
-    # show_name: false
     show_icon: false
     state_color: true
     entities:
       - entity: sensor.period_of_day
       - entity: sensor.period_of_day_volume
       - entity: input_number.default_restore_volume
-      # Second column
       - entity: input_select.notification_media_player_alexa
         tap_action:
           action: call-service
@@ -147,19 +145,21 @@ cards:
   - type: custom:paper-buttons-row
     buttons:
       - entity: input_boolean.google_switch
+        layout: icon|name
         name: Google
       - entity: input_select.tts_notify
+        layout: icon|state
         icon: false
-        state_icons:
-          "Google Say": "mdi:google"
-          "Google Cloud": "mdi:google-cloud"
-          "Google Assistant": "mdi:google-assistant"
-          "Reverso": "mdi:cached"
+        # state_icons:
+        #   "google say": "mdi:google"
+        #   "google cloud": "mdi:google-cloud"
+        #   "google assistant": "mdi:google-assistant"
+        #   "reverso": "mdi:cached"
         state_text:
-          "Google Say": "Say"
-          "Google Cloud": "Cloud"
-          "Google Assistant": "Assistant"
-          "Reverso": "Reverso"
+          "google say": "Say"
+          "google cloud": "Cloud"
+          "google assistant": "Assistant"
+          "reverso": "Reverso"
         # state_styles:
         #   "on":
         #     button:
@@ -174,21 +174,23 @@ cards:
             entity_id: input_select.tts_notify
 
       - entity: input_boolean.alexa_switch
+        layout: icon|name
         name: Alexa
       - entity: input_select.default_alexa_type
-        tooltip: false
-        icon: false
-        state_icons:
-          "TTS": "mdi:text-shadow"
-          "Push": "mdi:cellphone-text"
-          "Dropin": "mdi:form-dropdown"
-        state_text:
-          "TTS": "TTS"
-          "Announce": "Announce"
-          "Push": "Push"
-          "Dropin": "Dropin"
+        layout: state
+        state:
+          case: first
+        # state_icons:
+        #   "TTS": "mdi:text-shadow"
+        #   "Push": "mdi:cellphone-text"
+        #   "Dropin": "mdi:form-dropdown"
+        # state_text:
+        #   "tts": "TTS"
+        #   "announce": "Announce"
+        #   "push": "Push"
+        #   "dropin": "Dropin"
         state_styles:
-          "Announce":
+          "announce":
             button:
               color: var(--paper-item-icon-active-color)
         tap_action:
@@ -197,6 +199,7 @@ cards:
           service_data:
             entity_id: input_select.default_alexa_type
       - entity: input_boolean.alexa_ssml
+        layout: icon|name
         name: SSML
   # TEXT INPUT ROW
   - type: divider
@@ -224,27 +227,6 @@ cards:
           service: input_boolean.turn_on
           service_data:
             entity_id: input_boolean.last_message
-        # - entity: sensor.centro_notifiche
-        extend_paper_buttons_row:
-          buttons:
-            - entity: input_boolean.html_mode
-              # name: false
-              tap_action:
-                action: toggle
-              state_icons:
-                "off": "mdi:language-markdown"
-                "on": "mdi:language-html5"
-              state_text:
-                "off": "Modo Markdown"
-                "on": "Modo HTML"
-              state_styles:
-                # "off":
-                #   button:
-                #     color: red
-                "on":
-                  button:
-                    color: var(--paper-item-icon-active-color)
-
         entities:
           - type: custom:lovelace-multiline-text-input-card
             style: |
