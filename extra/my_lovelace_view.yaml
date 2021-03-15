@@ -36,6 +36,7 @@ cards:
           service_data:
             entity_id: input_boolean.speech_notifications
       - type: call-service
+        entity: input_boolean.last_message
         name: Ultimo Messaggio
         action_name: Ascolta
         service: input_boolean.turn_on
@@ -174,4 +175,3 @@ cards:
         entities:
           - entity: input_text.phone_called_number
       - entity: input_select.phone_notify
-
