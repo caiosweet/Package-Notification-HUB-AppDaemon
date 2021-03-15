@@ -4,17 +4,18 @@ cards:
   - type: custom:banner-card
     heading: [mdi:account-tie, Alfred]
     link: centro_notifiche
-    style: |
-      ha-card {
-        overflow: hidden; 
-        --bc-font-size-heading: 2em;
-        --bc-font-size-entity-value: 1em;
-        font-size: 1em;
-        --paper-icon-button: var(--paper-item-icon-active-color);
-        border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px;
-        background: content-box radial-gradient(var(--light-primary-color), var(--primary-color));
-        box-shadow: none;
-      }
+    card_mod:
+      style: |
+        ha-card {
+          overflow: hidden; 
+          --bc-font-size-heading: 2em;
+          --bc-font-size-entity-value: 1em;
+          font-size: 1em;
+          --paper-icon-button: var(--paper-item-icon-active-color);
+          border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px;
+          background: content-box radial-gradient(var(--light-primary-color), var(--primary-color));
+          box-shadow: none;
+        }
   # MARKDOWN SENSOR NOTIFIER APP CONDITIONAL
   - type: conditional
     conditions:
@@ -22,11 +23,12 @@ cards:
         state_not: "on"
     card:
       type: markdown
-      style: |
-        ha-card {
-          border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
-          background: red; box-shadow: none; color: yellow;
-        }
+      card_mod:
+        style: |
+          ha-card {
+            border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
+            background: red; box-shadow: none; color: yellow;
+          }
       content: >-
         ⛔ {{states('sensor.centro_notifiche')}}
   # PAPER BUTTONS Row 1
@@ -87,10 +89,11 @@ cards:
       height: 1px
   # GLANCE
   - type: glance
-    style: |
-      ha-card {
-        overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
-      }
+    card_mod:
+      style: |
+        ha-card {
+          overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
+        }
     columns: 3
     show_icon: false
     state_color: true
@@ -207,13 +210,14 @@ cards:
       background-color: var(--primary-color)
       height: 1px
   - type: entities
-    style: |
-      ha-card {
-        background:none; border-radius: 0px; box-shadow: none; 
-      }
-      .card-content {
-        padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
-      }
+    card_mod:
+      style: |
+        ha-card {
+          background:none; border-radius: 0px; box-shadow: none; 
+        }
+        .card-content {
+          padding-top: 0; margin-top: 0; padding-bottom: 0; margin-bottom: 0;
+        }
     entities:
       - type: custom:fold-entity-row
         padding: 0
@@ -229,13 +233,14 @@ cards:
             entity_id: input_boolean.last_message
         entities:
           - type: custom:lovelace-multiline-text-input-card
-            style: |
-              ha-card {
-                background:none; border-radius: 0px; box-shadow: none; 
-                color: var(--primary-text-color);
-              }
-              textarea.textarea {margin-top: 0;}
-              .card-content {padding-top: 0;}
+            card_mod:
+              style: |
+                ha-card {
+                  background:none; border-radius: 0px; box-shadow: none; 
+                  color: var(--primary-text-color);
+                }
+                textarea.textarea {margin-top: 0;}
+                .card-content {padding-top: 0;}
             # autosave: true
             entity: input_text.intercom_message_hub
             max_length: 255
