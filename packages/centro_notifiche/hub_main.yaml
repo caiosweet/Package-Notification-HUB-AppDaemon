@@ -1,6 +1,6 @@
 ### INFO
 #   @author         :   Caio & Gianpi - hassiohelp.eu 🌐
-#   @date           :   Started 01/11/2019 - Updated 15/01/2021
+#   @date           :   Started 01/11/2019 - Updated 15/03/2021
 #   @package        :   Notification HUB - Centro Notifiche 🔔
 #   @description    :   Package Appdaemon Notifier Center for Home Assistant
 ############################################################################
@@ -476,7 +476,7 @@ automation:
       - platform: event
         event_type: automation_reloaded
     action:
-      # Automatic creation of the location_tracker Group from Domain Person.
+      # Automatic creation of the location_tracker Group from Person Domain.
       # {{expand(states.person)|map(attribute='entity_id')|list}}
       - service: group.set
         data:
@@ -515,6 +515,14 @@ automation:
                     | selectattr('attributes.friendly_name', 'in', lista_google)
                     | map(attribute='entity_id')|list
                     }}
+
+      - choose:
+          - conditions: "{{states('input_text.personal_assistant_name') == 'unknown' }}"
+            sequence:
+              - service: input_text.set_value
+                data:
+                  entity_id: input_text.personal_assistant_name
+                  value: ""
 
       # Automatic creation of an automations_notification_hub Group
       # if the "id:" attribute or the "name" of the automations ends with "hub".
