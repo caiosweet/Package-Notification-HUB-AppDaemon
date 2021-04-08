@@ -45,11 +45,11 @@
   {# *************************************************************************** #}
   {#        INIZIO SEQUENZIALE DELLA COSTRUZIONE DEL MESSAGGIO / NOTICIA         #}
   {# *************************************************************************** #}
-  {% if not call_no_annuncio %} {{ annuncio() }} {% endif %}
-  {% if call_modo_ospite %} {{ modo_ospite() }} {% endif %}
+  {% if not call_no_annuncio|default %} {{ annuncio() }} {% endif %}
+  {% if call_modo_ospite|default %} {{ modo_ospite() }} {% endif %}
 
   {# Esempio di come aggiungere altre variabili - Chiamata da Automazione di Benvenuto #}
-  {{ benvenuto }}
+  {{ benvenuto|default }}
 
   {# + Contenuto del messaggio passato tramite automazioni/script + #}
-  {{ message }}
+  {{ message|default }}
