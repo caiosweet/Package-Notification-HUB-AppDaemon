@@ -22,7 +22,7 @@ homeassistant:
     automation.auto_volume_hub:
       <<: *customize
       friendly_name: Volume Automatico Hub
-    automation.hub_initialization_at_startup:
+    automation.initialization_at_startup_hub:
       <<: *customize
       friendly_name: Startup HUB
     automation.guest_mode_hub:
@@ -423,31 +423,31 @@ script:
           # VARIABLES
           # --------------------------------------------- #
           alexa: >-
-            {{alexa}}
+            {{alexa|default}}
           called_number: >-
-            {{called_number}}
+            {{called_number|default}}
           caption: >-
-            {{caption}}
+            {{caption|default}}
           file: >-
-            {{file}}
+            {{file|default}}
           google: >-
-            {{google}}
+            {{google|default}}
           html: >-
-            {{html}}
+            {{html|default}}
           link: >-
-            {{link}}
+            {{link|default}}
           location: >-
-            {{location}}
+            {{location|default}}
           no_show: >-
-            {{no_show}}
+            {{no_show|default}}
           notify: >-
-            {{notify}}
+            {{notify|default}}
           priority: >-
-            {{priority}}
+            {{priority|default}}
           title: >-
-            {{title}}
+            {{title|default}}
           url: >-
-            {{url}}
+            {{url|default}}
           #-------------------------------------------------------------------------------#
           # FILE TO BE INCLUDED IF MACROS ARE USED - NOTE: DO NOT MODIFY THE .yml EXTENSION
           #-------------------------------------------------------------------------------#
@@ -468,7 +468,7 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   # INITIALIZE
   #----------------------------------------------------------------------------------------------------#
-  - alias: Hub initialization at startup
+  - alias: Initialization At Startup Hub
     initial_state: true
     trigger:
       - platform: homeassistant
@@ -530,10 +530,10 @@ automation:
         data:
           object_id: "automations_notification_hub"
           entities: >
-            {%for item in states.automation if ((item.attributes.id|lower).endswith('hub'))
-            or ((item.attributes.friendly_name|lower).endswith('hub')) %}
+            {%for item in states.automation if (item.attributes.id is defined 
+            and (item.attributes.id|lower).endswith('hub'))
+            or (item.attributes.friendly_name|lower).endswith('hub') %}
             {{-item.entity_id}}{%if not loop.last%},{%endif-%}{%endfor%}
-
       # Execute auto_volume_hub Automation.
       - service: automation.trigger
         entity_id: automation.auto_volume_hub
