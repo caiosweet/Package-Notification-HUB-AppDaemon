@@ -16,7 +16,7 @@ script:
             media_player: media_player.studio, media_player.sala
             volume: 0.4
           google: 
-            media_player: media_player.red, media_player.black2
+            media_player: media_player.red, media_player.black_due
             volume: 0.4
           title: >-
             M0 - {{now().time()}} 
@@ -72,10 +72,8 @@ script:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-          alexa:
-            mode: true
-          google:
-            mode: true
+          alexa: true
+          google: true
           title: >-
             M4 - {{now().time()}} 
           message: >-
@@ -85,10 +83,8 @@ script:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
-          alexa:
-            mode: true
-          google:
-            mode: true
+          alexa: true
+          google: true
           title: >-
             M5 - {{now().time()}} 
           message: >-
@@ -97,7 +93,7 @@ script:
             {% set alexa = 'Media player selezionato ' 
             + states('input_select.notification_media_player_alexa')
             + '. Tipo ' + states('input_select.default_alexa_type')
-            + '. Metodo ' + ('Nessuno' if states('input_select.default_alexa_method5') == 'unknown' else states('input_select.default_alexa_method5')) %}
+            + '. Metodo ' + ('Nessuno' if states('input_select.default_alexa_method') == 'unknown' else states('input_select.default_alexa_method')) %}
             {% endif %}
             {% if states('input_boolean.google_switch') == 'on' %}
             {% set google = '. Google media player selezionato ' + states('input_select.notification_media_player_google')
@@ -110,15 +106,20 @@ script:
             +', Notifiche vocali ' + states('input_boolean.speech_notifications')
             +', Notifiche testo ' + states('input_boolean.text_notifications')
             +', Notifiche persistenti ' + states('input_boolean.screen_notifications') %}
-            {{(alexa ~ google ~ message)|replace(' off',' spento')|replace(' on',' acceso')}}
+            {{(alexa|default ~ google|default ~ message)|replace(' off',' spento')|replace(' on',' acceso')}}
 
   centro_notifiche_alexa_test:
     alias: 'Centro Notifiche Alexa Test'
     sequence:
+      - variables:
+          my_variable: >
+            {% if is_state('alarm_control_panel.home_alarm', 'triggered') 
+            and is_state('input_boolean.allarme_silenzioso', 'off')-%}
+            0 {% else -%} 1 {%- endif %}
       - service: script.my_notify
         data:
-          call_no_annuncio: 1
-          alexa:
+          message: "Alert"
+          "{{'alexa' if my_variable else ''}}": 
             message: "Houston, we have a problem! "
             language: en-US
             voice: Matthew
@@ -135,8 +136,7 @@ script:
         data:
           alexa:
             message: >
-              sono le {{now().strftime("%H:%M")}} 
-              e sogni d'oro. 
+              sono le {{now().strftime("%H:%M")}}, sogni d'oro. 
               a ah, che bello!
       - delay: "00:01:00"
       - service: script.my_notify
