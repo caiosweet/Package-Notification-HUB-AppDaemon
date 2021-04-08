@@ -309,27 +309,29 @@
   {#        INIZIO SEQUENZIALE DELLA COSTRUZIONE DEL MESSAGGIO / NOTICIA         #}
   {# *************************************************************************** #}
 
-  {% if not call_no_annuncio %} {{ annuncio() }} {% endif %}
-  {% if call_saluto %} {{ saluto() }} {% endif %}
-  {% if call_introduzione %} {{ introduzione() }} {% endif %}
-  {% if call_va_bene %} {{ va_bene () }} {% endif %}
-  {% if call_informare %} {{ informare() }} {% endif %}
-  {% if call_info %} {{ info() }} {% endif %}
-  {% if call_modo_ospite %} {{ modo_ospite() }} {% endif %}
+  {% if not call_no_annuncio|default %} {{ annuncio() }} {% endif %}
+  {% if call_saluto|default %} {{ saluto() }} {% endif %}
+  {% if call_introduzione|default %} {{ introduzione() }} {% endif %}
+  {% if call_va_bene|default %} {{ va_bene () }} {% endif %}
+  {% if call_informare|default %} {{ informare() }} {% endif %}
+  {% if call_info|default %} {{ info() }} {% endif %}
+  {% if call_modo_ospite|default %} {{ modo_ospite() }} {% endif %}
+
   {# Esempio di come aggiungere altre variabili - Chiamata da Automazione di Benvenuto #}
-  {{ benvenuto }}
-  {% if call_bentornato %} {{ bentornato(person) }} {% endif %}
-  {% if call_inizio_lavoro %} {{ inizio_lavoro(person) }} {% endif %}
-  {% if call_fine_lavoro %} {{ fine_lavoro(person) }} {% endif %}
-  {% if call_controllo_luci %} {{ controllo_luci() }} {% endif %}
-  {% if call_controllo_prese %} {{ controllo_prese() }} {% endif %}
-  {% if call_controllo_infissi %} {{ controllo_infissi() }} {% endif %}
-  {% if call_avviso_pioggia %} {{ avviso_pioggia(cattivo_tempo())}} {% endif %}
+  {{ benvenuto|default }}
+
+  {% if call_bentornato|default %} {{ bentornato(person) }} {% endif %}
+  {% if call_inizio_lavoro|default %} {{ inizio_lavoro(person) }} {% endif %}
+  {% if call_fine_lavoro|default %} {{ fine_lavoro(person) }} {% endif %}
+  {% if call_controllo_luci|default %} {{ controllo_luci() }} {% endif %}
+  {% if call_controllo_prese|default %} {{ controllo_prese() }} {% endif %}
+  {% if call_controllo_infissi|default %} {{ controllo_infissi() }} {% endif %}
+  {% if call_avviso_pioggia|default %} {{ avviso_pioggia(cattivo_tempo())}} {% endif %}
   {# + Contenuto del messaggio passato tramite automazioni/script + #}
-  {{ message }}
+  
+  {{ message|default }}
 
-  {% if call_arrivederci %} {{ arrivederci() }} {% endif %}
-  {% if call_spegni %} {{ spegni() }} {% endif %}
-  {% if call_nuovo_dispositivo %} {{ nuovo_dispositivo(introduzione()) }} {% endif %}
-  {% if call_fatto_casuale %} {{ fatto_casuale() }} {% endif %}
-
+  {% if call_arrivederci|default %} {{ arrivederci() }} {% endif %}
+  {% if call_spegni|default %} {{ spegni() }} {% endif %}
+  {% if call_nuovo_dispositivo|default %} {{ nuovo_dispositivo(introduzione()) }} {% endif %}
+  {% if call_fatto_casuale|default %} {{ fatto_casuale() }} {% endif %}
