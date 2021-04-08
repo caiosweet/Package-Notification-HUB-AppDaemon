@@ -71,7 +71,9 @@ automation:
                               Il sistema è operativo!.
                             voice: Giorgio
                             type: tts
-                          # google:
+                          google:
+                            message_tts: >-
+                              Il sistema è operativo!.
                           #   media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
                             # media_content_type: sound
         default:
@@ -476,16 +478,16 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   # Test trigger event - Notifica location
   #----------------------------------------------------------------------------------------------------#
-  - alias: Notifica location
+  - alias: Notifica location hub
     initial_state: true
     trigger:
       - platform: event
         event_type: state_changed
-    condition: # ??trigger.event.data.old_state is none 
+    condition: # and (trigger.event.data.old_state is none 
       - "{{ trigger.event.data.entity_id.startswith('person') }}"
       - "{{ trigger.event.data.old_state is not none
-        and (trigger.event.data.old_state is none 
-        or trigger.event.data.new_state.state != trigger.event.data.old_state.state) }}"
+        and 'latitude' in trigger.event.data
+        and trigger.event.data.new_state.state != trigger.event.data.old_state.state }}"
     action:
       - variables:
           lat: "{{trigger.event.data.new_state.attributes.latitude}}"
@@ -545,3 +547,16 @@ automation:
   #           [Mappa](https://www.openstreetmap.org/?mlat={{lat}}&mlon={{long}}#map=8/{{lat}}/{{long}})
   #           {% endif %}
 
+  - alias: Notifica Cambio Stagione hub
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.stagioni
+    condition:
+      - condition: template
+        value_template: '{{ trigger.from_state is defined and trigger.from_state.state | lower != "unknown" }}'
+    action:
+      - service: script.my_notify
+        data:
+            message: >
+              Arrivederci {{ trigger.from_state.state }}, e Salutiamo la Stagione {{ trigger.to_state.state }}!
