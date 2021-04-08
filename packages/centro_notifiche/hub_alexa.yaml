@@ -9,7 +9,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Alexa 3.2.0
+        version: Alexa 3.2.1
 
       expose: &expose
         <<: *customize
