@@ -220,17 +220,18 @@ cards:
         }
     entities:
       - type: custom:fold-entity-row
+        cickable: true
         padding: 0
         head:
-          # type: section
-          # label: Interfono
-          type: call-service
+          type: button
+          icon: mdi:bullhorn-outline
           name: Interfono
-          icon: mdi:bullhorn-outline #mdi:repeat-once
           action_name: Last Message
-          service: input_boolean.turn_on
-          service_data:
-            entity_id: input_boolean.last_message
+          tap_action:
+            action: call-service
+            service: input_boolean.turn_on
+            service_data:
+              entity_id: input_boolean.last_message
         entities:
           - type: custom:lovelace-multiline-text-input-card
             card_mod:
