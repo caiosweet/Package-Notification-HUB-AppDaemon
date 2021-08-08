@@ -1,7 +1,8 @@
-#######################################-#######################################
-##                                 CUSTOMIZE
-#######################################-#######################################
+# package_hub_google:
 homeassistant:
+  #######################################-#######################################
+  ##                                 CUSTOMIZE
+  #######################################-#######################################
   customize:
     ## NODE ANCHORS
     package.node_anchors:
@@ -9,7 +10,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Google 3.2.1
+        version: Google 3.2.2
 
       expose: &expose
         <<: *customize
@@ -48,18 +49,18 @@ input_select:
   notification_media_player_google:
     options: !secret notification_media_player_google_hub
 
-#######################################-#######################################
-##                                  SENSOR
-#######################################-#######################################
-sensor:
-  - platform: template
-    sensors:
-      media_player_google:
-        value_template: >-
-          {%set domains=['media_player','group']-%}
-          {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_google')|lower-%}
-          {%if x.domain=='group'%}{{-x.attributes.entity_id|join(', ')-}}{%else%}{{-x.entity_id-}}{%endif%}{%endfor%}
-        icon_template: >-
-          {%set domains=['media_player','group']-%}
-          {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_google')|lower-%}
-          {%if x.domain=='group'%}mdi:speaker-multiple{%elif x.domain=='sensor'%}mdi:cast-audio{%else%}mdi:speaker{%endif%}{%endfor%}
+######################################-#######################################
+#                                 TEMPLATE
+######################################-#######################################
+template:
+  sensor:
+    - name: Media Player Google
+      unique_id: media_player_google
+      state: >-
+        {%set domains=['media_player','group']-%}
+        {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_google')|lower-%}
+        {%if x.domain=='group'%}{{-x.attributes.entity_id|join(', ')-}}{%else%}{{-x.entity_id-}}{%endif%}{%endfor%}
+      icon: >-
+        {%set domains=['media_player','group']-%}
+        {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_google')|lower-%}
+        {%if x.domain=='group'%}mdi:speaker-multiple{%elif x.domain=='sensor'%}mdi:cast-audio{%else%}mdi:speaker{%endif%}{%endfor%}
