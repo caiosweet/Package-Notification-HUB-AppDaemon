@@ -1,8 +1,10 @@
+# package_hub_main:
 ### INFO
 #   @author         :   Caio & Gianpi - hassiohelp.eu 🌐
 #   @date           :   Started 01/11/2019 - Updated 15/03/2021
 #   @package        :   Notification HUB - Centro Notifiche 🔔
 #   @description    :   Package Appdaemon Notifier Center for Home Assistant
+#   @repo           :   https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases
 ############################################################################
 
 #######################################-#######################################
@@ -16,7 +18,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Main 3.2.1
+        version: Main 3.2.2
 
     ## AUTOMATION
     automation.auto_volume_hub:
@@ -322,90 +324,85 @@ input_text:
     max: 30
     mode: password
 
-#######################################-#######################################
-##                               BINARY SENSOR
-#######################################-#######################################
-binary_sensor:
-  - platform: template
-    sensors:
-      dnd:
-        value_template: >
-          {%set speech=states('input_boolean.speech_notifications')%}
-          {%set priority=states('input_boolean.priority_message')%}
-          {%set t=now().time()%}
-          {%set t=(t.hour*60+t.minute)*60+60%}
-          {% set day = 'weekdays' if (is_state('binary_sensor.workday_sensor','on')
-            and is_state('input_boolean.holidays','off')) else 'holidays' %}
-          {%set start=state_attr('input_datetime.dnd_start_%s'%day,'timestamp')%}
-          {%set stop=state_attr('input_datetime.dnd_end_%s'%day,'timestamp')%}
-          {%if speech=='on' and priority=='off'%} 
-          {{(start<t<stop) if start<stop else ((t>start or t<stop) and start != stop)}}
-          {%elif speech=='off' and priority=='off'%}True{%else%}False{%endif%}
-        icon_template: >
-          {%if is_state('binary_sensor.dnd','off')%}mdi:do-not-disturb-off{%else%}mdi:do-not-disturb{%endif%}
-
-      people_home:
-        device_class: presence
-        value_template: "{{expand(states.person)|selectattr('state','eq','home')|list|count > 0}}"
-        icon_template: >-
-          {% set people = expand(states.person)|selectattr('state','eq','home')
-            |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0) %}
-          {% set icon = {0 :'mdi:account-off', 1 :'mdi:account', 2 :'mdi:account-multiple', 3 :'mdi:account-multiple-check'} %}
-          {{icon[people] if people in icon else 'mdi:account-group'}}
-        attribute_templates:
-          number: >-
-            {{expand(states.person)|selectattr('state','eq','home')
-            |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0)}}
-          name: >-
-            {{expand(states.person)|selectattr('state','eq','home')
-            |join(', ',attribute='name')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
-          entity: >-
-            {{expand(states.person)|selectattr('state','eq','home')
-            |join(', ',attribute='entity_id')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
-
-#######################################-#######################################
-##                                  SENSOR
-#######################################-#######################################
-sensor:
-  - platform: template
-    sensors:
-      period_of_day:
-        value_template: >
-          {%set nt=now().time()%}
-          {%set nt=(nt.hour*60+nt.minute)*60+nt.second%}
-          {%if state_attr('input_datetime.start_morning','timestamp')<=nt<state_attr('input_datetime.start_afternoon','timestamp')%}Mattino
-          {%elif state_attr('input_datetime.start_afternoon','timestamp')<=nt<state_attr('input_datetime.start_evening','timestamp')%}Pomeriggio
-          {%elif state_attr('input_datetime.start_evening','timestamp')<=nt<state_attr('input_datetime.start_night','timestamp')%}Sera
-          {%elif (state_attr('input_datetime.start_evening','timestamp')>state_attr('input_datetime.start_night','timestamp'))
-          and (nt>state_attr('input_datetime.start_evening','timestamp') or nt<state_attr('input_datetime.start_night', 'timestamp'))%}Sera
-          {%else%}Notte{%endif%}
-        icon_template: >
-          {%if is_state('sensor.period_of_day','Mattino')%}mdi:weather-sunset-up
-          {%elif is_state('sensor.period_of_day','Pomeriggio')%}mdi:weather-sunny
-          {%elif is_state('sensor.period_of_day','Sera') %}mdi:weather-sunset-down
-          {%else%} mdi:weather-night{%endif%}
-      period_of_day_volume:
-        value_template: >
-          {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int}}
-          {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int}}
-          {%elif is_state('sensor.period_of_day','Sera') %}{{states('input_number.evening_volume')|int}}
-          {%else%}{{states('input_number.night_volume')|int}}{%endif%}
-        icon_template: >
-          {%if is_state('sensor.period_of_day_volume','0')%}mdi:volume-off
-          {%elif is_state('sensor.period_of_day_volume','10')%}mdi:volume-low
-          {%elif is_state('sensor.period_of_day_volume','20')%}mdi:volume-low
-          {%elif is_state('sensor.period_of_day_volume','30')%}mdi:volume-low
-          {%elif is_state('sensor.period_of_day_volume','40')%}mdi:volume-medium
-          {%elif is_state('sensor.period_of_day_volume','50')%}mdi:volume-medium
-          {%elif is_state('sensor.period_of_day_volume','60')%}mdi:volume-medium
-          {%else%}mdi:volume-high{%endif%}
-        attribute_templates:
-          vol: >
-            {%if is_state('sensor.period_of_day','Mattino') %}{{(states('input_number.morning_volume')|float)/100}}
-            {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{(states('input_number.afternoon_volume')|float)/100}}
-            {%elif is_state('sensor.period_of_day','Sera') %}{{(states('input_number.evening_volume')|float)/100}}
-            {%else%}{{(states('input_number.night_volume')|float)/100}}{%endif%}
-
+######################################-#######################################
+#                                 TEMPLATE
+######################################-#######################################
+template:
+  binary_sensor:
+    - name: dnd
+      unique_id: dnd
+      state: >
+        {%set speech=states('input_boolean.speech_notifications')%}
+        {%set priority=states('input_boolean.priority_message')%}
+        {%set t=now().time()%}
+        {%set t=(t.hour*60+t.minute)*60+60%}
+        {% set day = 'weekdays' if (is_state('binary_sensor.workday_sensor','on')
+          and is_state('input_boolean.holidays','off')) else 'holidays' %}
+        {%set start=state_attr('input_datetime.dnd_start_%s'%day,'timestamp')%}
+        {%set stop=state_attr('input_datetime.dnd_end_%s'%day,'timestamp')%}
+        {%if speech=='on' and priority=='off'%} 
+        {{(start<t<stop) if start<stop else ((t>start or t<stop) and start != stop)}}
+        {%elif speech=='off' and priority=='off'%}True{%else%}False{%endif%}
+      icon: >
+        {%if is_state('binary_sensor.dnd','off')%}mdi:do-not-disturb-off{%else%}mdi:do-not-disturb{%endif%}
+    - name: People Home
+      unique_id: people_home
+      device_class: presence
+      state: "{{expand(states.person)|selectattr('state','eq','home')|list|count > 0}}"
+      icon: >-
+        {% set people = expand(states.person)|selectattr('state','eq','home')
+          |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0) %}
+        {% set icon = {0 :'mdi:account-off', 1 :'mdi:account', 2 :'mdi:account-multiple', 3 :'mdi:account-multiple-check'} %}
+        {{icon[people] if people in icon else 'mdi:account-group'}}
+      attributes:
+        number: >-
+          {{expand(states.person)|selectattr('state','eq','home')
+          |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0)}}
+        name: >-
+          {{expand(states.person)|selectattr('state','eq','home')
+          |join(', ',attribute='name')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
+        entity: >-
+          {{expand(states.person)|selectattr('state','eq','home')
+          |join(', ',attribute='entity_id')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
+  sensor:
+    - name: Period of Day
+      unique_id: period_of_day
+      state: >
+        {%set nt=now().time()%}
+        {%set nt=(nt.hour*60+nt.minute)*60+nt.second%}
+        {%if state_attr('input_datetime.start_morning','timestamp')<=nt<state_attr('input_datetime.start_afternoon','timestamp')%}Mattino
+        {%elif state_attr('input_datetime.start_afternoon','timestamp')<=nt<state_attr('input_datetime.start_evening','timestamp')%}Pomeriggio
+        {%elif state_attr('input_datetime.start_evening','timestamp')<=nt<state_attr('input_datetime.start_night','timestamp')%}Sera
+        {%elif (state_attr('input_datetime.start_evening','timestamp')>state_attr('input_datetime.start_night','timestamp'))
+        and (nt>state_attr('input_datetime.start_evening','timestamp') or nt<state_attr('input_datetime.start_night', 'timestamp'))%}Sera
+        {%else%}Notte{%endif%}
+      icon: >
+        {%if is_state('sensor.period_of_day','Mattino')%}mdi:weather-sunset-up
+        {%elif is_state('sensor.period_of_day','Pomeriggio')%}mdi:weather-sunny
+        {%elif is_state('sensor.period_of_day','Sera') %}mdi:weather-sunset-down
+        {%else%} mdi:weather-night{%endif%}
+    - name: Period of Day Volume
+      unique_id: period_of_day_volume
+      state: >
+        {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int}}
+        {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int}}
+        {%elif is_state('sensor.period_of_day','Sera') %}{{states('input_number.evening_volume')|int}}
+        {%else%}{{states('input_number.night_volume')|int}}{%endif%}
+      icon: >
+        {%if is_state('sensor.period_of_day_volume','0')%}mdi:volume-off
+        {%elif is_state('sensor.period_of_day_volume','10')%}mdi:volume-low
+        {%elif is_state('sensor.period_of_day_volume','20')%}mdi:volume-low
+        {%elif is_state('sensor.period_of_day_volume','30')%}mdi:volume-low
+        {%elif is_state('sensor.period_of_day_volume','40')%}mdi:volume-medium
+        {%elif is_state('sensor.period_of_day_volume','50')%}mdi:volume-medium
+        {%elif is_state('sensor.period_of_day_volume','60')%}mdi:volume-medium
+        {%else%}mdi:volume-high{%endif%}
+      attributes:
+        vol: >
+          {%if is_state('sensor.period_of_day','Mattino') %}{{(states('input_number.morning_volume')|float)/100}}
+          {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{(states('input_number.afternoon_volume')|float)/100}}
+          {%elif is_state('sensor.period_of_day','Sera') %}{{(states('input_number.evening_volume')|float)/100}}
+          {%else%}{{(states('input_number.night_volume')|float)/100}}{%endif%}
 #######################################-#######################################
 ##                                  SCRIPT
 #######################################-#######################################

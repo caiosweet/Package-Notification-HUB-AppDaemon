@@ -1,7 +1,8 @@
-#######################################-#######################################
-##                                 CUSTOMIZE
-#######################################-#######################################
+# package_hub_alexa:
 homeassistant:
+  #######################################-#######################################
+  ##                                 CUSTOMIZE
+  #######################################-#######################################
   customize:
     ## NODE ANCHORS
     package.node_anchors:
@@ -9,7 +10,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Alexa 3.2.1
+        version: Alexa 3.2.2
 
       expose: &expose
         <<: *customize
@@ -169,20 +170,20 @@ input_select:
   #     ]
 
 #######################################-#######################################
-##                                  SENSOR
+##                                 TEMPLATE
 #######################################-#######################################
-sensor:
-  - platform: template
-    sensors:
-      media_player_alexa:
-        value_template: >
-          {%set domains=['media_player','group','sensor']-%}
-          {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
-          {%if x.domain=='sensor'%}{{x.state}}{%else%}{{-x.entity_id-}}{%endif%}{%endfor%}
-        icon_template: >-
-          {%set domains=['media_player','group','sensor']-%}
-          {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
-          {%if x.domain=='group'%}mdi:speaker-multiple{%elif x.domain=='sensor'%}mdi:cast-audio{%else%}mdi:speaker{%endif%}{%endfor%}
+template:
+  sensor:
+    - name: Media Player Alexa
+      unique_id: media_player_alexa
+      state: >
+        {%set domains=['media_player','group','sensor']-%}
+        {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
+        {%if x.domain=='sensor'%}{{x.state}}{%else%}{{-x.entity_id-}}{%endif%}{%endfor%}
+      icon: >-
+        {%set domains=['media_player','group','sensor']-%}
+        {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
+        {%if x.domain=='group'%}mdi:speaker-multiple{%elif x.domain=='sensor'%}mdi:cast-audio{%else%}mdi:speaker{%endif%}{%endfor%}
 
 #######################################-#######################################
 ##                                  SCRIPT
