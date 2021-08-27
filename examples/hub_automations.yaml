@@ -1,4 +1,4 @@
----
+# package_hub_automations:
 #----------------------------------------------------------------------------------------------------#
 # ESEMPI DI COME CREARE DELLE AUTOMAZIONI CON I RICHIAMI ALLE MACRO
 #----------------------------------------------------------------------------------------------------#
@@ -64,8 +64,8 @@ automation:
                           title: "HomeAssistant Start!"
                           notify: "{{notification_service}}"
                           message: |
-                            Centro Notifiche operativo! 👍
-                            {{states('sensor.ha_start')}}
+                            📬 Centro Notifiche operativo! 👨‍✈️
+                            🏁 {{states('sensor.ha_start')}}
                           alexa:
                             message_tts: >-
                               Il sistema è operativo!.
@@ -74,8 +74,8 @@ automation:
                           google:
                             message_tts: >-
                               Il sistema è operativo!.
-                          #   media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
                             # media_content_type: sound
+                          #   media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
         default:
           - service: "notify.{{notification_service}}"
             data:
@@ -144,7 +144,7 @@ automation:
           link: "[Release Notes]({{state_attr('binary_sensor.updater','release_notes')}})"
 
   #----------------------------------------------------------------------------------------------------#
-  # Benvenuto # Esempio Macro elaborata al di fuori di build_message, dove al suo interno va inserito {{ benvenuto }}
+  # Benvenuto # Esempio Macro elaborata al di fuori di build_message, dove al suo interno va inserito {{ benvenuto|default }}
   #----------------------------------------------------------------------------------------------------#
   - alias: Benvenuto
     description: "Welcome Message"
@@ -159,6 +159,7 @@ automation:
       - service: script.my_notify
         data:
           call_no_annuncio: 1
+          google: true
           alexa:
             type: announce
           title: Benvenuto
@@ -208,6 +209,7 @@ automation:
         data:
           alexa:
             type: announce
+          google: true
           call_no_annuncio: 1
           call_bentornato: 1
           title: Bentornato
@@ -483,7 +485,7 @@ automation:
     trigger:
       - platform: event
         event_type: state_changed
-    condition: # and (trigger.event.data.old_state is none 
+    condition: # and (trigger.event.data.old_state is none
       - "{{ trigger.event.data.entity_id.startswith('person') }}"
       - "{{ trigger.event.data.old_state is not none
         and 'latitude' in trigger.event.data
@@ -508,7 +510,7 @@ automation:
           - conditions: "{{not to in 'home' and lat != ''}}"
             sequence:
               - service: telegram_bot.send_location
-                data_template:
+                data:
                   disable_notification: true
                   latitude: "{{lat}}"
                   longitude: "{{long}}"
@@ -551,12 +553,22 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.stagioni
+        entity_id: sensor.season
     condition:
-      - condition: template
-        value_template: '{{ trigger.from_state is defined and trigger.from_state.state | lower != "unknown" }}'
+      - "{{ trigger.from_state is defined }}"
     action:
+      - variables:
+          from: "{{trigger.from_state.state if trigger.from_state is defined }}"
+          to: "{{states('sensor.season')}}"
       - service: script.my_notify
         data:
-            message: >
-              Arrivederci {{ trigger.from_state.state }}, e Salutiamo la Stagione {{ trigger.to_state.state }}!
+          message: >
+            {% set state_dict = {
+              'spring': 'Primavera',
+              'summer': 'Estate',
+              'autumn': 'Autunno',
+              'winter': 'Inverno'
+            } %}
+            {% set from = state_dict.get(from, from) %}
+            {% set to = state_dict.get(to, to) %}
+            Arrivederci {{ from }} e Salutiamo la Stagione {{ to }}!

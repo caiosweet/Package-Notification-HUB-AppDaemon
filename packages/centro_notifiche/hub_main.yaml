@@ -435,12 +435,14 @@ script:
             {{called_number|default}}
           caption: >-
             {{caption|default}}
-          file: >-
-            {{file|default}}
+          discord: >-
+            {{discord|default}}
           google: >-
             {{google|default}}
           html: >-
             {{html|default}}
+          image: >-
+            {{image|default}}
           link: >-
             {{link|default}}
           location: >-
@@ -455,8 +457,6 @@ script:
             {{priority|default}}
           title: >-
             {{title|default}}
-          url: >-
-            {{url|default}}
           #-------------------------------------------------------------------------------#
           # FILE TO BE INCLUDED IF MACROS ARE USED - NOTE: DO NOT MODIFY THE .yml EXTENSION
           #-------------------------------------------------------------------------------#

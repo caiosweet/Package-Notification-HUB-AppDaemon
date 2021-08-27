@@ -1,3 +1,4 @@
+# package_feed:
 # Requirement
 # https://github.com/custom-components/feedparser
 # https://github.com/iantrich/list-card
@@ -13,7 +14,7 @@ homeassistant:
         package: "Feed 📰"
         site: "hassiohelp.eu 🌐"
         author: "Caio"
-        version: "2.0.0"
+        version: "2.0.1"
       expose: &expose
         <<: *customize
         haaska_hidden: false
@@ -37,6 +38,9 @@ homeassistant:
     sensor.feed_dpc:
       <<: *customize
       friendly_name: "Feed DPC"
+    sensor.feed_cb01:
+      <<: *customize
+      friendly_name: "CineBlog01"
 ###############################################################################
 ## COMPONENT
 ###############################################################################
@@ -46,7 +50,10 @@ feedreader:
     - &feed_hassiohelp_commenti https://hassiohelp.eu/comments/feed/
     - &feed_news_ansa https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml
     - &feed_wikiquote https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd
-    - &feed_dpc http://www.protezionecivile.gov.it/web/guest/dettaglio/-/journal/rss/351565?doAsGroupId=20182&refererPlid=42041&controlPanelCategory=current_site.content&_15_groupId=20182
+    # - &feed_dpc https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_criticita
+    # - &feed_dpc_meteo https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_vigilanza #TODO
+    # - &feed_dpc_news https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=notizia #TODO
+    - &feed_cb01 http://feeds.feedburner.com/cineblog01/Film-In-Streaming-Gratis
   scan_interval:
     minutes: 30
   max_entries: 20
@@ -80,11 +87,21 @@ sensor:
       - title
       - summary
       - published
+  # - platform: feedparser
+  #   name: feed_dpc
+  #   feed_url: *feed_dpc
+  #   date_format: *data
+  #   inclusions: *title_link_pub
   - platform: feedparser
-    name: feed_dpc
-    feed_url: *feed_dpc
+    name: feed_cb01
+    feed_url: *feed_cb01
     date_format: *data
-    inclusions: *title_link_pub
+    # inclusions: *title_link_pub
+    inclusions:
+      - title
+      - summary
+      - published
+      - link
 #######################################-#######################################
 ##                                 AUTOMATION
 #######################################-#######################################
@@ -95,14 +112,15 @@ automation:
     max_exceeded: silent
     max: 20
     trigger:
-      platform: event
-      event_type: feedreader
+      - platform: event
+        event_type: feedreader
     variables:
       feed_hassiohelp_articoli: *feed_hassiohelp_articoli
       feed_hassiohelp_commenti: *feed_hassiohelp_commenti
       feed_news_ansa: *feed_news_ansa
       feed_wikiquote: *feed_wikiquote
-      feed_dpc: *feed_dpc
+      # feed_dpc: *feed_dpc
+      feed_cb01: *feed_cb01
     action:
       - variables:
           feed_url: "{{trigger.event.data.feed_url}}"
@@ -146,10 +164,18 @@ automation:
                   title: "📑 WikiQuote"
                   message: "Aforisma del giorno. {{trigger.event.data.summary|striptags}}"
                   link: "[Aforisma]({{feed_link}})"
-          - conditions: "{{feed_url == feed_dpc}}"
+          # - conditions: "{{feed_url == feed_dpc}}"
+          #   sequence:
+          #     - service: *notify
+          #       data:
+          #         title: "⛈️ Protezione Civile"
+          #         message: "{{feed_title}}"
+          #         link: "[Bollettini di criticità]({{feed_link}})"
+          - conditions: "{{ feed_url == feed_cb01 }}"
             sequence:
               - service: *notify
                 data:
-                  title: "⛈️ Protezione Civile"
+                  title: "🎬 FILM CineBlog01 🎥"
                   message: "{{feed_title}}"
-                  link: "[Bollettini di criticità]({{feed_link}})"
+                  link: "[Link]({{feed_link}})"
+        default: []

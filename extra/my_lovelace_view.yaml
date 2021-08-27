@@ -4,6 +4,8 @@ icon: mdi:account-tie-voice
 # panel: true
 cards:
   - !include ../cards/card_menu_centro_notifiche.yaml
+  # - !include ../cards/card_test_centro_notifiche.yaml
+  # - !include ../cards/card_test_centro_notifiche_change_me.yaml
   # CARD Centro Notifiche
   - type: entities
     title: Centro Notifiche
