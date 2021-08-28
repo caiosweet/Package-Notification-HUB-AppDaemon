@@ -1,7 +1,7 @@
 # package_hub_main:
 ### INFO
 #   @author         :   Caio & Gianpi - hassiohelp.eu 🌐
-#   @date           :   Started 01/11/2019 - Updated 15/03/2021
+#   @date           :   Started 01/11/2019 - Updated 21/08/2021
 #   @package        :   Notification HUB - Centro Notifiche 🔔
 #   @description    :   Package Appdaemon Notifier Center for Home Assistant
 #   @repo           :   https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases
@@ -18,7 +18,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Main 3.2.2
+        version: Main 3.3.0
 
     ## AUTOMATION
     automation.auto_volume_hub:
@@ -98,6 +98,14 @@ homeassistant:
       <<: *customize
       friendly_name: Notifiche Testo
       icon: mdi:cellphone-message
+    input_boolean.tts_clock:
+      <<: *customize
+      friendly_name: TTS clock
+      icon: mdi:clock
+    input_boolean.wrap_text:
+      <<: *customize
+      friendly_name: Testo a capo
+      icon: mdi:text-box-check
     ## INPUT DATETIME
     input_datetime.start_morning:
       <<: *customize
@@ -234,6 +242,8 @@ input_boolean:
   screen_notifications:
   speech_notifications:
   text_notifications:
+  tts_clock:
+  wrap_text:
 input_datetime:
   dnd_start_weekdays:
     has_date: false
@@ -425,16 +435,20 @@ script:
             {{called_number|default}}
           caption: >-
             {{caption|default}}
-          file: >-
-            {{file|default}}
+          discord: >-
+            {{discord|default}}
           google: >-
             {{google|default}}
           html: >-
             {{html|default}}
+          image: >-
+            {{image|default}}
           link: >-
             {{link|default}}
           location: >-
             {{location|default}}
+          mobile: >-
+            {{mobile|default}}
           no_show: >-
             {{no_show|default}}
           notify: >-
@@ -443,8 +457,6 @@ script:
             {{priority|default}}
           title: >-
             {{title|default}}
-          url: >-
-            {{url|default}}
           #-------------------------------------------------------------------------------#
           # FILE TO BE INCLUDED IF MACROS ARE USED - NOTE: DO NOT MODIFY THE .yml EXTENSION
           #-------------------------------------------------------------------------------#

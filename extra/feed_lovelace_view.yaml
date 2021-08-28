@@ -75,3 +75,17 @@ cards:
             field: published
             style:
               - white-space: nowrap
+
+      - type: custom:list-card
+        feed_attribute: entries
+        entity: sensor.feed_cb01
+        title: "FILM CineBlog01"
+        row_limit: 20
+        columns:
+          - title: "Titolo"
+            add_link: link
+            field: title
+          - title: Data
+            field: published
+            style:
+              - white-space: nowrap
