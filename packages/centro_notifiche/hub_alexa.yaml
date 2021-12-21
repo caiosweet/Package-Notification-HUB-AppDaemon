@@ -1,4 +1,5 @@
 # package_hub_alexa:
+# For the Alexa icon https://github.com/vigonotion/hass-simpleicons
 homeassistant:
   #######################################-#######################################
   ##                                 CUSTOMIZE
@@ -10,7 +11,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Alexa 3.3.0
+        version: Alexa 3.3.1
 
       expose: &expose
         <<: *customize
@@ -21,7 +22,8 @@ homeassistant:
     input_boolean.alexa_switch:
       <<: *customize
       friendly_name: Alexa
-      icon: mdi:amazon-alexa
+      icon: si:amazonalexa
+      # icon: mdi:alpha-a-circle
     input_boolean.alexa_ssml:
       <<: *customize
       friendly_name: Auto SSML

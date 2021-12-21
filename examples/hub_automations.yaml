@@ -1,6 +1,6 @@
 # package_hub_automations:
 #----------------------------------------------------------------------------------------------------#
-# ESEMPI DI COME CREARE DELLE AUTOMAZIONI CON I RICHIAMI ALLE MACRO
+# ESEMPI AUTOMAZIONI 
 #----------------------------------------------------------------------------------------------------#
 automation:
   #----------------------------------------------------------------------------------------------------#
@@ -27,59 +27,71 @@ automation:
           service: restart
       - platform: event
         event_type: core_config_updated
-    variables:
-      notification_service: "{{states('input_select.text_notify')|lower}}"
     action:
       - variables:
-          title: '{{trigger.description|regex_replace(find="\W|_|event", replace=" ")|trim|capitalize}}'
+          title: >
+            {{ (trigger.description | regex_replace(find="\W|_|event", replace=" ") | trim | capitalize) 
+            if trigger.description is defined else "TEST" }}
           time: "{{(now().time()|string)[:-4]}}"
           icon: >
             {% if 'stop' in title %}🛑
             {% elif 'final' in title %}🛡️
             {% elif 'close' in title %}⛔
+            {% elif 'restart' in title %}👍👍
             {% elif 'start' in title %}👍
-            {% else %}📞
+            {% elif 'Call' in title %}📞
+            {% else %}❗❓
             {% endif %}
+          notify_service: >-
+            {% set DEFAULT_NOTIFY = states('input_select.text_notify') %}
+            {{ (DEFAULT_NOTIFY|replace('notify.','')|regex_replace(find=" *, *", replace=",")|lower).rsplit(",") 
+            if DEFAULT_NOTIFY is string else DEFAULT_NOTIFY }}
       - choose:
-          - conditions: "{{title is defined}}"
+          - conditions: "{{ title != 'TEST' }}"
             sequence:
-              - service: "notify.{{notification_service}}"
-                data:
-                  title: "{{icon}} {{title}}"
-                  message: |
-                    ➡️ {{time}}
-              - choose:
-                  - conditions: "{{'start' in title}}"
-                    sequence:
-                      - service: homeassistant.update_entity
-                        entity_id: sensor.ha_start
-                      - wait_for_trigger:
-                          - platform: state
-                            entity_id: sensor.centro_notifiche
-                            to: "on"
-                        timeout: 120
-                        continue_on_timeout: true
-                      - service: script.my_notify
-                        data:
-                          title: "HomeAssistant Start!"
-                          notify: "{{notification_service}}"
-                          message: |
-                            📬 Centro Notifiche operativo! 👨‍✈️
-                            🏁 {{states('sensor.ha_start')}}
-                          alexa:
-                            message_tts: >-
-                              Il sistema è operativo!.
-                            voice: Giorgio
-                            type: tts
-                          google:
-                            message_tts: >-
-                              Il sistema è operativo!.
-                            # media_content_type: sound
-                          #   media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
+              - alias: "Repeat text notify"
+                repeat:
+                  while: "{{ repeat.index <= notify_service | length }}"
+                  sequence:
+                    - variables:
+                        notify_name: "{{ notify_service[repeat.index -1] | replace(' ','_') | lower }}"
+                    - service: "notify.{{ notify_name }}"
+                      data:
+                        title: "{{ icon }} {{ title }}"
+                        message: |
+                          ➡️ {{ time }}
+                    - choose:
+                        - conditions: "{{ 'start' in title }}"
+                          sequence:
+                            - service: homeassistant.update_entity
+                              entity_id: sensor.ha_start
+                            - wait_for_trigger:
+                                - platform: state
+                                  entity_id: sensor.centro_notifiche
+                                  to: "on"
+                              timeout: 120
+                              continue_on_timeout: true
+                            - service: script.my_notify
+                              data:
+                                title: "HomeAssistant Start!"
+                                notify: "notify.{{ notify_name }}"
+                                message: |
+                                  📬 Centro Notifiche operativo! 👨‍✈️
+                                  🏁 {{ states('sensor.ha_start') }}
+                                alexa:
+                                  message_tts: >-
+                                    Il sistema è operativo!.
+                                  voice: Giorgio
+                                  type: tts
+                                google:
+                                  message_tts: >-
+                                    Il sistema è operativo!.
+                                  # media_content_type: sound
+                                #   media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
         default:
-          - service: "notify.{{notification_service}}"
+          - service: "notify.{{ (notify_service | default(['notify']))[0] | replace(' ','_') | lower }}"
             data:
-              message: " DEFAULT: {{icon}} {{title}}"
+              message: "DEFAULT: {{ icon }} {{ title }} {{ trigger | replace('_','\_') }} {{ this | replace('_','\_') }}"
 
   #----------------------------------------------------------------------------------------------------#
   # Accesso Fallito # Banned IP persistent_notification.ip_ban title: Banning IP address
@@ -92,7 +104,7 @@ automation:
     trigger:
       - platform: state
         entity_id: persistent_notification.http_login
-    condition: "{{ trigger.to_state.state != 'None' and trigger.to_state.entity_id is defined}}"
+    condition: "{{ trigger.to_state.state != 'None' and trigger.to_state.entity_id is defined }}"
     action:
       - service: script.my_notify
         data:
@@ -101,7 +113,7 @@ automation:
           message: "Tentativo di accesso o richiesta con autenticazione non valida."
           link: >-
             {% set message = state_attr('persistent_notification.http_login','message') %}
-            {{'http://www.ip-tracker.org/locator/ip-lookup.php?ip=' ~ message.split('from ')[1] if message }}
+            {{ 'http://www.ip-tracker.org/locator/ip-lookup.php?ip=' ~ message.split('from ')[1] if message }}
           # notify: alert
           priority: 1
           alexa:
@@ -114,7 +126,7 @@ automation:
           data:
             url: >
               {% set message = state_attr('persistent_notification.http_login','message') %}
-              {{'https://whatismyipaddress.com/ip/' ~ message.split('from ')[1] if message }}
+              {{ 'https://whatismyipaddress.com/ip/' ~ message.split('from ')[1] if message }}
             priority: 1
             #attachment: "http://example.com/image.png"
             #sound: pianobar
@@ -140,8 +152,8 @@ automation:
       - service: script.my_notify
         data:
           title: "🆕 Nuovo Aggiornamento Home Assistant"
-          message: "Home Assistant {{state_attr('binary_sensor.updater','newest_version')}} è disponibile."
-          link: "[Release Notes]({{state_attr('binary_sensor.updater','release_notes')}})"
+          message: "Home Assistant {{ state_attr('binary_sensor.updater','newest_version') }} è disponibile."
+          link: "[Release Notes]({{ state_attr('binary_sensor.updater','release_notes') }})"
 
   #----------------------------------------------------------------------------------------------------#
   # Benvenuto # Esempio Macro elaborata al di fuori di build_message, dove al suo interno va inserito {{ benvenuto|default }}
@@ -164,7 +176,7 @@ automation:
             type: announce
           title: Benvenuto
           benvenuto: >
-            {% set person = trigger.entity_id.split('.')[1]|replace('_', ' ')|capitalize %}
+            {% set person = trigger.entity_id.split('.')[1] | replace('_', ' ') | capitalize %}
             {%- macro benvenuto(person) -%}
             {{ [
             "Bentornato a casa " ~person~" ",
@@ -280,8 +292,8 @@ automation:
         data:
           title: New device
           message: |
-            New device: {{trigger.event.data.host_name}}
-            entity: {{trigger.event.data.entity_id}}
+            New device: {{ trigger.event.data.host_name }}
+            entity: {{ trigger.event.data.entity_id }}
             mac: ({{ trigger.event.data.mac }})
 
   #----------------------------------------------------------------------------------------------------#
@@ -330,7 +342,7 @@ automation:
           call_avviso_pioggia: 1
           evento: "Dopo Lavoro"
           sensore_pioggia: >-
-            {{states.sensor.dark_sky_precip_intensity.state|round(2)~" "~states.sensor.dark_sky_precip_intensity.attributes.unit_of_measurement}}
+            {{ states('sensor.dark_sky_precip_intensity') | round(2)~" "~state_attr('sensor.dark_sky_precip_intensity', 'unit_of_measurement') }}
 
   #----------------------------------------------------------------------------------------------------#
   # Buongiorno Info
@@ -353,12 +365,12 @@ automation:
       - service: script.my_notify
         data:
           message: |
-            Sono le {{states('sensor.time')}}, 
-            ed è {{states('sensor.dark_sky_summary')}}. 
-            La temperatura esterna è di {{states('sensor.dark_sky_apparent_temperature')|int}} gradi, 
-            mentre la temperatura interna è di {{states('sensor.temperatura_media') |int}} gradi. 
-            *Previsioni.* {{states.sensor.dark_sky_hourly_summary.state}} 
-            *Citazione.* {{state_attr('sensor.feed_wikiquote', 'entries')[-1].summary|striptags}}.
+            Sono le {{ states('sensor.time') }}, 
+            ed è {{ states('sensor.dark_sky_summary') }}. 
+            La temperatura esterna è di {{ states('sensor.dark_sky_apparent_temperature') | int }} gradi, 
+            mentre la temperatura interna è di {{ states('sensor.temperatura_media') | int }} gradi. 
+            *Previsioni.* {{ states('sensor.dark_sky_hourly_summary') }} 
+            *Citazione.* {{ state_attr('sensor.feed_wikiquote', 'entries')[-1].summary | striptags }}.
       - delay: "00:01:00"
       - service: script.my_notify
         data:
@@ -385,9 +397,9 @@ automation:
       to: "on"
     action:
       - variables:
-          studio: "{{is_state('binary_sensor.motion_sensor_158d000222ccb7', 'on')}}"
-          corridoio: "{{is_state('binary_sensor.pir_corridoio', 'on')}}"
-          sala: "{{is_state('binary_sensor.pir_sala', 'on') or is_state('binary_sensor.cam_sala', 'on')}}"
+          studio: "{{ is_state('binary_sensor.motion_sensor_158d000222ccb7', 'on') }}"
+          corridoio: "{{ is_state('binary_sensor.pir_corridoio', 'on') }}"
+          sala: "{{ is_state('binary_sensor.pir_sala', 'on') or is_state('binary_sensor.cam_sala', 'on') }}"
       - service: input_select.select_option
         entity_id: input_select.notification_media_player_alexa
         data:
@@ -421,9 +433,9 @@ automation:
     action:
       - choose:
           - conditions:
-              - "{{trigger.entity_id is defined}}"
-              - "{{states(trigger.entity_id) != 'unknown'}}"
-              - "{{(states(trigger.entity_id) | float) != 0}}"
+              - "{{ trigger.entity_id is defined }}"
+              - "{{ states(trigger.entity_id) != 'unknown' }}"
+              - "{{ states(trigger.entity_id) != '0' }}"
             sequence:
               - service: script.my_notify
                 data:
@@ -438,8 +450,9 @@ automation:
                   link: |
                     {{"\n"}}
                     {% for repo in state_attr(trigger.entity_id, 'repositories') %}
-                    [{{repo.display_name}}](https://github.com/{{repo.name}}) {{repo["installed_version"]}} -> {{repo["available_version"]}}
+                    [{{ repo.display_name }}](https://github.com/{{ repo.name }}) {{ repo["installed_version"] }} -> {{ repo["available_version"] }}
                     {% endfor %}
+          # - choose:
           - conditions:
               - "{{ trigger.event is defined }}"
               - "{{ trigger.event.data.repository is defined }}"
@@ -451,7 +464,7 @@ automation:
                     Nuovo Repository aggiunto.
                   link: |
                     {% set repo = trigger.event.data.repository %}
-                    [{{repo}}](https://github.com/{{repo}})
+                    [{{ repo }}](https://github.com/{{ repo }})
         # default:
         #   - service: script.my_notify
         #     data:
@@ -472,31 +485,31 @@ automation:
           call_no_annuncio: 1
           title: 🔑 Alexa Media Integrazione
           message: Autenticazione Richiesta
-          notify: pushover
-          link: "[Integrazioni]({{external_url}}/config/integrations)"
+          notify: pushover,telegram
+          link: "[Integrazioni]({{ external_url }}/config/integrations)"
           # link Markdown --> [Nome link](LINK)
           # link html     --> <a href="LINK">"Nome link"</a>
 
   #----------------------------------------------------------------------------------------------------#
-  # Test trigger event - Notifica location
+  # Notifica Person location - No Entities
   #----------------------------------------------------------------------------------------------------#
-  - alias: Notifica location hub
+  - alias: Notifica Person location Hub
     initial_state: true
     trigger:
       - platform: event
         event_type: state_changed
-    condition: # and (trigger.event.data.old_state is none
-      - "{{ trigger.event.data.entity_id.startswith('person') }}"
-      - "{{ trigger.event.data.old_state is not none
-        and 'latitude' in trigger.event.data
-        and trigger.event.data.new_state.state != trigger.event.data.old_state.state }}"
+    condition:
+      # - "{{ trigger.event.data.entity_id.startswith('person') }}"
+      - "{{ trigger.event.data.new_state.domain == 'person' }}"
+      - "{{ trigger.event.data.old_state.state != states(trigger.event.data.entity_id) }}"
+      - "{{ 'latitude' in trigger.event.data.new_state.attributes }}"
     action:
       - variables:
-          lat: "{{trigger.event.data.new_state.attributes.latitude}}"
-          long: "{{trigger.event.data.new_state.attributes.longitude}}"
-          from: "{{trigger.event.data.old_state.state if trigger.event.data.old_state is not none else 'sconosciuto'}}"
-          to: "{{trigger.event.data.new_state.state}}"
-          name: "{{trigger.event.data.new_state.attributes.friendly_name}}"
+          lat: "{{ trigger.event.data.new_state.attributes.latitude }}"
+          long: "{{ trigger.event.data.new_state.attributes.longitude }}"
+          from: "{{ trigger.event.data.old_state.state if trigger.event.data.old_state is not none else 'sconosciuto' }}"
+          to: "{{ trigger.event.data.new_state.state }}"
+          name: "{{ state_attr(trigger.event.data.entity_id, 'friendly_name') }}"
       - service: script.my_notify
         data:
           alexa: true
@@ -507,17 +520,16 @@ automation:
             {% set to = state_dict.get(to, to) %}
             {{ name }} si è spostato da {{ from }} a {{ to }}
       - choose:
-          - conditions: "{{not to in 'home' and lat != ''}}"
+          - conditions: "{{ not to in 'home' and lat != '' }}"
             sequence:
               - service: telegram_bot.send_location
                 data:
                   disable_notification: true
-                  latitude: "{{lat}}"
-                  longitude: "{{long}}"
-                  # target: target
+                  latitude: "{{ lat }}"
+                  longitude: "{{ long }}"
 
   #----------------------------------------------------------------------------------------------------#
-  # Notifica Person location
+  # Notifica Person location with entity_id
   #----------------------------------------------------------------------------------------------------#
   # - alias: Notifica Person location
   #   initial_state: true
@@ -526,19 +538,19 @@ automation:
   #       entity_id:
   #         - person.claudio
   #   condition:
-  #     - "{{ trigger.to_state is not none
-  #       and (trigger.from_state is none or trigger.to_state.state != trigger.from_state.state) }}"
+  #     - "{{ trigger.to_state is not none }}"
+  #     - "{{ (trigger.to_state.state != trigger.from_state.state) }}"
   #   action:
   #     - variables:
-  #         lat: "{{trigger.to_state.attributes.latitude}}"
-  #         long: "{{trigger.to_state.attributes.longitude}}"
-  #         from: "{{trigger.from_state.state if trigger.from_state is not none else 'sconosciuto'}}"
-  #         to: "{{trigger.to_state.state}}"
-  #         name: "{{trigger.to_state.name}}"
+  #         lat: "{{ trigger.to_state.attributes.latitude }}" # "{{ state_attr(trigger.entity_id, 'latitude') }}" #
+  #         long: "{{ trigger.to_state.attributes.longitude }}" # "{{ state_attr(trigger.entity_id, 'longitude') }}" #
+  #         from: "{{ trigger.from_state.state if trigger.from_state is not none else 'sconosciuto' }}"
+  #         to: "{{ trigger.to_state.state }}"
+  #         name: "{{ trigger.to_state.name }}"
   #     - service: script.my_notify
   #       data:
   #         alexa: true
-  #         title: "📍 Location {{name}}"
+  #         title: "📍 Location {{ name }}"
   #         message: >
   #           {% set state_dict = {'home': 'Casa', 'not_home': 'Fuori Casa'} %}
   #           {% set from = state_dict.get(from, from) %}
@@ -546,9 +558,12 @@ automation:
   #           {{ name }} si è spostato da {{ from }} a {{ to }}
   #         link: >
   #           {% if lat and not to in 'home' %}
-  #           [Mappa](https://www.openstreetmap.org/?mlat={{lat}}&mlon={{long}}#map=8/{{lat}}/{{long}})
+  #           [Mappa](https://www.openstreetmap.org/?mlat={{ lat }}&mlon={{ long }}#map=8/{{ lat }}/{{ long }})
   #           {% endif %}
 
+  #----------------------------------------------------------------------------------------------------#
+  # Notifica Cambio Stagione
+  #----------------------------------------------------------------------------------------------------#
   - alias: Notifica Cambio Stagione hub
     initial_state: true
     trigger:
@@ -558,8 +573,8 @@ automation:
       - "{{ trigger.from_state is defined }}"
     action:
       - variables:
-          from: "{{trigger.from_state.state if trigger.from_state is defined }}"
-          to: "{{states('sensor.season')}}"
+          from: "{{ trigger.from_state.state if trigger.from_state is defined }}"
+          to: "{{ states('sensor.season') }}"
       - service: script.my_notify
         data:
           message: >
@@ -572,3 +587,68 @@ automation:
             {% set from = state_dict.get(from, from) %}
             {% set to = state_dict.get(to, to) %}
             Arrivederci {{ from }} e Salutiamo la Stagione {{ to }}!
+
+  #----------------------------------------------------------------------------------------------------#
+  # Addon Home Assistant Google Drive Backup https://github.com/sabeechen/hassio-google-drive-backup
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Home Assistant Google Drive Backup Hub
+    initial_state: true
+    # mode: queued
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.backups_stale
+        id: "backups_stale"
+      - platform: state
+        entity_id: sensor.backup_state
+        attribute: last_uploaded
+        id: "backup_state"
+    condition: 
+        - "{{ trigger.from_state is not none }}"
+    action:
+      - choose:
+        - conditions: 
+            - "{{ 'backup_state' in trigger.id }}"
+          sequence:
+            - variables:
+                ENTITY: "{{ trigger.entity_id }}"
+            - service: script.my_notify
+              data:
+                title: "Stato Backup"
+                message: |
+                  Stato : {{ states(ENTITY)}}
+                  Data Backup: {{ as_local(as_datetime(state_attr(ENTITY, 'last_backup'))) }}
+                  Data Upload: {{ as_local(as_datetime(state_attr(ENTITY, 'last_uploaded'))) }}
+                  N. su Drive: {{ state_attr(ENTITY, 'backups_in_google_drive') }}
+                  Dimensione : {{ state_attr(ENTITY, 'size_in_google_drive') }}
+                  N. in Local: {{ state_attr(ENTITY, 'backups_in_home_assistant') }}
+                  Dimensione : {{ state_attr(ENTITY, 'size_in_home_assistant') }}
+
+                  {% set backups = state_attr(ENTITY, 'backups') %}
+                  {% if backups %}
+                  Backups:
+                  {# for last backup only add filter -> if bkp.date == state_attr(ENTITY, 'last_backup') #}
+                  {% for bkp in backups %}
+                  ➡️ Nome : {{ bkp.name }}
+                    Data : {{ as_local(as_datetime(bkp.date)) }}
+                    {# Ora: {{ as_timestamp(bkp.date) | timestamp_custom('%X') }} #}
+                    Stato: {{ bkp.state }} 
+                    Dimen: {{ bkp.size }} 
+                    Slug : {{ bkp.slug }}
+                  {% endfor %}
+                  {% endif %}
+
+                  Caricato in: {{ utcnow() - as_datetime(state_attr(ENTITY, 'last_backup')) }}
+      - choose:
+        - conditions: 
+            - "{{ 'backups_stale' in trigger.id }}"
+          sequence:
+            - service: script.my_notify
+              data:
+                title: "Problemi Google Drive Backup"
+                message: >
+                  {% if trigger.to_state.state == 'on' %}
+                  Problemi con Google Drive BackUp
+                  {% else %}
+                  Risolto problemi Google Drive BackUp
+                  {% endif %}

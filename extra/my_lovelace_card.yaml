@@ -81,8 +81,8 @@ cards:
       - entity: binary_sensor.dnd
         layout: icon
         state_icons:
-          "on": "mdi:do-not-disturb"
-          "off": "mdi:do-not-disturb-off"
+          "on": "mdi:minus-circle"
+          "off": "mdi:minus-circle-off"
   - type: divider
     style:
       background-color: var(--primary-color)

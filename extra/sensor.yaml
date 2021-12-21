@@ -6,7 +6,7 @@ sensor:
   ## In order to use sensor.ha_start, set the info logs in this way
   ############################################################################
   # logger:
-  #   default: warn
+  #   default: warn # or whatever you want (info, error...)
   #   logs:
   #     homeassistant.bootstrap: info
 

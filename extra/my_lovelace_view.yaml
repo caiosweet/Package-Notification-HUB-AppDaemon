@@ -6,6 +6,55 @@ cards:
   - !include ../cards/card_menu_centro_notifiche.yaml
   # - !include ../cards/card_test_centro_notifiche.yaml
   # - !include ../cards/card_test_centro_notifiche_change_me.yaml
+
+  # CARD Impostazioni Assistente
+  - type: entities
+    title: Impostazioni Assistente
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - entity: sensor.centro_notifiche
+        name: Centro Notifiche
+      - entity: input_text.personal_assistant_name
+      - entity: input_select.language
+      - entity: input_select.text_notify
+      - entity: input_boolean.html_mode
+      - entity: input_boolean.tts_clock
+      - entity: input_boolean.wrap_text
+      - entity: input_number.tts_wait_time
+      - type: custom:fold-entity-row
+        head:
+          type: section
+          label: FERIALI - Orario modo silenzioso
+        entities:
+          - entity: input_datetime.dnd_start_weekdays
+          - entity: input_datetime.dnd_end_weekdays
+      - type: custom:fold-entity-row
+        head:
+          type: section
+          label: FESTIVI - Orario modo silenzioso
+        entities:
+          - entity: input_datetime.dnd_start_holidays
+          - entity: input_datetime.dnd_end_holidays
+      - type: custom:fold-entity-row
+        head:
+          type: section
+          label: VOLUME di default durante il griorno
+        entities:
+          - entity: input_datetime.start_morning
+          - entity: input_number.morning_volume
+          - type: divider
+          - entity: input_datetime.start_afternoon
+          - entity: input_number.afternoon_volume
+          - type: divider
+          - entity: input_datetime.start_evening
+          - entity: input_number.evening_volume
+          - type: divider
+          - entity: input_datetime.start_night
+          - entity: input_number.night_volume
+          - type: divider
+          - entity: input_number.default_restore_volume
+
   # CARD Centro Notifiche
   - type: entities
     title: Centro Notifiche
@@ -65,54 +114,6 @@ cards:
           - entity: input_number.intercom_message_volume
           - entity: input_text.intercom_message_hub
 
-  # CARD Impostazioni Assistente
-  - type: entities
-    title: Impostazioni Assistente
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - entity: sensor.centro_notifiche
-        name: Centro Notifiche
-      - entity: input_text.personal_assistant_name
-      - entity: input_select.language
-      - entity: input_select.text_notify
-      - entity: input_boolean.html_mode
-      - entity: input_boolean.tts_clock
-      - entity: input_boolean.wrap_text
-      - entity: input_number.tts_wait_time
-      - type: custom:fold-entity-row
-        head:
-          type: section
-          label: FERIALI - Orario modo silenzioso
-        entities:
-          - entity: input_datetime.dnd_start_weekdays
-          - entity: input_datetime.dnd_end_weekdays
-      - type: custom:fold-entity-row
-        head:
-          type: section
-          label: FESTIVI - Orario modo silenzioso
-        entities:
-          - entity: input_datetime.dnd_start_holidays
-          - entity: input_datetime.dnd_end_holidays
-      - type: custom:fold-entity-row
-        head:
-          type: section
-          label: VOLUME di default durante il griorno
-        entities:
-          - entity: input_datetime.start_morning
-          - entity: input_number.morning_volume
-          - type: divider
-          - entity: input_datetime.start_afternoon
-          - entity: input_number.afternoon_volume
-          - type: divider
-          - entity: input_datetime.start_evening
-          - entity: input_number.evening_volume
-          - type: divider
-          - entity: input_datetime.start_night
-          - entity: input_number.night_volume
-          - type: divider
-          - entity: input_number.default_restore_volume
-
   # CARD Alexa
   - type: entities
     title: Alexa
@@ -138,8 +139,15 @@ cards:
       - entity: input_select.notification_media_player_alexa
       - entity: input_select.default_alexa_type
       - entity: input_select.default_alexa_method
-      - entity: group.media_player_alexa
-      - entity: sensor.media_player_alexa
+      - type: custom:fold-entity-row
+        # padding: 0
+        head: sensor.media_player_alexa
+        entities:
+          - entity: group.media_player_alexa
+          - type: attribute
+            entity: group.media_player_alexa
+            attribute: entity_id
+            name: Players
 
   # CARD Google
   - type: entities
@@ -152,8 +160,15 @@ cards:
       - entity: input_boolean.google_switch
       - entity: input_select.tts_notify
       - entity: input_select.notification_media_player_google
-      - entity: group.media_player_google
-      - entity: sensor.media_player_google
+      - type: custom:fold-entity-row
+        # padding: 0
+        head: sensor.media_player_google
+        entities:
+          - entity: group.media_player_google
+          - type: attribute
+            entity: group.media_player_google
+            attribute: entity_id
+            name: Players
 
   # CARD Gruppo Automazioni
   - type: entities
