@@ -1,7 +1,7 @@
 # package_hub_main:
 ### INFO
 #   @author         :   Caio & Gianpi - hassiohelp.eu 🌐
-#   @date           :   Started 01/11/2019 - Updated 21/08/2021
+#   @date           :   Started 01/11/2019 - Updated 20/12/2021
 #   @package        :   Notification HUB - Centro Notifiche 🔔
 #   @description    :   Package Appdaemon Notifier Center for Home Assistant
 #   @repo           :   https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases
@@ -18,7 +18,7 @@ homeassistant:
         package: Centro Notifiche 🔔
         site: hassiohelp.eu 🌐
         author: Caio & Gianpi
-        version: Main 3.3.0
+        version: Main 3.3.1
 
     ## AUTOMATION
     automation.auto_volume_hub:
@@ -354,7 +354,7 @@ template:
         {{(start<t<stop) if start<stop else ((t>start or t<stop) and start != stop)}}
         {%elif speech=='off' and priority=='off'%}True{%else%}False{%endif%}
       icon: >
-        {%if is_state('binary_sensor.dnd','off')%}mdi:do-not-disturb-off{%else%}mdi:do-not-disturb{%endif%}
+        {%if is_state('binary_sensor.dnd','off')%}mdi:minus-circle-off{%else%}mdi:minus-circle{%endif%}
     - name: People Home
       unique_id: people_home
       device_class: presence
@@ -394,25 +394,21 @@ template:
     - name: Period of Day Volume
       unique_id: period_of_day_volume
       state: >
-        {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int}}
-        {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int}}
-        {%elif is_state('sensor.period_of_day','Sera') %}{{states('input_number.evening_volume')|int}}
-        {%else%}{{states('input_number.night_volume')|int}}{%endif%}
+        {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int(0)}}
+        {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int(0)}}
+        {%elif is_state('sensor.period_of_day','Sera') %}{{states('input_number.evening_volume')|int(0)}}
+        {%else%}{{states('input_number.night_volume')|int(0)}}{%endif%}
       icon: >
         {%if is_state('sensor.period_of_day_volume','0')%}mdi:volume-off
-        {%elif is_state('sensor.period_of_day_volume','10')%}mdi:volume-low
-        {%elif is_state('sensor.period_of_day_volume','20')%}mdi:volume-low
-        {%elif is_state('sensor.period_of_day_volume','30')%}mdi:volume-low
-        {%elif is_state('sensor.period_of_day_volume','40')%}mdi:volume-medium
-        {%elif is_state('sensor.period_of_day_volume','50')%}mdi:volume-medium
-        {%elif is_state('sensor.period_of_day_volume','60')%}mdi:volume-medium
+        {%elif (0 < states('sensor.period_of_day_volume')|int(0) <= 30) %}mdi:volume-low
+        {%elif (40 <= states('sensor.period_of_day_volume')|int(0) <= 60) %}mdi:volume-medium
         {%else%}mdi:volume-high{%endif%}
       attributes:
         vol: >
-          {%if is_state('sensor.period_of_day','Mattino') %}{{(states('input_number.morning_volume')|float)/100}}
-          {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{(states('input_number.afternoon_volume')|float)/100}}
-          {%elif is_state('sensor.period_of_day','Sera') %}{{(states('input_number.evening_volume')|float)/100}}
-          {%else%}{{(states('input_number.night_volume')|float)/100}}{%endif%}
+          {%if is_state('sensor.period_of_day','Mattino') %}{{(states('input_number.morning_volume')|float(10))/100}}
+          {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{(states('input_number.afternoon_volume')|float(10))/100}}
+          {%elif is_state('sensor.period_of_day','Sera') %}{{(states('input_number.evening_volume')|float(10))/100}}
+          {%else%}{{(states('input_number.night_volume')|float(10))/100}}{%endif%}
 #######################################-#######################################
 ##                                  SCRIPT
 #######################################-#######################################
@@ -502,10 +498,10 @@ automation:
                 data:
                   object_id: media_player_alexa
                   entities: >-
-                    {% set lista_alexa = expand('input_select.notification_media_player_alexa')|join(',','attributes.options') %}
-                    {{ states.media_player 
+                    {% set lista_alexa = state_attr('input_select.notification_media_player_alexa','options') %}
+                    {{ states.media_player
                     | selectattr('attributes.friendly_name', 'defined')
-                    | selectattr('attributes.friendly_name', 'in', lista_alexa)
+                    | selectattr('attributes.friendly_name', 'in', lista_alexa|default([],true))
                     | map(attribute='entity_id')|list
                     }}
 
@@ -518,10 +514,10 @@ automation:
                 data:
                   object_id: media_player_google
                   entities: >-
-                    {% set lista_google = expand('input_select.notification_media_player_google')|join(',','attributes.options') %}
+                    {% set lista_google = state_attr('input_select.notification_media_player_google','options') %}
                     {{ states.media_player 
                     | selectattr('attributes.friendly_name', 'defined')
-                    | selectattr('attributes.friendly_name', 'in', lista_google)
+                    | selectattr('attributes.friendly_name', 'in', lista_google|default([],true))
                     | map(attribute='entity_id')|list
                     }}
 
@@ -562,7 +558,7 @@ automation:
           list_alexa: "{{expand('group.media_player_alexa')|map(attribute='entity_id')|list}}"
           list_google: "{{expand('group.media_player_google')|map(attribute='entity_id')|list}}"
           all_entity: "{{list_alexa + list_google}}"
-          volume: "{{states('sensor.period_of_day_volume')|float}}"
+          volume: "{{states('sensor.period_of_day_volume')|float(10)}}"
       - choose:
           - conditions: "{{list_alexa|length > 0}}"
             sequence:

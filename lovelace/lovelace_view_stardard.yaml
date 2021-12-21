@@ -204,6 +204,7 @@ cards:
             entity_id: input_boolean.speech_notifications
       - entity: binary_sensor.dnd
       - type: call-service
+        entity: input_boolean.last_message
         name: Ultimo Messaggio
         action_name: Ascolta
         service: input_boolean.turn_on

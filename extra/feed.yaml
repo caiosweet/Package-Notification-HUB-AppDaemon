@@ -50,7 +50,7 @@ feedreader:
     - &feed_hassiohelp_commenti https://hassiohelp.eu/comments/feed/
     - &feed_news_ansa https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml
     - &feed_wikiquote https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd
-    # - &feed_dpc https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_criticita
+    - &feed_dpc https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_criticita
     # - &feed_dpc_meteo https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_vigilanza #TODO
     # - &feed_dpc_news https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=notizia #TODO
     - &feed_cb01 http://feeds.feedburner.com/cineblog01/Film-In-Streaming-Gratis
@@ -87,11 +87,11 @@ sensor:
       - title
       - summary
       - published
-  # - platform: feedparser
-  #   name: feed_dpc
-  #   feed_url: *feed_dpc
-  #   date_format: *data
-  #   inclusions: *title_link_pub
+  - platform: feedparser
+    name: feed_dpc
+    feed_url: *feed_dpc
+    date_format: *data
+    inclusions: *title_link_pub
   - platform: feedparser
     name: feed_cb01
     feed_url: *feed_cb01
@@ -119,7 +119,7 @@ automation:
       feed_hassiohelp_commenti: *feed_hassiohelp_commenti
       feed_news_ansa: *feed_news_ansa
       feed_wikiquote: *feed_wikiquote
-      # feed_dpc: *feed_dpc
+      feed_dpc: *feed_dpc
       feed_cb01: *feed_cb01
     action:
       - variables:
@@ -164,13 +164,13 @@ automation:
                   title: "📑 WikiQuote"
                   message: "Aforisma del giorno. {{trigger.event.data.summary|striptags}}"
                   link: "[Aforisma]({{feed_link}})"
-          # - conditions: "{{feed_url == feed_dpc}}"
-          #   sequence:
-          #     - service: *notify
-          #       data:
-          #         title: "⛈️ Protezione Civile"
-          #         message: "{{feed_title}}"
-          #         link: "[Bollettini di criticità]({{feed_link}})"
+          - conditions: "{{feed_url == feed_dpc}}"
+            sequence:
+              - service: *notify
+                data:
+                  title: "⛈️ Protezione Civile"
+                  message: "{{feed_title}}"
+                  link: "[Bollettini di criticità]({{feed_link}})"
           - conditions: "{{ feed_url == feed_cb01 }}"
             sequence:
               - service: *notify
