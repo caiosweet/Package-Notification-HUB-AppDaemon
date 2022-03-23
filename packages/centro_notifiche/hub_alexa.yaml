@@ -1,49 +1,44 @@
 # package_hub_alexa:
-# For the Alexa icon https://github.com/vigonotion/hass-simpleicons
+# https://github.com/vigonotion/hass-simpleicons
 homeassistant:
-  #######################################-#######################################
-  ##                                 CUSTOMIZE
-  #######################################-#######################################
+  ######################################-#######################################
+  ##                                CUSTOMIZE
+  ######################################-#######################################
   customize:
     ## NODE ANCHORS
     package.node_anchors:
       customize: &customize
-        package: Centro Notifiche 🔔
-        site: hassiohelp.eu 🌐
-        author: Caio & Gianpi
-        version: Alexa 3.3.1
-
-      expose: &expose
-        <<: *customize
-        haaska_hidden: false
-        homebridge_hidden: false
+        package: "Centro Notifiche 🔔"
+        site: "hassiohelp.eu 🌐"
+        author: "Caio & Gianpi"
+        version: "Alexa 3.3.2"
 
     ## INPUT
     input_boolean.alexa_switch:
       <<: *customize
-      friendly_name: Alexa
+      friendly_name: "Alexa"
       icon: si:amazonalexa
       # icon: mdi:alpha-a-circle
     input_boolean.alexa_ssml:
       <<: *customize
-      friendly_name: Auto SSML
+      friendly_name: "Auto SSML"
       icon: mdi:waveform
     input_number.alexa_prosody_rate:
       <<: *customize
-      friendly_name: Rate
+      friendly_name: "Rate"
       icon: mdi:alpha-r
     input_number.alexa_prosody_pitch:
       <<: *customize
-      friendly_name: Pitch
+      friendly_name: "Pitch"
       icon: mdi:alpha-p
     input_number.alexa_prosody_volume:
       <<: *customize
-      friendly_name: Volume
+      friendly_name: "Volume"
       icon: mdi:alpha-v
       unit_of_measurement: "dB"
     input_select.alexa_voice:
       <<: *customize
-      friendly_name: Amazon Polly voice
+      friendly_name: "Amazon Polly voice"
       icon: mdi:account-tie-voice-outline
     # input_select.alexa_language:
     #   <<: *customize
@@ -51,29 +46,29 @@ homeassistant:
     #   icon: mdi:flag-variant
     input_select.notification_media_player_alexa:
       <<: *customize
-      friendly_name: Sorgente Alexa
+      friendly_name: "Sorgente Alexa"
       icon: mdi:speaker-wireless
     input_select.default_alexa_method:
       <<: *customize
-      friendly_name: Metodo Predefinito Alexa
+      friendly_name: "Metodo Predefinito Alexa"
       icon: mdi:monitor-speaker
     input_select.default_alexa_type:
       <<: *customize
-      friendly_name: Tipo Predefinito Alexa
+      friendly_name: "Tipo Predefinito Alexa"
       icon: mdi:bugle
     ## SCRIPT
     script.ssml_reset:
       <<: *customize
-      friendly_name: Ripristina SSML
+      friendly_name: "Ripristina SSML"
       icon: mdi:restore
     ## SENSOR
     sensor.last_alexa:
       <<: *customize
-      friendly_name: Last Alexa
+      friendly_name: "Last Alexa"
       icon: mdi:play-network
     sensor.media_player_alexa:
       <<: *customize
-      friendly_name: Player Alexa Attivo
+      friendly_name: "Player Alexa Attivo"
 
 #######################################-#######################################
 ##                                   INPUT
@@ -81,6 +76,7 @@ homeassistant:
 input_boolean:
   alexa_switch:
   alexa_ssml:
+
 input_number:
   alexa_prosody_rate:
     min: 20
@@ -128,7 +124,6 @@ input_select:
         "Amy",
         "Brian",
         "Emma",
-        "Aditi",
         "Raveena",
         "Chantal",
         "Celine",
@@ -175,17 +170,46 @@ input_select:
 ##                                 TEMPLATE
 #######################################-#######################################
 template:
-  sensor:
-    - name: Media Player Alexa
-      unique_id: media_player_alexa
-      state: >
-        {%set domains=['media_player','group','sensor']-%}
-        {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
-        {%if x.domain=='sensor'%}{{x.state}}{%else%}{{-x.entity_id-}}{%endif%}{%endfor%}
-      icon: >-
-        {%set domains=['media_player','group','sensor']-%}
-        {%for x in states if x.domain in domains and x.name|lower==states('input_select.notification_media_player_alexa')|lower-%}
-        {%if x.domain=='group'%}mdi:speaker-multiple{%elif x.domain=='sensor'%}mdi:cast-audio{%else%}mdi:speaker{%endif%}{%endfor%}
+  - trigger:
+      - platform: state
+        entity_id: input_select.notification_media_player_alexa
+        to:
+      - platform: state
+        entity_id: sensor.last_alexa
+        to:
+      - platform: state
+        entity_id: group.media_player_alexa
+        attribute: entity_id
+      # - platform: event
+      #   event_type: event_template_reloaded
+      - platform: state
+        entity_id: sensor.media_player_alexa
+        to: unknown
+    sensor:
+      - name: Media Player Alexa
+        unique_id: media_player_alexa
+        state: >-
+          {% set domains = states.group | list + states.media_player | list + expand('sensor.last_alexa') %}
+          {% set selected = states('input_select.notification_media_player_alexa') | lower %}
+          {% for x in domains if x.name | lower == selected %}
+            {% if x.domain == 'sensor' %}
+                {{ x.state }}
+              {% else %}
+                {{ x.entity_id }}
+            {% endif %}
+          {% endfor %}
+        icon: >-
+          {% set domains = states.group | list + states.media_player | list + expand('sensor.last_alexa') %}
+          {% set selected = states('input_select.notification_media_player_alexa') | lower %}
+          {% for x in domains if x.name | lower == selected %}
+            {% if x.domain == 'group' %}
+              mdi:speaker-multiple
+            {% elif x.domain == 'sensor' %}
+              mdi:cast-audio
+            {% else %}
+              mdi:speaker
+            {% endif %}
+          {% endfor %}
 
 #######################################-#######################################
 ##                                  SCRIPT

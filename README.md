@@ -6,20 +6,20 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/graphs/commit-activity)
 [![GitHub issues](https://img.shields.io/github/issues/caiosweet/Package-Notification-HUB-AppDaemon)](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/issues)
 
-
-### Notifier Centre for Home Assistant by [Engineer Gianpi (@jumping2000)](https://github.com/jumping2000/appdaemon/commits?author=jumping2000)<br>
+## Notifier Centre for Home Assistant by [Engineer Gianpi (@jumping2000)](https://github.com/jumping2000/appdaemon/commits?author=jumping2000)
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
 [![GitHub Release Date](https://img.shields.io/github/release-date/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
 [![Hass.io][img-hassio]][link-hassio]
 [![GitHub issues](https://img.shields.io/github/issues/jumping2000/notifier)](https://github.com/jumping2000/notifier/issues)
 
+## Advice and useful information
 
-# Advice and useful information
+- **[Wiki][Wiki]**
 
-- **[Wiki][Wiki]**<br>
-- [AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)<br>
-- [Nuovo Centro notifiche](https://hassiohelp.eu/2019/12/25/notifer/)<br>
+- [AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)
+
+- [Nuovo Centro notifiche](https://hassiohelp.eu/2019/12/25/notifer/)
 
 ![Website](https://img.shields.io/website?down_message=Offline&label=HssioHelp&logoColor=blue&up_message=Online&url=https%3A%2F%2Fhassiohelp.eu)
 [![Chat on Telegram](https://img.shields.io/badge/Chat-Telegram-blue?logo=Telegram)](https://t.me/HassioHelp)
@@ -27,35 +27,38 @@
 [![Forum](https://img.shields.io/badge/HassioHelp-Forum-blue?logo=Wordpress)](https://forum.hassiohelp.eu/showthread.php?tid=481&pid=1758#pid1758)
 [![Don't buy me a coffee](https://img.shields.io/static/v1.svg?label=Don't%20buy%20me%20a%20coffee&message=🔔&color=black&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=6f4e37)](https://paypal.me/hassiohelp)
 
-# Requirements
+## Requirements
 
-  - [AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) - [Addon](https://github.com/hassio-addons/repository)
-  - [Sensor Workday](https://www.home-assistant.io/integrations/workday/)
-  - [Sensor Time & Date](https://www.home-assistant.io/integrations/time_date/)
+- [AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) - [Addon](https://github.com/hassio-addons/repository)
+- [Sensor Workday](https://www.home-assistant.io/integrations/workday/)
+- [Sensor Time & Date](https://www.home-assistant.io/integrations/time_date/)
 
+## [My Lovelace Card](./extra/my_lovelace_card.yaml)
 
-# [My Lovelace Card](./extra/my_lovelace_card.yaml)
-
-> custom: 
+> custom:
+  >
   > - [Lovelace Card Mod](https://github.com/thomasloven/lovelace-card-mod)
   > - [Banner Card](https://github.com/nervetattoo/banner-card)
   > - [Lovelace Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row)
   > - [Lovelace Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
-  > + [lovelace-multiline-text-input-card](https://github.com/faeibson/lovelace-multiline-text-input-card)
-  > + [vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card)
+  >
+  > - [lovelace-multiline-text-input-card](https://github.com/faeibson/lovelace-multiline-text-input-card)
+  > - [vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card)
 
 <p align="center">
 <img src="./assets/images/CN_my_card.png">
 <br><br>
 </p>
 
-# [My Lovelace view](./extra/my_lovelace_view.yaml)
+## [My Lovelace view](./extra/my_lovelace_view.yaml)
+
 <p align="center">
 <img src="./assets/images/CN_my_view.png">
 <br><br>
 </p>
 
-# [Standard Lovelace View and Cards](./lovelace/)
+## [Standard Lovelace View and Cards](./lovelace/)
+
 <p align="center">
 <img src="./assets/images/CN_standard_cards.png">
 <br><br>

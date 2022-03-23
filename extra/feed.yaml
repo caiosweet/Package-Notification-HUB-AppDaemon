@@ -14,11 +14,22 @@ homeassistant:
         package: "Feed 📰"
         site: "hassiohelp.eu 🌐"
         author: "Caio"
-        version: "2.0.1"
-      expose: &expose
-        <<: *customize
-        haaska_hidden: false
-        homebridge_hidden: false
+        version: "2.1.0"
+
+      ##------------------------------ FEED URL ------------------------------##
+      ##
+      1: &feed_hassiohelp_articoli https://hassiohelp.eu/feed/
+      2: &feed_hassiohelp_commenti https://hassiohelp.eu/comments/feed/
+      3: &feed_news_ansa https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml
+      4: &feed_wikiquote https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd
+      5: &feed_dpc https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_criticita
+      6: &feed_dpc_meteo https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_vigilanza #TODO
+      7: &feed_dpc_news https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=notizia #TODO
+      8: &feed_cb01 http://feeds.feedburner.com/cineblog01/Film-In-Streaming-Gratis
+      9: &feed_hass_alerts https://alerts.home-assistant.io/feed.xml
+      ##
+      ##----------------------------------------------------------------------##
+
     ## AUTOMATION
     automation.feed:
       <<: *customize
@@ -41,22 +52,25 @@ homeassistant:
     sensor.feed_cb01:
       <<: *customize
       friendly_name: "CineBlog01"
+
 ###############################################################################
 ## COMPONENT
 ###############################################################################
 feedreader:
   urls:
-    - &feed_hassiohelp_articoli https://hassiohelp.eu/feed/
-    - &feed_hassiohelp_commenti https://hassiohelp.eu/comments/feed/
-    - &feed_news_ansa https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml
-    - &feed_wikiquote https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd
-    - &feed_dpc https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_criticita
-    # - &feed_dpc_meteo https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_vigilanza #TODO
-    # - &feed_dpc_news https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=notizia #TODO
-    - &feed_cb01 http://feeds.feedburner.com/cineblog01/Film-In-Streaming-Gratis
+    - *feed_hassiohelp_articoli
+    - *feed_hassiohelp_commenti
+    - *feed_news_ansa
+    - *feed_wikiquote
+    - *feed_dpc
+    # - *feed_dpc_meteo
+    # - *feed_dpc_news
+    - *feed_cb01
+    - *feed_hass_alerts
   scan_interval:
     minutes: 30
-  max_entries: 20
+  max_entries: 10
+
 #######################################-#######################################
 ##                                  SENSOR
 #######################################-#######################################
@@ -96,17 +110,21 @@ sensor:
     name: feed_cb01
     feed_url: *feed_cb01
     date_format: *data
-    # inclusions: *title_link_pub
     inclusions:
       - title
       - summary
       - published
       - link
+    # show_topn: 2
+    # scan_interval:
+    #   minutes: 30
+    #   #hours: 1
 #######################################-#######################################
 ##                                 AUTOMATION
 #######################################-#######################################
 automation:
   - alias: Feed
+    description: "Trigger feeds in base al componente ufficiale feedreader"
     initial_state: true
     mode: queued
     max_exceeded: silent
@@ -121,61 +139,69 @@ automation:
       feed_wikiquote: *feed_wikiquote
       feed_dpc: *feed_dpc
       feed_cb01: *feed_cb01
+      feed_hass_alerts: *feed_hass_alerts
     action:
       - variables:
-          feed_url: "{{trigger.event.data.feed_url}}"
-          feed_link: "{{trigger.event.data.link}}"
-          feed_title: "{{trigger.event.data.title}}"
+          feed_url: "{{ trigger.event.data.feed_url }}"
+          feed_link: "{{ trigger.event.data.link }}"
+          feed_title: "{{ trigger.event.data.title }}"
       - choose:
-          - conditions: "{{feed_url == feed_hassiohelp_articoli}}"
+          - conditions: "{{ feed_url == feed_hassiohelp_articoli }}"
             sequence:
               - service: &notify script.my_notify
                 data:
                   title: "🆕 Articolo HassioHElp"
-                  message: "Nuovo Articolo su Hassio Help. {{feed_title}}"
+                  message: "Nuovo Articolo su Hassio Help. {{ feed_title }}"
                   alexa:
                     voice: giorgio
                     message_tts: &tts1 "è stato pubblicato un nuovo articolo su Hassio Help"
                   google:
                     message_tts: *tts1
-                  link: "[Articolo HassioHelp]({{feed_link}})"
-          - conditions: "{{feed_url == feed_hassiohelp_commenti}}"
+                  link: "[Articolo HassioHelp]({{ feed_link }})"
+          - conditions: "{{ feed_url == feed_hassiohelp_commenti }}"
             sequence:
               - service: *notify
                 data:
                   title: "🗣 Commento HassioHelp"
-                  message: "{{feed_title}}"
-                  link: "[Commento HassioHelp]({{feed_link}})"
-          - conditions: "{{feed_url == feed_news_ansa}}"
+                  message: "{{ feed_title }}"
+                  link: "[Commento HassioHelp]({{ feed_link }})"
+          - conditions: "{{ feed_url == feed_news_ansa }}"
             sequence:
               - service: *notify
                 data:
                   call_no_annuncio: 1
                   notify: news # è un gruppo telegram creato ad hoc per le notizie (notify.news meglio se notify.telegram_news)
                   title: "📰 Ansa"
-                  message: "Notizia Ansa. {{feed_title}}"
-                  link: "[Ansa News]({{feed_link}})"
+                  message: "Notizia Ansa. {{ feed_title }}"
+                  link: "[Ansa News]({{ feed_link }})"
                   alexa:
                     voice: giorgio
-          - conditions: "{{feed_url == feed_wikiquote}}"
+          - conditions: "{{ feed_url == feed_wikiquote }}"
             sequence:
               - service: *notify
                 data:
                   title: "📑 WikiQuote"
-                  message: "Aforisma del giorno. {{trigger.event.data.summary|striptags}}"
-                  link: "[Aforisma]({{feed_link}})"
-          - conditions: "{{feed_url == feed_dpc}}"
+                  message: "Aforisma del giorno. {{ trigger.event.data.summary|striptags }}"
+                  link: "[Aforisma]({{ feed_link }})"
+          - conditions: "{{ feed_url == feed_dpc }}"
             sequence:
               - service: *notify
                 data:
                   title: "⛈️ Protezione Civile"
-                  message: "{{feed_title}}"
-                  link: "[Bollettini di criticità]({{feed_link}})"
+                  message: "{{ feed_title }}"
+                  link: "[Bollettini di criticità]({{ feed_link }})"
           - conditions: "{{ feed_url == feed_cb01 }}"
             sequence:
               - service: *notify
                 data:
                   title: "🎬 FILM CineBlog01 🎥"
-                  message: "{{feed_title}}"
-                  link: "[Link]({{feed_link}})"
+                  message: "{{ feed_title }}"
+                  link: "[Link]({{ feed_link }})"
+          - conditions: "{{ feed_url == feed_hass_alerts }}"
+            sequence:
+              - service: *notify
+                data:
+                  title: "🚨 Home Assistant - Alerts 🚨"
+                  message: "{{ feed_title }}"
+                  link: "[Link]({{ feed_link }})"
         default: []

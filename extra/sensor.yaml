@@ -10,52 +10,63 @@ sensor:
   #   logs:
   #     homeassistant.bootstrap: info
 
-  # ClockTime
+  # Time & Date https://www.home-assistant.io/integrations/time_date/
   - platform: time_date
     display_options:
-      - "time"
+      # - "beat"
       - "date"
-      - "date_time"
-      - "date_time_iso"
-      - "time_date"
-      - "time_utc"
-      - "beat"
+      # - "date_time"
+      # - "date_time_iso"
+      # - "date_time_utc"
+      - "time"
+      # - "time_date"
+      # - "time_utc"
 
 template:
-  sensor:
-    # Calcolo Giorno della settimana
-    - name: Giorno della settimana
-      unique_id: day_of_week
-      state: >
-        {{ ['lun','mar','mer','gio','ven','sab','dom'][now().weekday()] }}
-      icon: >-
-        mdi:{{['emoticon-dead-outline', 'emoticon-angry-outline', 'emoticon-sad-outline','emoticon-neutral-outline','emoticon-cool-outline','emoticon-excited-outline','emoticon-happy-outline'][now().weekday()] }}
+  - sensor:
+        # Calcolo Giorno della settimana # [now().weekday()]
+      - name: Day of week
+        unique_id: day_of_week
+        state: >-
+          {{ [
+              'lunedì',
+              'martedì',
+              'mercoledì',
+              'giovedì',
+              'venerdì',
+              'sabato',
+              'domenica'
+            ][as_datetime(states('sensor.date')).weekday()] }}
+        icon: >-
+          mdi:{{ [
+            'emoticon-dead-outline',
+            'emoticon-angry-outline',
+            'emoticon-sad-outline',
+            'emoticon-neutral-outline',
+            'emoticon-cool-outline',
+            'emoticon-excited-outline',
+            'emoticon-happy-outline'
+          ][as_datetime(states('sensor.date')).weekday()] }}
 
-      # Calcolo Giorno dopo
-    - name: Domani
-      unique_id: tomorrow_day_of_week
-      state: >
-        {{ ['mar','mer','gio','ven','sab','dom','lun'][now().weekday()] }}
-      icon: >-
-        mdi:{{['emoticon-angry-outline', 'emoticon-sad-outline','emoticon-neutral-outline','emoticon-cool-outline','emoticon-excited-outline','emoticon-happy-outline','emoticon-dead-outline'][now().weekday()] }}
+        # Calcolo Giorno dopo
+      - name: Tomorrow day of week #Domani
+        unique_id: tomorrow_day_of_week
+        state: >-
+          {{ ['mar','mer','gio','ven','sab','dom','lun'][as_datetime(states('sensor.date')).weekday()] }}
+        icon: >-
+          mdi:{{ [
+            'emoticon-angry-outline', 
+            'emoticon-sad-outline',
+            'emoticon-neutral-outline',
+            'emoticon-cool-outline',
+            'emoticon-excited-outline',
+            'emoticon-happy-outline',
+            'emoticon-dead-outline'
+          ][as_datetime(states('sensor.date')).weekday()] }}
 
-      # Data e Ora per DarkSky package
-      # {{as_local(states.sensor.time.last_updated).timestamp() | timestamp_custom('%d/%m/%Y - %H:%M')}}
-    - name: Data e Ora
-      unique_id: data_ora
-      state: >
-        {{as_timestamp(states.sensor.time.last_updated)|timestamp_custom('%d/%m/%Y - %H:%M')}}
-      icon: mdi:calendar-clock
-      # value_template: >
-      #   {{now().strftime("%d/%m/%Y - %H:%M")}}
-
-      # Definizione Orario Alba e Tramonto
-    - name: Alba
-      unique_id: sunrise_time
-      state: '{% set timestamp = as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom("%H:%M") %} {{ timestamp.lstrip("0") }}'
-      icon: mdi:weather-sunset-up
-
-    - name: Tramonto
-      unique_id: sunset_time
-      state: '{% set timestamp = as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom("%H:%M") %} {{ timestamp.lstrip("0") }}'
-      icon: mdi:weather-sunset-down
+      # Ultimo giorno del mese
+      - name: "Last Day of the Month"
+        unique_id: last_day_of_the_month
+        icon: "mdi:calendar"
+        state: >-
+          {{ as_datetime(states('sensor.date')).day + 1 == 1 }}

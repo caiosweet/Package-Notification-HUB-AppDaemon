@@ -1,10 +1,13 @@
 # package_hub_main:
 ### INFO
-#   @author         :   Caio & Gianpi - hassiohelp.eu 🌐
-#   @date           :   Started 01/11/2019 - Updated 20/12/2021
+#   @site           :   https://hassiohelp.eu/
+#   @author         :   Caio - https://github.com/caiosweet
+#                   :   Gianpi - https://github.com/jumping2000
+#   @date           :   Started 01/11/2019 - Updated 23/03/2022
+#   @description    :   Package for Appdaemon Notifier Center
+#                       https://github.com/jumping2000/notifier
 #   @package        :   Notification HUB - Centro Notifiche 🔔
-#   @description    :   Package Appdaemon Notifier Center for Home Assistant
-#   @repo           :   https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases
+#   @last_release   :   https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest
 ############################################################################
 
 #######################################-#######################################
@@ -15,188 +18,189 @@ homeassistant:
     ## NODE ANCHORS
     package.node_anchors:
       customize: &customize
-        package: Centro Notifiche 🔔
-        site: hassiohelp.eu 🌐
-        author: Caio & Gianpi
-        version: Main 3.3.1
+        package: "Centro Notifiche 🔔"
+        site: "hassiohelp.eu 🌐"
+        author: "Caio & Gianpi"
+        version: "Main 3.3.2"
 
     ## AUTOMATION
     automation.auto_volume_hub:
       <<: *customize
-      friendly_name: Volume Automatico Hub
+      friendly_name: "Volume Automatico Hub"
     automation.initialization_at_startup_hub:
       <<: *customize
-      friendly_name: Startup HUB
+      friendly_name: "Startup HUB"
     automation.guest_mode_hub:
       <<: *customize
-      friendly_name: Modo Ospite
+      friendly_name: "Modo Ospite"
     automation.notification_repeat_last_message_hub:
       <<: *customize
-      friendly_name: Ripete Ultimo Messaggio
+      friendly_name: "Ripete Ultimo Messaggio"
     automation.send_intercom_message_hub:
       <<: *customize
-      friendly_name: Invia Messaggio Con Iterfono
+      friendly_name: "Invia Messaggio Con Iterfono"
       icon: mdi:bullhorn
     ## BINARY SENSOR
     binary_sensor.dnd:
       <<: *customize
-      friendly_name: Modo Silenzioso
+      friendly_name: "Modo Silenzioso"
     binary_sensor.people_home:
       <<: *customize
-      friendly_name: Persone in casa # People at Home
+      friendly_name: "Persone in casa"
     ## GROUP
     group.automations_notification_hub:
       <<: *customize
-      friendly_name: Automazioni HUB
+      friendly_name: "Automazioni HUB"
       icon: mdi:account-tie
     group.location_tracker:
       <<: *customize
-      friendly_name: Dispositivi tracciati
+      friendly_name: "Dispositivi tracciati"
       icon: mdi:target-account
     group.media_player_alexa:
       <<: *customize
-      friendly_name: Gruppo Alexa
+      friendly_name: "Gruppo Alexa"
       icon: mdi:speaker-multiple
     group.media_player_google:
       <<: *customize
-      friendly_name: Gruppo Google
+      friendly_name: "Gruppo Google"
       icon: mdi:speaker-multiple
     ## INPUT BOOLEAN
     input_boolean.guest_mode:
       <<: *customize
-      friendly_name: Modo Ospite
+      friendly_name: "Modo Ospite"
       icon: mdi:account-multiple-plus
     input_boolean.holidays:
       <<: *customize
-      friendly_name: Modo Vacanza
+      friendly_name: "Modo Vacanza"
       icon: mdi:beach
     input_boolean.html_mode:
       <<: *customize
       friendly_name: "Modo Markdown/Html"
-      icon: mdi:language-html5 #language-markdown
+      icon: mdi:language-html5
+      # icon: mdi:language-markdown
     input_boolean.last_message:
       <<: *customize
-      friendly_name: Ultimo Messaggio
+      friendly_name: "Ultimo Messaggio"
       icon: mdi:repeat-once
     input_boolean.phone_notifications:
       <<: *customize
-      friendly_name: Notifiche VoIP
+      friendly_name: "Notifiche VoIP"
       icon: mdi:phone-in-talk
     input_boolean.priority_message:
       <<: *customize
-      friendly_name: Modo Prioritario
+      friendly_name: "Modo Prioritario"
       icon: mdi:alarm-light
     input_boolean.screen_notifications:
       <<: *customize
-      friendly_name: Notifiche Persistenti
+      friendly_name: "Notifiche Persistenti"
       icon: mdi:message-bulleted
     input_boolean.speech_notifications:
       <<: *customize
-      friendly_name: Notifiche Vocali
+      friendly_name: "Notifiche Vocali"
       icon: mdi:account-tie-voice
     input_boolean.text_notifications:
       <<: *customize
-      friendly_name: Notifiche Testo
+      friendly_name: "Notifiche Testo"
       icon: mdi:cellphone-message
     input_boolean.tts_clock:
       <<: *customize
-      friendly_name: TTS clock
+      friendly_name: "TTS clock"
       icon: mdi:clock
     input_boolean.wrap_text:
       <<: *customize
-      friendly_name: Testo a capo
+      friendly_name: "Testo a capo"
       icon: mdi:text-box-check
     ## INPUT DATETIME
     input_datetime.start_morning:
       <<: *customize
-      friendly_name: Mattina
+      friendly_name: "Mattina"
       icon: mdi:timetable
     input_datetime.start_afternoon:
       <<: *customize
-      friendly_name: Pomeriggio
+      friendly_name: "Pomeriggio"
       icon: mdi:timetable
     input_datetime.start_evening:
       <<: *customize
-      friendly_name: Sera
+      friendly_name: "Sera"
       icon: mdi:timetable
     input_datetime.start_night:
       <<: *customize
-      friendly_name: Notte
+      friendly_name: "Notte"
       icon: mdi:timetable
     ## INPUT NUMBER
     input_number.morning_volume:
       <<: *customize
-      friendly_name: Vol Mattina
+      friendly_name: "Vol Mattina"
       icon: mdi:volume-medium
     input_number.afternoon_volume:
       <<: *customize
-      friendly_name: Vol Pomeriggio
+      friendly_name: "Vol Pomeriggio"
       icon: mdi:volume-high
     input_number.evening_volume:
       <<: *customize
-      friendly_name: Vol Sera
+      friendly_name: "Vol Sera"
       icon: mdi:volume-medium
     input_number.night_volume:
       <<: *customize
-      friendly_name: Vol Notte
+      friendly_name: "Vol Notte"
       icon: mdi:volume-low
     input_number.default_restore_volume:
       <<: *customize
-      friendly_name: Volume Rispristino
+      friendly_name: "Volume Rispristino"
       icon: mdi:volume-source
     input_number.intercom_message_volume:
       <<: *customize
-      friendly_name: Volume
+      friendly_name: "Volume"
       icon: mdi:volume-source
     input_number.tts_wait_time:
       <<: *customize
-      friendly_name: Regolazione attesa TTS
+      friendly_name: "Regolazione attesa TTS"
       icon: mdi:av-timer
       unit_of_measurement: "sec"
     ## INPUT SELECT
     input_select.language:
       <<: *customize
-      friendly_name: Lingua
+      friendly_name: "Lingua"
       icon: mdi:flag-variant
     input_select.phone_notify:
       <<: *customize
-      friendly_name: Notifica Telefonica
+      friendly_name: "Notifica Telefonica"
       icon: mdi:phone-forward
     input_select.text_notify:
       <<: *customize
-      friendly_name: Notifica Testo
+      friendly_name: "Notifica Testo"
       icon: mdi:message-cog
     ## INPUT TEXT
     input_text.phone_called_number:
       <<: *customize
-      friendly_name: N. Tel / @user
+      friendly_name: "N. Tel / @user"
       icon: mdi:phone-classic
     input_text.last_message:
       <<: *customize
-      friendly_name: Salva Ultimo Messaggio
+      friendly_name: "Salva Ultimo Messaggio"
       icon: mdi:repeat
     input_text.intercom_message_hub:
       <<: *customize
-      friendly_name: Messaggio
+      friendly_name: "Messaggio"
       icon: mdi:bullhorn-outline
     input_text.personal_assistant_name:
       <<: *customize
-      friendly_name: Nome Assistente
+      friendly_name: "Nome Assistente"
     ## SCRIPT
     script.my_notify:
       <<: *customize
-      friendly_name: HUB
+      friendly_name: "HUB"
     ## SENSOR
     sensor.centro_notifiche:
       <<: *customize
-      friendly_name: Centro Notifiche
+      friendly_name: "Centro Notifiche"
       icon: mdi:account-tie-outline
     sensor.period_of_day:
       <<: *customize
-      friendly_name: Periodo del Giorno
+      friendly_name: "Periodo del Giorno"
     sensor.period_of_day_volume:
       <<: *customize
-      friendly_name: Volume Notifica
+      friendly_name: "Volume Notifica"
 
   ############################################################################
   ##                             CUSTOMIZE GLOB
@@ -207,11 +211,11 @@ homeassistant:
       icon: mdi:alpha-a-circle-outline
     input_datetime.dnd_start_*:
       <<: *customize
-      friendly_name: Non disturbare inizio
+      friendly_name: "Non disturbare inizio"
       icon: mdi:clock-start
     input_datetime.dnd_end_*:
       <<: *customize
-      friendly_name: Non disturbare fine
+      friendly_name: "Non disturbare fine"
       icon: mdi:clock-end
     input_number.*_volume:
       <<: *customize
@@ -311,7 +315,6 @@ input_select:
       - fr-FR
       - de-DE
       - es-ES
-      - ja-JP
       # Extra Only For Alexa
       - en-CA
       - en-AU
@@ -327,95 +330,148 @@ input_text:
     max: 255
   intercom_message_hub:
     max: 255
-    initial: ""
   personal_assistant_name:
     max: 255
   phone_called_number:
     max: 30
     mode: password
 
-######################################-#######################################
-#                                 TEMPLATE
-######################################-#######################################
+#######################################-#######################################
+##                                 TEMPLATE
+#######################################-#######################################
 template:
-  binary_sensor:
-    - name: dnd
-      unique_id: dnd
-      state: >
-        {%set speech=states('input_boolean.speech_notifications')%}
-        {%set priority=states('input_boolean.priority_message')%}
-        {%set t=now().time()%}
-        {%set t=(t.hour*60+t.minute)*60+60%}
-        {% set day = 'weekdays' if (is_state('binary_sensor.workday_sensor','on')
-          and is_state('input_boolean.holidays','off')) else 'holidays' %}
-        {%set start=state_attr('input_datetime.dnd_start_%s'%day,'timestamp')%}
-        {%set stop=state_attr('input_datetime.dnd_end_%s'%day,'timestamp')%}
-        {%if speech=='on' and priority=='off'%} 
-        {{(start<t<stop) if start<stop else ((t>start or t<stop) and start != stop)}}
-        {%elif speech=='off' and priority=='off'%}True{%else%}False{%endif%}
-      icon: >
-        {%if is_state('binary_sensor.dnd','off')%}mdi:minus-circle-off{%else%}mdi:minus-circle{%endif%}
-    - name: People Home
-      unique_id: people_home
-      device_class: presence
-      state: "{{expand(states.person)|selectattr('state','eq','home')|list|count > 0}}"
-      icon: >-
-        {% set people = expand(states.person)|selectattr('state','eq','home')
-          |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0) %}
-        {% set icon = {0 :'mdi:account-off', 1 :'mdi:account', 2 :'mdi:account-multiple', 3 :'mdi:account-multiple-check'} %}
-        {{icon[people] if people in icon else 'mdi:account-group'}}
-      attributes:
-        number: >-
-          {{expand(states.person)|selectattr('state','eq','home')
-          |list|count+(1 if is_state('input_boolean.guest_mode','on') else 0)}}
-        name: >-
-          {{expand(states.person)|selectattr('state','eq','home')
-          |join(', ',attribute='name')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
-        entity: >-
-          {{expand(states.person)|selectattr('state','eq','home')
-          |join(', ',attribute='entity_id')+(', Ospiti' if is_state('input_boolean.guest_mode','on') else '')}}
-  sensor:
-    - name: Period of Day
-      unique_id: period_of_day
-      state: >
-        {%set nt=now().time()%}
-        {%set nt=(nt.hour*60+nt.minute)*60+nt.second%}
-        {%if state_attr('input_datetime.start_morning','timestamp')<=nt<state_attr('input_datetime.start_afternoon','timestamp')%}Mattino
-        {%elif state_attr('input_datetime.start_afternoon','timestamp')<=nt<state_attr('input_datetime.start_evening','timestamp')%}Pomeriggio
-        {%elif state_attr('input_datetime.start_evening','timestamp')<=nt<state_attr('input_datetime.start_night','timestamp')%}Sera
-        {%elif (state_attr('input_datetime.start_evening','timestamp')>state_attr('input_datetime.start_night','timestamp'))
-        and (nt>state_attr('input_datetime.start_evening','timestamp') or nt<state_attr('input_datetime.start_night', 'timestamp'))%}Sera
-        {%else%}Notte{%endif%}
-      icon: >
-        {%if is_state('sensor.period_of_day','Mattino')%}mdi:weather-sunset-up
-        {%elif is_state('sensor.period_of_day','Pomeriggio')%}mdi:weather-sunny
-        {%elif is_state('sensor.period_of_day','Sera') %}mdi:weather-sunset-down
-        {%else%} mdi:weather-night{%endif%}
-    - name: Period of Day Volume
-      unique_id: period_of_day_volume
-      state: >
-        {%if is_state('sensor.period_of_day','Mattino') %}{{states('input_number.morning_volume')|int(0)}}
-        {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{states('input_number.afternoon_volume')|int(0)}}
-        {%elif is_state('sensor.period_of_day','Sera') %}{{states('input_number.evening_volume')|int(0)}}
-        {%else%}{{states('input_number.night_volume')|int(0)}}{%endif%}
-      icon: >
-        {%if is_state('sensor.period_of_day_volume','0')%}mdi:volume-off
-        {%elif (0 < states('sensor.period_of_day_volume')|int(0) <= 30) %}mdi:volume-low
-        {%elif (40 <= states('sensor.period_of_day_volume')|int(0) <= 60) %}mdi:volume-medium
-        {%else%}mdi:volume-high{%endif%}
-      attributes:
-        vol: >
-          {%if is_state('sensor.period_of_day','Mattino') %}{{(states('input_number.morning_volume')|float(10))/100}}
-          {%elif is_state('sensor.period_of_day','Pomeriggio')%}{{(states('input_number.afternoon_volume')|float(10))/100}}
-          {%elif is_state('sensor.period_of_day','Sera') %}{{(states('input_number.evening_volume')|float(10))/100}}
-          {%else%}{{(states('input_number.night_volume')|float(10))/100}}{%endif%}
+  - binary_sensor:
+      - name: dnd
+        unique_id: dnd
+        state: >-
+          {% set speech = states('input_boolean.speech_notifications') %}
+          {% set priority = states('input_boolean.priority_message') %}
+          {% set t = now().time() %}
+          {% set t = (t.hour * 60 + t.minute) * 60 + 60 %}
+          {% set day = 'weekdays' if (is_state('binary_sensor.workday_sensor', 'on')
+              and is_state('input_boolean.holidays', 'off')) else 'holidays' %}
+          {% set start = state_attr('input_datetime.dnd_start_%s'%day, 'timestamp') %}
+          {% set stop = state_attr('input_datetime.dnd_end_%s'%day, 'timestamp') %}
+          {% if speech == 'on' and priority == 'off' %} 
+            {{ (start < t < stop) if start < stop 
+              else ((t > start or t < stop) and start != stop) }}
+          {% elif speech == 'off' and priority == 'off'%}
+            True
+          {% else %}
+            False
+          {% endif %}
+        icon: >-
+          {% if is_state('binary_sensor.dnd','off') %}
+            mdi:minus-circle-off
+          {% else %}
+            mdi:minus-circle
+          {% endif %}
+
+      - name: People Home
+        unique_id: people_home
+        device_class: presence
+        state: >-
+          {{ expand(states.person) 
+            | selectattr('state', 'eq', 'home') | list | count > 0 }}
+        icon: >-
+          {% set people = expand(states.person) | selectattr('state', 'eq', 'home')
+            | list | count + (1 if is_state('input_boolean.guest_mode', 'on') else 0) %}
+          {% set icon = {
+                    0 :'mdi:account-off', 
+                    1 :'mdi:account', 
+                    2 :'mdi:account-multiple', 
+                    3 :'mdi:account-multiple-check'
+                  } %}
+          {{ icon[people] if people in icon else 'mdi:account-group' }}
+        attributes:
+          number: >-
+            {{ expand(states.person) 
+              | selectattr('state', 'eq', 'home') | list | count 
+              + (1 if is_state('input_boolean.guest_mode', 'on') else 0) }}
+          name: >-
+            {{ expand(states.person) 
+              | selectattr('state', 'eq', 'home') | join(', ', attribute = 'name')
+              + (', Ospiti' if is_state('input_boolean.guest_mode', 'on') else '') }}
+          entity: >-
+            {{ expand(states.person)
+              | selectattr('state', 'eq', 'home') | join(', ', attribute = 'entity_id')
+              + (', Ospiti' if is_state('input_boolean.guest_mode', 'on') else '') }}
+
+  - sensor:
+      - name: Period of Day
+        unique_id: period_of_day
+        state: >-
+          {% set nt = now().time() %}
+          {% set nt = (nt.hour * 60 + nt.minute) * 60 + nt.second %}
+          {% if state_attr('input_datetime.start_morning', 'timestamp') 
+                <= nt < state_attr('input_datetime.start_afternoon', 'timestamp') %}
+            Mattino
+          {% elif state_attr('input_datetime.start_afternoon', 'timestamp') 
+                <= nt < state_attr('input_datetime.start_evening', 'timestamp') %}
+            Pomeriggio
+          {% elif state_attr('input_datetime.start_evening', 'timestamp') 
+                <= nt < state_attr('input_datetime.start_night', 'timestamp') %}
+            Sera
+          {% elif (state_attr('input_datetime.start_evening', 'timestamp') 
+                > state_attr('input_datetime.start_night', 'timestamp'))
+                and (nt > state_attr('input_datetime.start_evening', 'timestamp') 
+                or nt < state_attr('input_datetime.start_night', 'timestamp')) %}
+            Sera
+          {% else %} 
+            Notte 
+          {% endif %}
+        icon: >-
+          {% if is_state('sensor.period_of_day', 'Mattino') %}
+            mdi:weather-sunset-up
+          {% elif is_state('sensor.period_of_day', 'Pomeriggio') %}
+            mdi:weather-sunny
+          {% elif is_state('sensor.period_of_day', 'Sera') %}
+            mdi:weather-sunset-down
+          {% else %}
+            mdi:weather-night 
+          {% endif %}
+
+      - name: Period of Day Volume
+        unique_id: period_of_day_volume
+        state: >-
+          {% if is_state('sensor.period_of_day', 'Mattino') %}
+            {{ states('input_number.morning_volume') | int(0) }}
+          {% elif is_state('sensor.period_of_day', 'Pomeriggio') %}
+            {{ states('input_number.afternoon_volume') | int(0) }}
+          {% elif is_state('sensor.period_of_day', 'Sera') %}
+            {{ states('input_number.evening_volume') | int(0) }}
+          {% else%}
+            {{ states('input_number.night_volume') | int(0) }}
+          {% endif %}
+        icon: >-
+          {% if is_state('sensor.period_of_day_volume', '0') %}
+            mdi:volume-off
+          {% elif (0 < states('sensor.period_of_day_volume') | int(0) <= 30) %}
+            mdi:volume-low
+          {% elif (40 <= states('sensor.period_of_day_volume') | int(0) <= 60) %}
+            mdi:volume-medium
+          {% else %}
+            mdi:volume-high
+          {% endif %}
+        attributes:
+          vol: >-
+            {% if is_state('sensor.period_of_day', 'Mattino') %}
+              {{ (states('input_number.morning_volume') | float(10)) / 100 }}
+            {% elif is_state('sensor.period_of_day', 'Pomeriggio') %}
+              {{ (states('input_number.afternoon_volume') | float(10)) / 100 }}
+            {% elif is_state('sensor.period_of_day', 'Sera') %}
+              {{ (states('input_number.evening_volume') | float(10)) / 100 }}
+            {% else %}
+              {{ (states('input_number.night_volume') | float(10)) / 100 }}
+            {% endif %}
+
 #######################################-#######################################
 ##                                  SCRIPT
 #######################################-#######################################
 script:
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   # MAIN SCRIPT - Variables to be passed to the HUB + template file event if included
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   my_notify:
     alias: HUB
     mode: queued
@@ -423,39 +479,39 @@ script:
       - event: hub
         event_data:
           # --------------------------------------------- #
-          # VARIABLES
+          # VARIABLES (String)
           # --------------------------------------------- #
           alexa: >-
-            {{alexa|default}}
+            {{ alexa | default }}
           called_number: >-
-            {{called_number|default}}
+            {{ called_number | default }}
           caption: >-
-            {{caption|default}}
+            {{ caption | default }}
           discord: >-
-            {{discord|default}}
+            {{ discord | default }}
           google: >-
-            {{google|default}}
+            {{ google | default }}
           html: >-
-            {{html|default}}
+            {{ html | default }}
           image: >-
-            {{image|default}}
+            {{ image | default }}
           link: >-
-            {{link|default}}
+            {{ link | default }}
           location: >-
-            {{location|default}}
+            {{ location | default }}
           mobile: >-
-            {{mobile|default}}
+            {{ mobile | default }}
           no_show: >-
-            {{no_show|default}}
+            {{ no_show | default }}
           notify: >-
-            {{notify|default}}
+            {{ notify | default }}
           priority: >-
-            {{priority|default}}
+            {{ priority | default }}
           title: >-
-            {{title|default}}
-          #-------------------------------------------------------------------------------#
-          # FILE TO BE INCLUDED IF MACROS ARE USED - NOTE: DO NOT MODIFY THE .yml EXTENSION
-          #-------------------------------------------------------------------------------#
+            {{ title | default }}
+          #----------------------------------------------------------------------------#
+          # FILE TO BE INCLUDED IF MACROS ARE USED - DO NOT MODIFY THE .yml EXTENSION
+          #----------------------------------------------------------------------------#
           message: !include hub_build_message.yml
 
 #######################################-#######################################
@@ -463,16 +519,16 @@ script:
 #######################################-#######################################
 # https://www.callmebot.com/blog/telegram-call-from-home-assistant/
 shell_command:
-  telegram_call: "/usr/bin/wget {{url}} -O /dev/null"
-  #telegram_call: '/usr/bin/curl {{url}} -O /dev/null' # alternative
+  telegram_call: "/usr/bin/wget {{ url }} -O /dev/null"
+  #telegram_call: '/usr/bin/curl {{ url }} -O /dev/null' # alternative
 
 #######################################-#######################################
 ##                                 AUTOMATION
 #######################################-#######################################
 automation:
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   # INITIALIZE
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   - alias: Initialization At Startup Hub
     initial_state: true
     trigger:
@@ -487,10 +543,11 @@ automation:
         data:
           object_id: location_tracker
           entities: >-
-            {{states.person|join(',','entity_id')}}
+            {{ states.person | join(',','entity_id') }}
 
       - choose:
-          - conditions: "{{state_attr('input_select.notification_media_player_alexa', 'options') is not none }}"
+          - conditions:
+              - "{{ state_attr('input_select.notification_media_player_alexa', 'options') is not none }}"
             sequence:
               # Automatic creation of the media_player_alexa Group
               # from entity input_select.notification_media_player_alexa if it exists.
@@ -498,15 +555,15 @@ automation:
                 data:
                   object_id: media_player_alexa
                   entities: >-
-                    {% set lista_alexa = state_attr('input_select.notification_media_player_alexa','options') %}
+                    {% set lista_alexa = state_attr('input_select.notification_media_player_alexa', 'options') %}
                     {{ states.media_player
-                    | selectattr('attributes.friendly_name', 'defined')
-                    | selectattr('attributes.friendly_name', 'in', lista_alexa|default([],true))
-                    | map(attribute='entity_id')|list
-                    }}
+                      | selectattr('attributes.friendly_name', 'defined')
+                      | selectattr('attributes.friendly_name', 'in', lista_alexa | default([], true))
+                      | map(attribute='entity_id') | list }}
 
       - choose:
-          - conditions: "{{state_attr('input_select.notification_media_player_google', 'options') is not none }}"
+          - conditions:
+              - "{{ state_attr('input_select.notification_media_player_google', 'options') is not none }}"
             sequence:
               # Automatic creation of the media_player_google Group
               # from entity input_select.notification_media_player_google if it exists.
@@ -514,15 +571,14 @@ automation:
                 data:
                   object_id: media_player_google
                   entities: >-
-                    {% set lista_google = state_attr('input_select.notification_media_player_google','options') %}
+                    {% set lista_google = state_attr('input_select.notification_media_player_google', 'options') %}
                     {{ states.media_player 
-                    | selectattr('attributes.friendly_name', 'defined')
-                    | selectattr('attributes.friendly_name', 'in', lista_google|default([],true))
-                    | map(attribute='entity_id')|list
-                    }}
+                      | selectattr('attributes.friendly_name', 'defined')
+                      | selectattr('attributes.friendly_name', 'in', lista_google | default([], true))
+                      | map(attribute='entity_id') | list }}
 
       - choose:
-          - conditions: "{{states('input_text.personal_assistant_name') == 'unknown' }}"
+          - conditions: "{{ states('input_text.personal_assistant_name') == 'unknown' }}"
             sequence:
               - service: input_text.set_value
                 data:
@@ -534,19 +590,19 @@ automation:
       - service: group.set
         data:
           object_id: "automations_notification_hub"
-          entities: >
-            {%for item in states.automation if (item.attributes.id is defined 
-            and (item.attributes.id|lower).endswith('hub'))
-            or (item.attributes.friendly_name|lower).endswith('hub') %}
-            {{-item.entity_id}}{%if not loop.last%},{%endif-%}{%endfor%}
+          entities: >-
+            {% for item in states.automation if (item.attributes.id is defined 
+                and (item.attributes.id|lower).endswith('hub'))
+                or (item.attributes.friendly_name|lower).endswith('hub') %}
+            {{ item.entity_id }} {% if not loop.last %},{% endif %} {% endfor %}
       # Execute auto_volume_hub Automation.
       - service: automation.trigger
         entity_id: automation.auto_volume_hub
         # skip_condition: true
 
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   # Automatic Volume - Media player volume adjustment, based on period_of_day_volume sensor
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   - alias: Auto Volume Hub
     mode: queued
     initial_state: true
@@ -555,41 +611,43 @@ automation:
         entity_id: sensor.period_of_day_volume
     action:
       - variables:
-          list_alexa: "{{expand('group.media_player_alexa')|map(attribute='entity_id')|list}}"
-          list_google: "{{expand('group.media_player_google')|map(attribute='entity_id')|list}}"
-          all_entity: "{{list_alexa + list_google}}"
-          volume: "{{states('sensor.period_of_day_volume')|float(10)}}"
+          list_alexa: >-
+            {{ expand('group.media_player_alexa') | map(attribute='entity_id') | list }}
+          list_google: >-
+            {{ expand('group.media_player_google') | map(attribute='entity_id') | list }}
+          all_entity: "{{ list_alexa + list_google }}"
+          volume: "{{ states('sensor.period_of_day_volume') | float(10) }}"
       - choose:
-          - conditions: "{{list_alexa|length > 0}}"
+          - conditions: "{{ list_alexa | length > 0 }}"
             sequence:
               - service: notify.alexa_media
                 data:
                   data:
                     type: tts
-                  target: "{{list_alexa}}"
-                  message: >
+                  target: "{{ list_alexa }}"
+                  message: >-
                     <speak>
                     <break time="4s"/>
                     <prosody volume="silent">volume</prosody>
                     </speak>
               - delay: "00:00:02"
       - choose:
-          - conditions: "{{all_entity|length > 0}}"
+          - conditions: "{{ all_entity | length > 0 }}"
             sequence:
               - service: media_player.volume_set
                 data:
-                  entity_id: "{{all_entity}}"
-                  volume_level: "{{(volume|round(2))/100}}"
+                  entity_id: "{{ all_entity }}"
+                  volume_level: "{{ (volume | round(2)) / 100 }}"
               - service: input_number.set_value
                 data:
                   entity_id:
                     - input_number.intercom_message_volume
                     - input_number.default_restore_volume
-                  value: "{{volume}}"
+                  value: "{{ volume }}"
 
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   # LAST MESSAGE - Repeat the last text sent (Excluding tts messages)
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   - alias: Notification Repeat Last Message Hub
     initial_state: true
     mode: queued
@@ -604,13 +662,13 @@ automation:
       - service: script.my_notify
         data:
           title: "Ultimo messaggio"
-          message: >
-            {{states('input_text.last_message')}}
+          message: >-
+            {{ states('input_text.last_message') }}
           <<: &common
             call_no_annuncio: true
             alexa:
               volume: &intercom_volume >
-                {{states('input_number.intercom_message_volume')|int/100}}
+                {{ states('input_number.intercom_message_volume') | int(0) / 100 }}
             google:
               volume: *intercom_volume
       - service: input_boolean.turn_off
@@ -618,32 +676,32 @@ automation:
           # - input_boolean.priority_message
           - input_boolean.last_message
 
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   # INTERCOM - To send messages from the GUI (graphical user interface)
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   - alias: Send Intercom Message Hub
     initial_state: true
     mode: queued
     trigger:
       - platform: state
         entity_id: input_text.intercom_message_hub
-    condition: "{{states('input_text.intercom_message_hub')|trim != ''}}"
+    condition: "{{ states('input_text.intercom_message_hub') | trim != '' }}"
     action:
       - service: script.my_notify
         data:
           title: "Interfono"
-          message: >
-            {{states('input_text.intercom_message_hub')~' '}}
+          message: >-
+            {{ states('input_text.intercom_message_hub')~' ' }}
           <<: *common
       - service: input_text.set_value
         data:
           entity_id: input_text.intercom_message_hub
           value: ""
 
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   # GUEST - On and Off guest mode - The TTS works even if you are away from home.
   #         Useful even if you want to exclude automations if there are guests in the house
-  #----------------------------------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------#
   - alias: Guest Mode Hub
     initial_state: true
     mode: queued
@@ -653,8 +711,8 @@ automation:
     action:
       - service: script.my_notify
         data:
-          title: >
-            Modalità Ospite - {{trigger.to_state.state|upper}}
+          title: >-
+            Modalità Ospite - {{ trigger.to_state.state | upper }}
           call_no_annuncio: true
           call_modo_ospite: true
           alexa: true

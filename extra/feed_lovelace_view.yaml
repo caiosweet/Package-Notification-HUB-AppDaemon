@@ -1,5 +1,5 @@
-title: News
-path: news
+title: Feeds
+path: feeds
 icon: mdi:newspaper
 cards:
   - type: vertical-stack
@@ -31,22 +31,6 @@ cards:
             field: published
             style:
               - white-space: nowrap
-
-      - type: custom:list-card
-        feed_attribute: entries
-        entity: sensor.feed_hassiohelp_articoli_tutti
-        title: "\U0001F4F0 Articoli HassioHelp"
-        row_limit: 10
-        columns:
-          - title: "Titolo"
-            add_link: link
-            field: title
-          - title: Data
-            field: published
-            style:
-              - white-space: nowrap
-          - title: "Autore"
-            field: author
 
       - type: custom:list-card
         feed_attribute: entries

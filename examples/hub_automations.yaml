@@ -35,7 +35,7 @@ automation:
           time: "{{(now().time()|string)[:-4]}}"
           icon: >
             {% if 'stop' in title %}🛑
-            {% elif 'final' in title %}🛡️
+            {% elif 'final' in title %}🏁
             {% elif 'close' in title %}⛔
             {% elif 'restart' in title %}👍👍
             {% elif 'start' in title %}👍
@@ -59,12 +59,14 @@ automation:
                       data:
                         title: "{{ icon }} {{ title }}"
                         message: |
-                          ➡️ {{ time }}
+                          ➡ {{ time }}
                     - choose:
                         - conditions: "{{ 'start' in title }}"
                           sequence:
                             - service: homeassistant.update_entity
-                              entity_id: sensor.ha_start
+                              entity_id: 
+                                - sensor.ha_start
+                                - sensor.verifica_tempi_setup
                             - wait_for_trigger:
                                 - platform: state
                                   entity_id: sensor.centro_notifiche
@@ -76,8 +78,8 @@ automation:
                                 title: "HomeAssistant Start!"
                                 notify: "notify.{{ notify_name }}"
                                 message: |
-                                  📬 Centro Notifiche operativo! 👨‍✈️
-                                  🏁 {{ states('sensor.ha_start') }}
+                                  📬 Centro Notifiche operativo! 🕵
+                                  🟩 {{ states('sensor.ha_start') }}
                                 alexa:
                                   message_tts: >-
                                     Il sistema è operativo!.
@@ -629,7 +631,7 @@ automation:
                   Backups:
                   {# for last backup only add filter -> if bkp.date == state_attr(ENTITY, 'last_backup') #}
                   {% for bkp in backups %}
-                  ➡️ Nome : {{ bkp.name }}
+                  ➡ Nome : {{ bkp.name }}
                     Data : {{ as_local(as_datetime(bkp.date)) }}
                     {# Ora: {{ as_timestamp(bkp.date) | timestamp_custom('%X') }} #}
                     Stato: {{ bkp.state }} 
