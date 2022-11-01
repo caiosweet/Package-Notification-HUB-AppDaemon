@@ -2,54 +2,83 @@ title: Centro Notifiche
 path: centro_notifiche
 icon: mdi:account-tie
 cards:
-  - type: custom:vertical-stack-in-card
+  # CARD Menu
+  - type: vertical-stack
+  # - type: custom:vertical-stack-in-card
     cards:
       - type: markdown
         content: |
           <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</center></font>
           {% if not is_state('sensor.centro_notifiche', 'on') %}
-          <center>⚠️ {{states('sensor.centro_notifiche')}} ⚠️</center>
+          <ha-alert title="Centro Notifiche" alert-type="error">
+          {{states('sensor.centro_notifiche')}}
+          </ha-alert>
           {% endif %}
-      - type: divider
-        style:
-          background-color: var(--primary-color)
-          height: 1px
-      - type: entities
-        show_header_toggle: false
-        state_color: true
-        header:
-          type: buttons
-          state_color: true
-          icon_height: 24px
-          entities:
-            - entity: binary_sensor.people_home
-              tap_action:
-                action: more-info
-            - entity: group.location_tracker
-              tap_action:
-                action: more-info
-            - entity: input_boolean.phone_notifications
-            - entity: input_boolean.speech_notifications
-            - entity: input_boolean.text_notifications
-            - entity: input_boolean.screen_notifications
-            - entity: input_boolean.guest_mode
-            - entity: input_boolean.priority_message
-            - entity: input_boolean.holidays
-            - entity: binary_sensor.dnd
-              tap_action:
-                action: more-info
-        entities: []
-      - type: divider
-        style:
-          background-color: var(--primary-color)
-          height: 1px
+      # - type: divider
+      #   style:
+      #     background-color: var(--primary-color)
+      #     height: 1px
+      - type: grid
+        columns: 10
+        square: true
+        cards:
+          - type: button
+            show_name: false
+            show_state: false
+            entity: binary_sensor.people_home
+            tap_action:
+              action: more-info
+          - type: button
+            show_name: false
+            show_state: false
+            entity: group.location_tracker
+            tap_action:
+              action: more-info
+          - type: button
+            show_name: false
+            show_state: false
+            entity: input_boolean.phone_notifications
+          - type: button
+            show_name: false
+            show_state: false
+            entity: input_boolean.speech_notifications
+          - type: button
+            show_name: false
+            show_state: false
+            entity: input_boolean.text_notifications
+          - type: button
+            show_name: false
+            show_state: false
+            entity: input_boolean.screen_notifications
+          - type: button
+            show_name: false
+            show_state: false
+            entity: input_boolean.guest_mode
+          - type: button
+            show_name: false
+            show_state: false
+            entity: input_boolean.priority_message
+          - type: button
+            show_name: false
+            show_state: false
+            entity: input_boolean.holidays
+          - type: button
+            show_name: false
+            show_state: false
+            entity: binary_sensor.dnd
+            tap_action:
+              action: more-info
+      # - type: divider
+      #   style:
+      #     background-color: var(--primary-color)
+      #     height: 1px
       - type: glance
         columns: 3
         show_icon: false
         entities:
           - entity: sensor.period_of_day
           - entity: sensor.period_of_day_volume
-          - entity: input_number.default_restore_volume
+          - entity: input_select.language
           - entity: input_select.notification_media_player_alexa
             tap_action:
               action: call-service
@@ -89,10 +118,10 @@ cards:
                 entity_id: input_select.text_notify
             double_tap_action:
               action: more-info
-      - type: divider
-        style:
-          background-color: var(--primary-color)
-          height: 1px
+      # - type: divider
+      #   style:
+      #     background-color: var(--primary-color)
+      #     height: 1px
       - type: horizontal-stack
         cards:
           - type: button
@@ -144,10 +173,10 @@ cards:
             entity: input_boolean.last_message
             tap_action:
               action: toggle
-      - type: divider
-        style:
-          background-color: var(--primary-color)
-          height: 1px
+      # - type: divider
+      #   style:
+      #     background-color: var(--primary-color)
+      #     height: 1px
       - type: entities
         show_header_toggle: false
         state_color: true
@@ -155,11 +184,14 @@ cards:
           - entity: input_text.intercom_message_hub
           - entity: input_number.intercom_message_volume
 
+  # CARD Impostazioni Assistente
   - type: entities
     title: Impostazioni Assistente
     show_header_toggle: false
     state_color: true
     entities:
+      - type: section
+        label: ""
       - entity: input_text.personal_assistant_name
       - entity: input_select.language
       - entity: input_select.text_notify
@@ -185,8 +217,8 @@ cards:
       - entity: input_number.evening_volume
       - entity: input_datetime.start_night
       - entity: input_number.night_volume
-      - entity: input_number.default_restore_volume
 
+  # CARD Centro Notifiche
   - type: entities
     title: Centro Notifiche
     show_header_toggle: false
@@ -226,6 +258,7 @@ cards:
       - entity: input_number.intercom_message_volume
       - entity: input_text.intercom_message_hub
 
+  # CARD Alexa
   - type: entities
     title: Alexa
     show_header_toggle: false
@@ -237,10 +270,27 @@ cards:
       - entity: input_select.notification_media_player_alexa
       - entity: input_select.default_alexa_type
       - entity: input_select.default_alexa_method
+      - entity: input_boolean.alexa_smart_volume_set
+      - entity: binary_sensor.notifyhub_alexa_speak
       - type: section
-        label: "Sensore"
+        label: "SSML"
+      - entity: input_boolean.alexa_ssml
+      - entity: input_select.alexa_voice
+      - entity: input_select.alexa_language
+      - entity: input_number.alexa_prosody_rate
+      - entity: input_number.alexa_prosody_pitch
+      - entity: input_number.alexa_prosody_volume
+      - entity: script.ssml_reset
+      - type: section
+        label: "Info"
+      - entity: group.media_player_alexa
+      - type: attribute
+        entity: group.media_player_alexa
+        attribute: entity_id
+        name: Players
       - entity: sensor.media_player_alexa
 
+  # CARD Google
   - type: entities
     title: Google
     show_header_toggle: false
@@ -252,9 +302,15 @@ cards:
       - entity: input_select.tts_notify
       - entity: input_select.notification_media_player_google
       - type: section
-        label: "Sensore"
+        label: "Info"
+      - entity: group.media_player_google
+      - type: attribute
+        entity: group.media_player_google
+        attribute: entity_id
+        name: Players
       - entity: sensor.media_player_google
 
+  # CARD VOIP
   - type: entities
     title: VoIP
     show_header_toggle: false
@@ -265,6 +321,7 @@ cards:
       - entity: input_text.phone_called_number
       - entity: input_select.phone_notify
 
+  # CARD Gruppo Automazioni
   - type: entities
     title: Automazioni
     show_header_toggle: false

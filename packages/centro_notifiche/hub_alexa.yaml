@@ -11,14 +11,23 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Alexa 3.3.2"
+        version: "Alexa 3.4.0"
 
+    ## SENSOR
+    binary_sensor.notifyhub_alexa_speak:
+      <<: *customize
+      friendly_name: "Alexa parla"
+      # icon: si:amazonalexa
     ## INPUT
     input_boolean.alexa_switch:
       <<: *customize
       friendly_name: "Alexa"
       icon: si:amazonalexa
       # icon: mdi:alpha-a-circle
+    input_boolean.alexa_smart_volume_set:
+      <<: *customize
+      friendly_name: "Imposta volume smart"
+      icon: mdi:volume-equal
     input_boolean.alexa_ssml:
       <<: *customize
       friendly_name: "Auto SSML"
@@ -40,10 +49,10 @@ homeassistant:
       <<: *customize
       friendly_name: "Amazon Polly voice"
       icon: mdi:account-tie-voice-outline
-    # input_select.alexa_language:
-    #   <<: *customize
-    #   friendly_name: Amazon Polly language
-    #   icon: mdi:flag-variant
+    input_select.alexa_language:
+      <<: *customize
+      friendly_name: Amazon Polly language
+      icon: mdi:flag-variant
     input_select.notification_media_player_alexa:
       <<: *customize
       friendly_name: "Sorgente Alexa"
@@ -76,7 +85,7 @@ homeassistant:
 input_boolean:
   alexa_switch:
   alexa_ssml:
-
+  alexa_smart_volume_set:
 input_number:
   alexa_prosody_rate:
     min: 20
@@ -90,7 +99,6 @@ input_number:
     min: -50
     max: 4.08
     step: 0.01
-
 input_select:
   notification_media_player_alexa:
     options: !secret notification_media_player_alexa_hub
@@ -146,25 +154,26 @@ input_select:
         "Lucia",
         "Mia",
       ]
-
-  # alexa_language:
-  #   options: [
-  #     "Master",
-  #     "it-IT",
-  #     "en-US", "en-CA",
-  #     "en-AU",
-  #     "en-GB",
-  #     "en-IN",
-  #     "fr-CA",
-  #     "fr-FR",
-  #     "de-DE",
-  #     "hi-IN",
-  #     "ja-JP",
-  #     "pt-BR",
-  #     "es-US",
-  #     "es-ES",
-  #     "es-MX",
-  #     ]
+  alexa_language:
+    options:
+      [
+        "Master",
+        "it-IT",
+        "en-AU",
+        "en-CA",
+        "en-GB",
+        "en-IN",
+        "en-US",
+        "fr-CA",
+        "fr-FR",
+        "de-DE",
+        "hi-IN",
+        "ja-JP",
+        "pt-BR",
+        "es-ES",
+        "es-MX",
+        "es-US",
+      ]
 
 #######################################-#######################################
 ##                                 TEMPLATE
@@ -172,16 +181,13 @@ input_select:
 template:
   - trigger:
       - platform: state
-        entity_id: input_select.notification_media_player_alexa
-        to:
-      - platform: state
-        entity_id: sensor.last_alexa
+        entity_id:
+          - input_select.notification_media_player_alexa
+          - sensor.last_alexa
         to:
       - platform: state
         entity_id: group.media_player_alexa
         attribute: entity_id
-      # - platform: event
-      #   event_type: event_template_reloaded
       - platform: state
         entity_id: sensor.media_player_alexa
         to: unknown
@@ -189,7 +195,7 @@ template:
       - name: Media Player Alexa
         unique_id: media_player_alexa
         state: >-
-          {% set domains = states.group | list + states.media_player | list + expand('sensor.last_alexa') %}
+          {% set domains = (states.group | list) + (states.media_player | list) + expand('sensor.last_alexa') %}
           {% set selected = states('input_select.notification_media_player_alexa') | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain == 'sensor' %}
@@ -211,6 +217,10 @@ template:
             {% endif %}
           {% endfor %}
 
+  - binary_sensor:
+      - name: Notifyhub Alexa speak
+        # unique_id: notifyhub_alexa_speak
+        state: "false"
 #######################################-#######################################
 ##                                  SCRIPT
 #######################################-#######################################
@@ -229,7 +239,7 @@ script:
         data:
           entity_id: input_select.alexa_voice
           option: Alexa
-      # - service: input_select.select_option
-      #   data:
-      #     entity_id: input_select.alexa_language
-      #     option: it-IT
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.alexa_language
+          option: Master

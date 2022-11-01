@@ -4,8 +4,11 @@ binary_sensor:
     workdays: [mon, tue, wed, thu, fri, sat]
     excludes: [sun, holiday]
     add_holidays:
-      - "2022-08-31"
       - "2023-08-31"
       - "2024-08-31"
       - "2025-08-31"
       - "2026-08-31"
+      - "2027-08-31"
+      - "2028-08-31"
+      - "2029-08-31"
+      - "2030-08-31"

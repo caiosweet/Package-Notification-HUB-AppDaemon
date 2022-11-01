@@ -3,6 +3,8 @@ title: Impostazioni Assistente
 show_header_toggle: false
 state_color: true
 entities:
+  - type: section
+    label: ""
   - entity: input_text.personal_assistant_name
   - entity: input_select.language
   - entity: input_select.text_notify
@@ -28,4 +30,3 @@ entities:
   - entity: input_number.evening_volume
   - entity: input_datetime.start_night
   - entity: input_number.night_volume
-  - entity: input_number.default_restore_volume

@@ -3,7 +3,7 @@
 #   @site           :   https://hassiohelp.eu/
 #   @author         :   Caio - https://github.com/caiosweet
 #                   :   Gianpi - https://github.com/jumping2000
-#   @date           :   Started 01/11/2019 - Updated 23/03/2022
+#   @date           :   Started 01/11/2019 - Updated 31/10/2022
 #   @description    :   Package for Appdaemon Notifier Center
 #                       https://github.com/jumping2000/notifier
 #   @package        :   Notification HUB - Centro Notifiche 🔔
@@ -21,7 +21,7 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Main 3.3.2"
+        version: "Main 3.4.0"
 
     ## AUTOMATION
     automation.auto_volume_hub:
@@ -144,10 +144,6 @@ homeassistant:
       <<: *customize
       friendly_name: "Vol Notte"
       icon: mdi:volume-low
-    input_number.default_restore_volume:
-      <<: *customize
-      friendly_name: "Volume Rispristino"
-      icon: mdi:volume-source
     input_number.intercom_message_volume:
       <<: *customize
       friendly_name: "Volume"
@@ -294,10 +290,6 @@ input_number:
     min: 0
     max: 100
     step: 10
-  default_restore_volume:
-    min: 0
-    max: 100
-    step: 10
   tts_wait_time:
     min: 0
     max: 5
@@ -315,16 +307,6 @@ input_select:
       - fr-FR
       - de-DE
       - es-ES
-      # Extra Only For Alexa
-      - en-CA
-      - en-AU
-      - en-IN
-      - fr-CA
-      - hi-IN
-      - ja-JP
-      - pt-BR
-      - es-US
-      - es-MX
 input_text:
   last_message:
     max: 255
@@ -474,6 +456,192 @@ script:
   #------------------------------------------------------------------------------------#
   my_notify:
     alias: HUB
+    description: "Cross-platform notification sorting center"
+    fields:
+      title:
+        name: title
+        description: "Title for your notification."
+        example: &ex_title "⭐ Star Notifier app on GitHub!."
+        default: *ex_title
+        selector:
+          text:
+            multiline: true
+      message:
+        name: message
+        description: "Message body of the notification."
+        example: &ex_message "Star Notifier app on GitHub! https://github.com/jumping2000/notifier"
+        default: *ex_message
+        required: false
+        selector:
+          text:
+            multiline: true
+      alexa:
+        name: alexa
+        description: "Parameter for TTS Alexa. Bool (True/Flase) or Dict (media_player, message, audio)"
+        example: &ex_alexa |
+          media_player: media_player.studio
+          message: Cucù! Sono le 10:00, accipicchia!
+          audio: "soundbank://soundlibrary/foley/amzn_sfx_clock_ticking_01"
+        default: *ex_alexa
+        required: false
+        selector:
+          object:
+      google:
+        name: google
+        description: "Parameter for TTS Google. Bool (True/Flase) or Dict (media_player, message, audio)"
+        example: &ex_google |
+          message: test more Google.
+          media_player: media_player.red,media_player.black2
+          volume: 0.5
+        default: *ex_google
+        required: false
+        selector:
+          object:
+      called_number:
+        name: called_number
+        description: "called number"
+        example: "3331122343"
+        default: "3331122343"
+        required: false
+        selector:
+          object:
+      caption:
+        name: caption
+        description: "The title of the image."
+        example: "Picture Title"
+        default: "Picture Title"
+        required: false
+        selector:
+          object:
+      discord:
+        name: discord
+        description: "All extended functionality under discord"
+        example: &ex_discord |
+          embed:
+            title: 'title'
+            description: 'description'
+            url: 'https://hassiohelp.eu/'
+            color: 199363
+            author:
+              name: 'Author Hassio Help'
+              url: 'https://hassiohelp.eu/'
+              icon_url: 'https://hassiohelp.eu/wp-content/uploads/2019/03/hassiohelp-192.png'
+            footer:
+              text: 'Footer Text'
+              icon_url: 'https://www.hassiohelp.eu'
+            thumbnail:
+              url: 'https://hassiohelp.eu/wp-content/uploads/2019/03/hassiohelp-192.png'
+            image:
+              url: 'https://hassiohelp.eu/wp-content/uploads/2019/03/hassiohelp-192.png'
+        default: *ex_discord
+        required: false
+        selector:
+          object:
+      html:
+        name: html
+        description: "HTML management in Telegram messages."
+        example: "false"
+        default: false
+        required: false
+        selector:
+          boolean:
+      image:
+        name: image
+        description: "image"
+        example: "/config/www/hassiohelp/pkg_natural_events/burze.png"
+        default: "https://hassiohelp.eu/wp-content/uploads/2020/11/Notifer-3.0-00-2-2048x1451.jpg"
+        required: false
+        selector:
+          object:
+      link:
+        name: link
+        description: "link"
+        example: "https://github.com/caiosweet/Package-Notification-HUB-AppDaemon"
+        default: "https://github.com/caiosweet/Package-Notification-HUB-AppDaemon"
+        required: false
+        selector:
+          object:
+      location:
+        name: location
+        description: "Send notification only if at home (home) or if you are away (not_home)."
+        example: "home"
+        default: "home"
+        required: false
+        selector:
+          object:
+      mobile:
+        name: mobile
+        description: "All extended functionality under Mobile App."
+        example: &ex_mobile |
+          # iOS URL
+          url: "https://github.com/jumping2000/notifier"
+          # Android URL
+          clickAction: "https://github.com/jumping2000/notifier"
+        default: *ex_mobile
+        required: false
+        selector:
+          object:
+      no_show:
+        name: no_show
+        description: "Disables persistent notification."
+        example: "true"
+        default: true
+        required: false
+        selector:
+          boolean:
+      notify:
+        name: notify
+        description: |-
+          [0, false, off, no] does not send the text notification.
+          Notify name or entity_id send notification to a device other than the default one.
+          Multiple notification service is allowed"
+        example: "telegram, pushover, mobile_app_oneplus_a5010"
+        default: "telegram, pushover, mobile_app_oneplus_a5010"
+        required: false
+        selector:
+          object:
+      priority:
+        name: priority
+        description: "by-pass DND (do not disturb) and all switches or booleans."
+        example: "false"
+        default: false
+        required: false
+        selector:
+          boolean:
+      pushover:
+        name: pushover
+        description: "All extended functionality under pushover"
+        example: &ex_pushover |
+          sound: bike
+          priority: 0
+          expire: 300
+          retry: 30
+        default: *ex_pushover
+        required: false
+        selector:
+          object:
+      telegram:
+        name: telegram, pushover, discord
+        description: "All extended functionality under telegram"
+        example: &ex_telegram |
+          inline_keyboard:
+            🔔 Menu:/menu
+        default: *ex_telegram
+        required: false
+        selector:
+          object:
+      whatsapp:
+        name: whatsapp
+        description: "whatsapp addon by Giuseppe Castaldo"
+        example: &ex_whatsapp |
+          clientId: default
+          to: 391234567890@s.whatsapp.net # User ID
+          body:
+            text: ⭐ Star Notifier app on GitHub!. https://github.com/jumping2000/notifier
+        default: *ex_whatsapp
+        required: false
+        selector:
+          object:
     mode: queued
     sequence:
       - event: hub
@@ -507,8 +675,16 @@ script:
             {{ notify | default }}
           priority: >-
             {{ priority | default }}
+          pushover: >-
+            {{ pushover | default }}
+          target: >-
+            {{ target | default }}
+          telegram: >-
+            {{ telegram | default }}
           title: >-
             {{ title | default }}
+          whatsapp: >-
+            {{ whatsapp | default }}
           #----------------------------------------------------------------------------#
           # FILE TO BE INCLUDED IF MACROS ARE USED - DO NOT MODIFY THE .yml EXTENSION
           #----------------------------------------------------------------------------#
@@ -630,7 +806,6 @@ automation:
                     <break time="4s"/>
                     <prosody volume="silent">volume</prosody>
                     </speak>
-              - delay: "00:00:02"
       - choose:
           - conditions: "{{ all_entity | length > 0 }}"
             sequence:
@@ -642,8 +817,12 @@ automation:
                 data:
                   entity_id:
                     - input_number.intercom_message_volume
-                    - input_number.default_restore_volume
                   value: "{{ volume }}"
+              - if: 
+                  - "{{ list_alexa | length > 0 }}"
+                then:
+                  - service: alexa_media.update_last_called
+                    data: {}
 
   #------------------------------------------------------------------------------------#
   # LAST MESSAGE - Repeat the last text sent (Excluding tts messages)
