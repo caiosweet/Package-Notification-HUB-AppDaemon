@@ -11,71 +11,72 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Alexa 3.4.0"
+        version: "Alexa 4.0.0"
 
     ## SENSOR
-    binary_sensor.notifyhub_alexa_speak:
+    binary_sensor.notifier_alexa_speak:
       <<: *customize
       friendly_name: "Alexa parla"
       # icon: si:amazonalexa
     ## INPUT
-    input_boolean.alexa_switch:
+    input_boolean.notifier_alexa_switch:
       <<: *customize
       friendly_name: "Alexa"
       icon: si:amazonalexa
       # icon: mdi:alpha-a-circle
-    input_boolean.alexa_smart_volume_set:
+    input_boolean.notifier_alexa_smart_volume:
       <<: *customize
       friendly_name: "Imposta volume smart"
       icon: mdi:volume-equal
-    input_boolean.alexa_ssml:
+    input_boolean.notifier_alexa_ssml:
       <<: *customize
       friendly_name: "Auto SSML"
       icon: mdi:waveform
-    input_number.alexa_prosody_rate:
+    input_number.notifier_alexa_prosody_rate:
       <<: *customize
       friendly_name: "Rate"
       icon: mdi:alpha-r
-    input_number.alexa_prosody_pitch:
+    input_number.notifier_alexa_prosody_pitch:
       <<: *customize
       friendly_name: "Pitch"
       icon: mdi:alpha-p
-    input_number.alexa_prosody_volume:
+    input_number.notifier_alexa_prosody_volume:
       <<: *customize
       friendly_name: "Volume"
       icon: mdi:alpha-v
       unit_of_measurement: "dB"
-    input_select.alexa_voice:
+    input_select.notifier_alexa_voice:
       <<: *customize
       friendly_name: "Amazon Polly voice"
       icon: mdi:account-tie-voice-outline
-    input_select.alexa_language:
+    input_select.notifier_alexa_language:
       <<: *customize
       friendly_name: Amazon Polly language
       icon: mdi:flag-variant
-    input_select.notification_media_player_alexa:
-      <<: *customize
-      friendly_name: "Sorgente Alexa"
-      icon: mdi:speaker-wireless
-    input_select.default_alexa_method:
+    input_select.notifier_alexa_method:
       <<: *customize
       friendly_name: "Metodo Predefinito Alexa"
       icon: mdi:monitor-speaker
-    input_select.default_alexa_type:
+    input_select.notifier_alexa_type:
       <<: *customize
       friendly_name: "Tipo Predefinito Alexa"
       icon: mdi:bugle
     ## SCRIPT
-    script.ssml_reset:
+    script.notifier_ssml_reset:
       <<: *customize
       friendly_name: "Ripristina SSML"
       icon: mdi:restore
+    ## SELECT
+    select.notifier_player_alexa:
+      <<: *customize
+      friendly_name: "Sorgente Alexa"
+      icon: mdi:speaker-wireless
     ## SENSOR
     sensor.last_alexa:
       <<: *customize
       friendly_name: "Last Alexa"
       icon: mdi:play-network
-    sensor.media_player_alexa:
+    sensor.notifier_player_alexa:
       <<: *customize
       friendly_name: "Player Alexa Attivo"
 
@@ -83,36 +84,34 @@ homeassistant:
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
-  alexa_switch:
-  alexa_ssml:
-  alexa_smart_volume_set:
+  notifier_alexa_switch:
+  notifier_alexa_ssml:
+  notifier_alexa_smart_volume:
 input_number:
-  alexa_prosody_rate:
+  notifier_alexa_prosody_rate:
     min: 20
     max: 200
     step: 0.1
-  alexa_prosody_pitch:
+  notifier_alexa_prosody_pitch:
     min: -33.3
     max: 50
     step: 0.1
-  alexa_prosody_volume:
+  notifier_alexa_prosody_volume:
     min: -50
     max: 4.08
     step: 0.01
 input_select:
-  notification_media_player_alexa:
-    options: !secret notification_media_player_alexa_hub
-  default_alexa_method:
+  notifier_alexa_method:
     options:
       - Speak
       - All
-  default_alexa_type:
+  notifier_alexa_type:
     options:
       - TTS
       - Announce
       - Push
       - Dropin
-  alexa_voice:
+  notifier_alexa_voice:
     options:
       [
         "Alexa",
@@ -154,7 +153,7 @@ input_select:
         "Lucia",
         "Mia",
       ]
-  alexa_language:
+  notifier_alexa_language:
     options:
       [
         "Master",
@@ -174,39 +173,61 @@ input_select:
         "es-MX",
         "es-US",
       ]
-
+input_text:
+  notifier_player_alexa:
+    name: alexa
 #######################################-#######################################
 ##                                 TEMPLATE
 #######################################-#######################################
 template:
+  - select:
+      - name: "notifier player alexa" 
+        state: "{{ states('input_text.notifier_player_alexa') }}"
+        optimistic: true
+        options: |
+          {% set mp = state_attr('group.notifier_player_alexa', 'entity_id')
+            |default(['\0'],true)|join('|') %}
+          {{states |select('search', mp, ignorecase=True)
+            |rejectattr('entity_id', '==','sensor.notifier_player_alexa')
+            |map(attribute='name')|list|unique|sort}}
+        select_option:
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.notifier_player_alexa
+            data:
+              value: "{{ option }}"
+
   - trigger:
       - platform: state
         entity_id:
-          - input_select.notification_media_player_alexa
+          - select.notifier_player_alexa
           - sensor.last_alexa
         to:
       - platform: state
-        entity_id: group.media_player_alexa
+        entity_id: group.notifier_player_alexa
         attribute: entity_id
       - platform: state
-        entity_id: sensor.media_player_alexa
+        entity_id: sensor.notifier_player_alexa
         to: unknown
     sensor:
-      - name: Media Player Alexa
-        unique_id: media_player_alexa
+      - name: notifier player alexa
         state: >-
-          {% set domains = (states.group | list) + (states.media_player | list) + expand('sensor.last_alexa') %}
-          {% set selected = states('input_select.notification_media_player_alexa') | lower %}
+          {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
+          {% set player = state_attr('group.notifier_player_alexa','entity_id') %}
+          {% set selected = states('select.notifier_player_alexa') | lower %}
           {% for x in domains if x.name | lower == selected %}
-            {% if x.domain == 'sensor' %}
-                {{ x.state }}
-              {% else %}
-                {{ x.entity_id }}
+            {% if x.domain == 'sensor' and player and x.state in player | list %}
+              {{ x.state }}
+            {% elif x.domain == 'group'
+                  and player and x.attributes.entity_id[0] in player | list %}
+              {{ x.attributes.entity_id | join(', ') }}
+            {% else %}
+              {{ x.entity_id }}
             {% endif %}
           {% endfor %}
         icon: >-
           {% set domains = states.group | list + states.media_player | list + expand('sensor.last_alexa') %}
-          {% set selected = states('input_select.notification_media_player_alexa') | lower %}
+          {% set selected = states('select.notifier_player_alexa') | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain == 'group' %}
               mdi:speaker-multiple
@@ -218,28 +239,27 @@ template:
           {% endfor %}
 
   - binary_sensor:
-      - name: Notifyhub Alexa speak
-        # unique_id: notifyhub_alexa_speak
-        state: "false"
+      - name: Notifier Alexa speak
+        state: "off"
 #######################################-#######################################
 ##                                  SCRIPT
 #######################################-#######################################
 script:
-  ssml_reset:
+  notifier_ssml_reset:
     sequence:
       - service: input_number.set_value
         data:
-          entity_id: input_number.alexa_prosody_pitch, input_number.alexa_prosody_volume
+          entity_id: input_number.notifier_alexa_prosody_pitch, input_number.notifier_alexa_prosody_volume
           value: 0
       - service: input_number.set_value
         data:
-          entity_id: input_number.alexa_prosody_rate
+          entity_id: input_number.notifier_alexa_prosody_rate
           value: 100
       - service: input_select.select_option
         data:
-          entity_id: input_select.alexa_voice
+          entity_id: input_select.notifier_alexa_voice
           option: Alexa
       - service: input_select.select_option
         data:
-          entity_id: input_select.alexa_language
+          entity_id: input_select.notifier_alexa_language
           option: Master

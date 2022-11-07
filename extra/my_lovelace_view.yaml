@@ -1,7 +1,6 @@
 title: Centro Notifiche
 path: centro_notifiche
 icon: mdi:account-tie-voice
-# panel: true
 cards:
   - !include ../cards/card_menu_centro_notifiche.yaml
   # - !include ../cards/card_test_centro_notifiche.yaml
@@ -13,45 +12,45 @@ cards:
     show_header_toggle: false
     state_color: true
     entities:
-      - entity: sensor.centro_notifiche
-        name: Centro Notifiche
-      - entity: input_text.personal_assistant_name
-      - entity: input_select.language
-      - entity: input_select.text_notify
-      - entity: input_boolean.html_mode
-      - entity: input_boolean.tts_clock
-      - entity: input_boolean.wrap_text
-      - entity: input_number.tts_wait_time
+      - entity: input_text.notifier_personal_assistant
+      - entity: input_select.notifier_language
+      - entity: input_select.notifier_text_notify
+      - entity: input_boolean.notifier_html_mode
+      - entity: input_boolean.notifier_wrap_text
+      - entity: input_boolean.notifier_tts_clock
+      - entity: input_number.notifier_tts_wait_time
+      # - type: section
+      #   label: Orario non disturbare
       - type: custom:fold-entity-row
         head:
           type: section
-          label: FERIALI - Orario modo silenzioso
+          label: FERIALI Orario non disturbare
         entities:
-          - entity: input_datetime.dnd_start_weekdays
-          - entity: input_datetime.dnd_end_weekdays
+          - entity: input_datetime.notifier_start_weekdays
+          - entity: input_datetime.notifier_end_weekdays
       - type: custom:fold-entity-row
         head:
           type: section
-          label: FESTIVI - Orario modo silenzioso
+          label: FESTIVI Orario non disturbare
         entities:
-          - entity: input_datetime.dnd_start_holidays
-          - entity: input_datetime.dnd_end_holidays
+          - entity: input_datetime.notifier_start_holidays
+          - entity: input_datetime.notifier_end_holidays
       - type: custom:fold-entity-row
         head:
           type: section
-          label: VOLUME di default durante il griorno
+          label: VOLUMI di default durante il griorno
         entities:
-          - entity: input_datetime.start_morning
-          - entity: input_number.morning_volume
+          - entity: input_datetime.notifier_start_morning
+          - entity: input_number.notifier_morning_volume
           - type: divider
-          - entity: input_datetime.start_afternoon
-          - entity: input_number.afternoon_volume
+          - entity: input_datetime.notifier_start_afternoon
+          - entity: input_number.notifier_afternoon_volume
           - type: divider
-          - entity: input_datetime.start_evening
-          - entity: input_number.evening_volume
+          - entity: input_datetime.notifier_start_evening
+          - entity: input_number.notifier_evening_volume
           - type: divider
-          - entity: input_datetime.start_night
-          - entity: input_number.night_volume
+          - entity: input_datetime.notifier_start_night
+          - entity: input_number.notifier_night_volume
 
   # CARD Centro Notifiche
   - type: entities
@@ -61,55 +60,62 @@ cards:
     entities:
       - type: section
         label: Monitor
-      - entity: group.location_tracker
+      - entity: sensor.notifier_debug_error
+        name: Centro Notifiche
+        hold_action:
+          action: call-service
+          service: template.reload
+          service_data: {}
+      - entity: binary_sensor.notifier_people_home
+      - entity: group.notifier_location_tracker
       - type: custom:fold-entity-row
-        head: sensor.period_of_day
+        head: sensor.notifier_day_period
         entities:
-          - entity: input_datetime.start_morning
-          - entity: input_datetime.start_afternoon
-          - entity: input_datetime.start_evening
-          - entity: input_datetime.start_night
+          - entity: input_datetime.notifier_start_morning
+          - entity: input_datetime.notifier_start_afternoon
+          - entity: input_datetime.notifier_start_evening
+          - entity: input_datetime.notifier_start_night
       - type: custom:fold-entity-row
-        head: sensor.period_of_day_volume
+        head: sensor.notifier_day_period_volume
         entities:
-          - entity: input_number.morning_volume
-          - entity: input_number.afternoon_volume
-          - entity: input_number.evening_volume
-          - entity: input_number.night_volume
-      - entity: binary_sensor.dnd
+          - entity: input_number.notifier_morning_volume
+          - entity: input_number.notifier_afternoon_volume
+          - entity: input_number.notifier_evening_volume
+          - entity: input_number.notifier_night_volume
+      - entity: binary_sensor.notifier_dnd
         tap_action:
           action: call-service
           service: input_boolean.toggle
           service_data:
-            entity_id: input_boolean.speech_notifications
+            entity_id: input_boolean.notifier_speech_notifications
       - type: call-service
-        entity: input_boolean.last_message
+        entity: input_boolean.notifier_last_message
         name: Ultimo Messaggio
         action_name: Ascolta
         service: input_boolean.turn_on
         service_data:
-          entity_id: input_boolean.last_message
+          entity_id: input_boolean.notifier_last_message
       - type: custom:fold-entity-row
         head:
           type: section
           label: Modalità
         entities:
-          - entity: input_boolean.holidays
-          - entity: input_boolean.guest_mode
-          - entity: input_boolean.priority_message
-          - entity: input_boolean.phone_notifications
-          - entity: input_boolean.speech_notifications
-          - entity: input_boolean.text_notifications
-          - entity: input_boolean.screen_notifications
+          - entity: input_boolean.notifier_holidays
+          - entity: input_boolean.notifier_guest_mode
+          - entity: input_boolean.notifier_priority_message
+          - entity: input_boolean.notifier_phone_notifications
+          - entity: input_boolean.notifier_speech_notifications
+          - entity: input_boolean.notifier_text_notifications
+          - entity: input_boolean.notifier_screen_notifications
       - type: custom:fold-entity-row
         head:
           type: section
           label: Interfono
         entities:
-          - entity: automation.send_intercom_message_hub
+          - entity: automation.notifier_intercom_message
             name: Off/On
-          - entity: input_number.intercom_message_volume
-          - entity: input_text.intercom_message_hub
+          - entity: input_number.notifier_intercom_volume
+          - entity: input_text.notifier_intercom_message
 
   # CARD Alexa
   - type: entities
@@ -119,32 +125,32 @@ cards:
     entities:
       - type: section
         label: ""
-      - entity: input_boolean.alexa_switch
-      - entity: input_select.notification_media_player_alexa
-      - entity: input_select.default_alexa_type
-      - entity: input_select.default_alexa_method
-      - entity: input_boolean.alexa_smart_volume_set
-      - entity: binary_sensor.notifyhub_alexa_speak
+      - entity: input_boolean.notifier_alexa_switch
+      - entity: select.notifier_player_alexa
+      - entity: input_select.notifier_alexa_type
+      - entity: input_select.notifier_alexa_method
+      - entity: input_boolean.notifier_alexa_smart_volume
+      - entity: binary_sensor.notifier_alexa_speak
       - type: custom:fold-entity-row
         # padding: 0
-        head: #input_boolean.alexa_ssml
+        head: #input_boolean.notifier_alexa_ssml
           type: section
           label: SSML
         entities:
-          - entity: input_boolean.alexa_ssml
-          - entity: input_select.alexa_voice
-          - entity: input_select.alexa_language
-          - entity: input_number.alexa_prosody_rate
-          - entity: input_number.alexa_prosody_pitch
-          - entity: input_number.alexa_prosody_volume
-          - entity: script.ssml_reset
+          - entity: input_boolean.notifier_alexa_ssml
+          - entity: input_select.notifier_alexa_voice
+          - entity: input_select.notifier_alexa_language
+          - entity: input_number.notifier_alexa_prosody_rate
+          - entity: input_number.notifier_alexa_prosody_pitch
+          - entity: input_number.notifier_alexa_prosody_volume
+          - entity: script.notifier_ssml_reset
       - type: custom:fold-entity-row
         # padding: 0
-        head: sensor.media_player_alexa
+        head: sensor.notifier_player_alexa
         entities:
-          - entity: group.media_player_alexa
+          - entity: group.notifier_player_alexa
           - type: attribute
-            entity: group.media_player_alexa
+            entity: group.notifier_player_alexa
             attribute: entity_id
             name: Players
 
@@ -156,16 +162,16 @@ cards:
     entities:
       - type: section
         label: ""
-      - entity: input_boolean.google_switch
-      - entity: input_select.tts_notify
-      - entity: input_select.notification_media_player_google
+      - entity: input_boolean.notifier_google_switch
+      - entity: select.notifier_player_google
+      - entity: input_select.notifier_tts_notify
       - type: custom:fold-entity-row
         # padding: 0
-        head: sensor.media_player_google
+        head: sensor.notifier_player_google
         entities:
-          - entity: group.media_player_google
+          - entity: group.notifier_player_google
           - type: attribute
-            entity: group.media_player_google
+            entity: group.notifier_player_google
             attribute: entity_id
             name: Players
 
@@ -175,7 +181,7 @@ cards:
     show_header_toggle: false
     entities:
       - type: custom:fold-entity-row
-        head: group.automations_notification_hub
+        head: group.notifier_automations
 
   # CARD VOIP
   - type: entities
@@ -183,12 +189,10 @@ cards:
     show_header_toggle: false
     state_color: true
     entities:
-      # - type: section
-      #   label: ''
       - type: custom:fold-entity-row
         head:
           type: section
           label: Rubrica
         entities:
-          - entity: input_text.phone_called_number
-      - entity: input_select.phone_notify
+          - entity: input_text.notifier_called_number
+      - entity: input_select.notifier_phone_notify

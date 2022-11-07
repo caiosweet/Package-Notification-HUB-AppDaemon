@@ -15,11 +15,11 @@
 
 ## Advice and useful information
 
-- **[Wiki][Wiki]**
+- **[Wiki (EN)][Wiki]**
 
-- [AppDaemon: automazioni al massimo](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)
+- [AppDaemon: automazioni al massimo (IT)](https://hassiohelp.eu/2019/12/23/appdaemon-automazioni-al-massimo/)
 
-- [Nuovo Centro notifiche](https://hassiohelp.eu/2019/12/25/notifer/)
+- [Nuovo Centro notifiche (IT)](https://hassiohelp.eu/2019/12/25/notifer/)
 
 ![Website](https://img.shields.io/website?down_message=Offline&label=HssioHelp&logoColor=blue&up_message=Online&url=https%3A%2F%2Fhassiohelp.eu)
 [![Chat on Telegram](https://img.shields.io/badge/Chat-Telegram-blue?logo=Telegram)](https://t.me/HassioHelp)
@@ -29,11 +29,11 @@
 
 ## Requirements
 
-- [AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) - [Addon](https://github.com/hassio-addons/repository)
+- [AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) <-> [Addon](https://github.com/hassio-addons/repository)
 - [Sensor Workday](https://www.home-assistant.io/integrations/workday/)
 - [Sensor Time & Date](https://www.home-assistant.io/integrations/time_date/)
 
-## [My Lovelace Card](./extra/my_lovelace_card.yaml)
+## [My Lovelace Card Menu](./extra/my_lovelace_card.yaml)
 
 > custom:
   >
@@ -41,12 +41,11 @@
   > - [Banner Card](https://github.com/nervetattoo/banner-card)
   > - [Lovelace Paper Buttons Row](https://github.com/jcwillox/lovelace-paper-buttons-row)
   > - [Lovelace Fold Entity Row](https://github.com/thomasloven/lovelace-fold-entity-row)
-  >
   > - [lovelace-multiline-text-input-card](https://github.com/faeibson/lovelace-multiline-text-input-card)
   > - [vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card)
 
 <p align="center">
-<img src="./assets/images/CN_my_card.png">
+<img src="./assets/images/CN_my_card_menu.png">
 <br><br>
 </p>
 
@@ -54,6 +53,13 @@
 
 <p align="center">
 <img src="./assets/images/CN_my_view.png">
+<br><br>
+</p>
+
+## [Standard Cards & Custom vertical Menu](./lovelace/)
+
+<p align="center">
+<img src="./assets/images/CN_vertical_stack_in_card_menu.png">
 <br><br>
 </p>
 

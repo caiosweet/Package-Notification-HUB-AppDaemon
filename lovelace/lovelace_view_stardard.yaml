@@ -1,332 +1,300 @@
-title: Centro Notifiche
-path: centro_notifiche
-icon: mdi:account-tie
-cards:
-  # CARD Menu
-  - type: vertical-stack
-  # - type: custom:vertical-stack-in-card
+
+    theme: Backend-selected
+    title: Centro Notifiche
+    path: notifier_view
+    icon: mdi:account-tie
+    badges: []
     cards:
-      - type: markdown
-        content: |
-          <font size=5><center>🤵 {{states('input_text.personal_assistant_name')}}</center></font>
-          {% if not is_state('sensor.centro_notifiche', 'on') %}
-          <ha-alert title="Centro Notifiche" alert-type="error">
-          {{states('sensor.centro_notifiche')}}
-          </ha-alert>
-          {% endif %}
-      # - type: divider
-      #   style:
-      #     background-color: var(--primary-color)
-      #     height: 1px
-      - type: grid
-        columns: 10
-        square: true
+      # CARD Menu
+      - type: vertical-stack
         cards:
-          - type: button
-            show_name: false
-            show_state: false
-            entity: binary_sensor.people_home
-            tap_action:
-              action: more-info
-          - type: button
-            show_name: false
-            show_state: false
-            entity: group.location_tracker
-            tap_action:
-              action: more-info
-          - type: button
-            show_name: false
-            show_state: false
-            entity: input_boolean.phone_notifications
-          - type: button
-            show_name: false
-            show_state: false
-            entity: input_boolean.speech_notifications
-          - type: button
-            show_name: false
-            show_state: false
-            entity: input_boolean.text_notifications
-          - type: button
-            show_name: false
-            show_state: false
-            entity: input_boolean.screen_notifications
-          - type: button
-            show_name: false
-            show_state: false
-            entity: input_boolean.guest_mode
-          - type: button
-            show_name: false
-            show_state: false
-            entity: input_boolean.priority_message
-          - type: button
-            show_name: false
-            show_state: false
-            entity: input_boolean.holidays
-          - type: button
-            show_name: false
-            show_state: false
-            entity: binary_sensor.dnd
-            tap_action:
-              action: more-info
-      # - type: divider
-      #   style:
-      #     background-color: var(--primary-color)
-      #     height: 1px
-      - type: glance
-        columns: 3
-        show_icon: false
-        entities:
-          - entity: sensor.period_of_day
-          - entity: sensor.period_of_day_volume
-          - entity: input_select.language
-          - entity: input_select.notification_media_player_alexa
-            tap_action:
-              action: call-service
-              service: input_select.select_next
-              service_data:
-                entity_id: input_select.notification_media_player_alexa
-            hold_action:
-              action: call-service
-              service: input_select.select_previous
-              service_data:
-                entity_id: input_select.notification_media_player_alexa
-            double_tap_action:
-              action: more-info
-          - entity: input_select.notification_media_player_google
-            tap_action:
-              action: call-service
-              service: input_select.select_next
-              service_data:
-                entity_id: input_select.notification_media_player_google
-            hold_action:
-              action: call-service
-              service: input_select.select_previous
-              service_data:
-                entity_id: input_select.notification_media_player_google
-            double_tap_action:
-              action: more-info
-          - entity: input_select.text_notify
-            tap_action:
-              action: call-service
-              service: input_select.select_next
-              service_data:
-                entity_id: input_select.text_notify
-            hold_action:
-              action: call-service
-              service: input_select.select_previous
-              service_data:
-                entity_id: input_select.text_notify
-            double_tap_action:
-              action: more-info
-      # - type: divider
-      #   style:
-      #     background-color: var(--primary-color)
-      #     height: 1px
-      - type: horizontal-stack
-        cards:
-          - type: button
-            state_color: true
-            show_name: false
-            icon_height: 24px
-            entity: input_boolean.google_switch
-            tap_action:
-              action: toggle
-          - type: button
-            state_color: true
-            show_name: false
+          - type: markdown
+            content: |
+              <font size=5><center>🤵 {{states('input_text.notifier_personal_assistant')}}</center></font>
+              {% if not states('sensor.notifier_debug_error') in ['on','OK']%}
+              <ha-alert title="Centro Notifiche" alert-type="error">
+              {{states('sensor.notifier_debug_error')}}
+              </ha-alert>
+              {% endif %}
+          - type: grid
+            columns: 10
+            square: true
+            cards:
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: binary_sensor.notifier_people_home
+                tap_action:
+                  action: more-info
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: group.notifier_location_tracker
+                tap_action:
+                  action: more-info
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: input_boolean.notifier_phone_notifications
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: input_boolean.notifier_speech_notifications
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: input_boolean.notifier_text_notifications
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: input_boolean.notifier_screen_notifications
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: input_boolean.notifier_guest_mode
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: input_boolean.notifier_priority_message
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: input_boolean.notifier_holidays
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
+                entity: binary_sensor.notifier_dnd
+                tap_action:
+                  action: more-info
+          - type: glance
+            columns: 3
             show_icon: false
-            show_state: true
-            entity: input_select.tts_notify
-            tap_action:
-              action: call-service
-              service: input_select.select_next
-              service_data:
-                entity_id: input_select.tts_notify
-          - type: button
+            entities:
+              - entity: sensor.notifier_day_period
+              - entity: sensor.notifier_day_period_volume
+              - entity: input_select.notifier_language
+              - entity: select.notifier_player_alexa
+              - entity: select.notifier_player_google
+              - entity: input_select.notifier_text_notify
+                tap_action:
+                  action: call-service
+                  service: input_select.select_next
+                  service_data:
+                    entity_id: input_select.text_notify
+                hold_action:
+                  action: call-service
+                  service: input_select.select_previous
+                  service_data:
+                    entity_id: input_select.text_notify
+                double_tap_action:
+                  action: more-info
+          - type: horizontal-stack
+            cards:
+              - type: button
+                state_color: true
+                show_name: false
+                icon_height: 24px
+                entity: input_boolean.notifier_google_switch
+                tap_action:
+                  action: toggle
+              - type: button
+                state_color: true
+                show_name: false
+                show_icon: false
+                show_state: true
+                entity: input_select.notifier_tts_notify
+                tap_action:
+                  action: call-service
+                  service: input_select.select_next
+                  service_data:
+                    entity_id: input_select.notifier_tts_notify
+              - type: button
+                state_color: true
+                show_name: false
+                icon_height: 24px
+                entity: input_boolean.notifier_alexa_switch
+                tap_action:
+                  action: toggle
+              - show_name: false
+                show_icon: false
+                type: button
+                show_state: true
+                entity: input_select.notifier_alexa_type
+                tap_action:
+                  action: call-service
+                  service: input_select.select_next
+                  service_data:
+                    entity_id: input_select.default_alexa_type
+              - type: button
+                state_color: true
+                show_name: false
+                icon_height: 24px
+                entity: input_boolean.notifier_alexa_ssml
+                tap_action:
+                  action: toggle
+              - type: button
+                state_color: true
+                show_name: false
+                icon_height: 24px
+                entity: input_boolean.notifier_last_message
+                tap_action:
+                  action: toggle
+          - type: entities
+            show_header_toggle: false
             state_color: true
-            show_name: false
-            icon_height: 24px
-            entity: input_boolean.alexa_switch
-            tap_action:
-              action: toggle
-          - type: button
-            show_icon: false
-            show_name: false
-            show_state: true
-            entity: input_select.default_alexa_type
-            tap_action:
-              action: call-service
-              service: input_select.select_next
-              service_data:
-                entity_id: input_select.default_alexa_type
-          - type: button
-            state_color: true
-            show_name: false
-            icon_height: 24px
-            entity: input_boolean.alexa_ssml
-            tap_action:
-              action: toggle
-          - type: button
-            state_color: true
-            show_name: false
-            icon_height: 24px
-            entity: input_boolean.last_message
-            tap_action:
-              action: toggle
-      # - type: divider
-      #   style:
-      #     background-color: var(--primary-color)
-      #     height: 1px
+            entities:
+              - entity: input_text.notifier_intercom_message
+              - entity: input_number.notifier_intercom_volume
+      # CARD Impostazioni Assistente
       - type: entities
+        title: Impostazioni Assistente
         show_header_toggle: false
         state_color: true
         entities:
-          - entity: input_text.intercom_message_hub
-          - entity: input_number.intercom_message_volume
-
-  # CARD Impostazioni Assistente
-  - type: entities
-    title: Impostazioni Assistente
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - type: section
-        label: ""
-      - entity: input_text.personal_assistant_name
-      - entity: input_select.language
-      - entity: input_select.text_notify
-      - entity: input_boolean.html_mode
-      - entity: input_boolean.tts_clock
-      - entity: input_boolean.wrap_text
-      - entity: input_number.tts_wait_time
-      - type: section
-        label: FERIALI - Orario modo silenzioso
-      - entity: input_datetime.dnd_start_weekdays
-      - entity: input_datetime.dnd_end_weekdays
-      - type: section
-        label: FESTIVI - Orario modo silenzioso
-      - entity: input_datetime.dnd_start_holidays
-      - entity: input_datetime.dnd_end_holidays
-      - type: section
-        label: VOLUME di default durante il griorno
-      - entity: input_datetime.start_morning
-      - entity: input_number.morning_volume
-      - entity: input_datetime.start_afternoon
-      - entity: input_number.afternoon_volume
-      - entity: input_datetime.start_evening
-      - entity: input_number.evening_volume
-      - entity: input_datetime.start_night
-      - entity: input_number.night_volume
-
-  # CARD Centro Notifiche
-  - type: entities
-    title: Centro Notifiche
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - type: section
-        label: Monitor
-      - entity: group.location_tracker
-      - entity: sensor.period_of_day
-      - entity: sensor.period_of_day_volume
-        tap_action:
-          action: call-service
-          service: input_boolean.toggle
-          service_data:
-            entity_id: input_boolean.speech_notifications
-      - entity: binary_sensor.dnd
-      - type: call-service
-        entity: input_boolean.last_message
-        name: Ultimo Messaggio
-        action_name: Ascolta
-        service: input_boolean.turn_on
-        service_data:
-          entity_id: input_boolean.last_message
-      - type: section
-        label: Modalità
-      - entity: input_boolean.holidays
-      - entity: input_boolean.guest_mode
-      - entity: input_boolean.priority_message
-      - entity: input_boolean.phone_notifications
-      - entity: input_boolean.speech_notifications
-      - entity: input_boolean.text_notifications
-      - entity: input_boolean.screen_notifications
-      - type: section
-        label: Interfono
-      - entity: automation.send_intercom_message_hub
-        name: Off/On
-      - entity: input_number.intercom_message_volume
-      - entity: input_text.intercom_message_hub
-
-  # CARD Alexa
-  - type: entities
-    title: Alexa
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - type: section
-        label: ""
-      - entity: input_boolean.alexa_switch
-      - entity: input_select.notification_media_player_alexa
-      - entity: input_select.default_alexa_type
-      - entity: input_select.default_alexa_method
-      - entity: input_boolean.alexa_smart_volume_set
-      - entity: binary_sensor.notifyhub_alexa_speak
-      - type: section
-        label: "SSML"
-      - entity: input_boolean.alexa_ssml
-      - entity: input_select.alexa_voice
-      - entity: input_select.alexa_language
-      - entity: input_number.alexa_prosody_rate
-      - entity: input_number.alexa_prosody_pitch
-      - entity: input_number.alexa_prosody_volume
-      - entity: script.ssml_reset
-      - type: section
-        label: "Info"
-      - entity: group.media_player_alexa
-      - type: attribute
-        entity: group.media_player_alexa
-        attribute: entity_id
-        name: Players
-      - entity: sensor.media_player_alexa
-
-  # CARD Google
-  - type: entities
-    title: Google
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - type: section
-        label: ""
-      - entity: input_boolean.google_switch
-      - entity: input_select.tts_notify
-      - entity: input_select.notification_media_player_google
-      - type: section
-        label: "Info"
-      - entity: group.media_player_google
-      - type: attribute
-        entity: group.media_player_google
-        attribute: entity_id
-        name: Players
-      - entity: sensor.media_player_google
-
-  # CARD VOIP
-  - type: entities
-    title: VoIP
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - type: section
-        label: ""
-      - entity: input_text.phone_called_number
-      - entity: input_select.phone_notify
-
-  # CARD Gruppo Automazioni
-  - type: entities
-    title: Automazioni
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - type: section
-        label: ""
-      - entity: group.automations_notification_hub
+          - type: section
+            label: ''
+          - entity: input_text.notifier_personal_assistant
+          - entity: input_select.notifier_language
+          - entity: input_select.notifier_text_notify
+          - entity: input_boolean.notifier_html_mode
+          - entity: input_boolean.notifier_tts_clock
+          - entity: input_boolean.notifier_wrap_text
+          - entity: input_number.notifier_tts_wait_time
+          - type: section
+            label: FERIALI - Orario modo silenzioso
+          - entity: input_datetime.notifier_start_weekdays
+          - entity: input_datetime.notifier_end_weekdays
+          - type: section
+            label: FESTIVI - Orario modo silenzioso
+          - entity: input_datetime.notifier_start_holidays
+          - entity: input_datetime.notifier_end_holidays
+          - type: section
+            label: VOLUME di default durante il griorno
+          - entity: input_datetime.notifier_start_morning
+          - entity: input_number.notifier_morning_volume
+          - entity: input_datetime.notifier_start_afternoon
+          - entity: input_number.notifier_afternoon_volume
+          - entity: input_datetime.notifier_start_evening
+          - entity: input_number.notifier_evening_volume
+          - entity: input_datetime.notifier_start_night
+          - entity: input_number.notifier_night_volume
+      # CARD Centro Notifiche
+      - type: entities
+        title: Centro Notifiche
+        show_header_toggle: false
+        state_color: true
+        entities:
+          - entity: sensor.notifier_debug_error
+          - type: section
+            label: Monitor
+          - entity: binary_sensor.notifier_people_home
+          - entity: group.notifier_location_tracker
+          - entity: sensor.notifier_day_period
+          - entity: sensor.notifier_day_period_volume
+            tap_action:
+              action: call-service
+              service: input_boolean.toggle
+              service_data:
+                entity_id: input_boolean.notifier_speech_notifications
+          - entity: binary_sensor.notifier_dnd
+          - type: call-service
+            entity: input_boolean.notifier_last_message
+            name: Ultimo Messaggio
+            action_name: Ascolta
+            service: input_boolean.turn_on
+            service_data:
+              entity_id: input_boolean.notifier_last_message
+          - type: section
+            label: Modalità
+          - entity: input_boolean.notifier_holidays
+          - entity: input_boolean.notifier_guest_mode
+          - entity: input_boolean.notifier_priority_message
+          - entity: input_boolean.notifier_phone_notifications
+          - entity: input_boolean.notifier_speech_notifications
+          - entity: input_boolean.notifier_text_notifications
+          - entity: input_boolean.notifier_screen_notifications
+          - type: section
+            label: Interfono
+          - entity: automation.notifier_intercom_message
+            name: Off/On
+          - entity: input_number.notifier_intercom_volume
+          - entity: input_text.notifier_intercom_message
+      # CARD Alexa
+      - type: entities
+        title: Alexa
+        show_header_toggle: false
+        state_color: true
+        entities:
+          - type: section
+            label: ''
+          - entity: input_boolean.notifier_alexa_switch
+          - entity: select.notifier_player_alexa
+          - entity: input_select.notifier_alexa_type
+          - entity: input_select.notifier_alexa_method
+          - entity: input_boolean.notifier_alexa_smart_volume
+          - entity: binary_sensor.notifier_alexa_speak
+          - type: section
+            label: SSML
+          - entity: input_boolean.notifier_alexa_ssml
+          - entity: input_select.notifier_alexa_voice
+          - entity: input_select.notifier_alexa_language
+          - entity: input_number.notifier_alexa_prosody_rate
+          - entity: input_number.notifier_alexa_prosody_pitch
+          - entity: input_number.notifier_alexa_prosody_volume
+          - entity: script.notifier_ssml_reset
+          - type: section
+            label: Info
+          - entity: group.notifier_player_alexa
+          - type: attribute
+            entity: group.notifier_player_alexa
+            attribute: entity_id
+            name: Players
+          - entity: sensor.notifier_player_alexa
+      # CARD Google
+      - type: entities
+        title: Google
+        show_header_toggle: false
+        state_color: true
+        entities:
+          - type: section
+            label: ''
+          - entity: input_boolean.notifier_google_switch
+          - entity: select.notifier_player_google
+          - entity: input_select.notifier_tts_notify
+          - type: section
+            label: Info
+          - entity: group.notifier_player_google
+          - type: attribute
+            entity: group.notifier_player_google
+            attribute: entity_id
+            name: Players
+          - entity: sensor.notifier_player_google
+      # CARD VOIP
+      - type: entities
+        title: VoIP
+        show_header_toggle: false
+        state_color: true
+        entities:
+          - type: section
+            label: ''
+          - entity: input_text.notifier_called_number
+          - entity: input_select.notifier_phone_notify
+      # CARD Gruppo Automazioni
+      - type: entities
+        title: Automazioni
+        show_header_toggle: false
+        state_color: true
+        entities:
+          - type: section
+            label: ''
+          - entity: group.notifier_automations
