@@ -5,14 +5,15 @@ state_color: true
 entities:
   - type: section
     label: ""
-  - entity: input_boolean.google_switch
-  - entity: input_select.tts_notify
-  - entity: input_select.notification_media_player_google
+  - entity: input_boolean.notifier_google_switch
+  - entity: select.notifier_player_google
+  - entity: input_select.notifier_tts_notify
   - type: section
-    label: "Info"
-  - entity: group.media_player_google
+    label: Info
+  - entity: group.notifier_player_google
   - type: attribute
-    entity: group.media_player_google
+    entity: group.notifier_player_google
     attribute: entity_id
     name: Players
-  - entity: sensor.media_player_google
+  - entity: sensor.notifier_player_google
+  - entity: input_text.notifier_player_google

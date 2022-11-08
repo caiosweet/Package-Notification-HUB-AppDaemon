@@ -1,0 +1,149 @@
+type: vertical-stack
+cards:
+  - type: markdown
+    content: |
+      <font size=5><center>🤵 {{states('input_text.notifier_personal_assistant')}}</center></font>
+      {% if not states('sensor.notifier_debug_error') in ['on','OK']%}
+      <ha-alert title="Centro Notifiche" alert-type="error">
+      {{states('sensor.notifier_debug_error')}}
+      </ha-alert>
+      {% endif %}
+  - type: grid
+    columns: 10
+    square: true
+    cards:
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: binary_sensor.notifier_people_home
+        tap_action:
+          action: more-info
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: group.notifier_location_tracker
+        tap_action:
+          action: more-info
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: input_boolean.notifier_phone_notifications
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: input_boolean.notifier_speech_notifications
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: input_boolean.notifier_text_notifications
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: input_boolean.notifier_screen_notifications
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: input_boolean.notifier_guest_mode
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: input_boolean.notifier_priority_message
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: input_boolean.notifier_holidays
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
+        entity: binary_sensor.notifier_dnd
+        tap_action:
+          action: more-info
+  - type: glance
+    columns: 3
+    show_icon: false
+    entities:
+      - entity: sensor.notifier_day_period
+      - entity: sensor.notifier_day_period_volume
+      - entity: input_select.notifier_language
+      - entity: select.notifier_player_alexa
+      - entity: select.notifier_player_google
+      - entity: input_select.notifier_text_notify
+        tap_action:
+          action: call-service
+          service: input_select.select_next
+          service_data:
+            entity_id: input_select.text_notify
+        hold_action:
+          action: call-service
+          service: input_select.select_previous
+          service_data:
+            entity_id: input_select.text_notify
+        double_tap_action:
+          action: more-info
+  - type: horizontal-stack
+    cards:
+      - type: button
+        state_color: true
+        show_name: false
+        icon_height: 24px
+        entity: input_boolean.notifier_google_switch
+        tap_action:
+          action: toggle
+      - type: button
+        state_color: true
+        show_name: false
+        show_icon: false
+        show_state: true
+        entity: input_select.notifier_tts_notify
+        tap_action:
+          action: call-service
+          service: input_select.select_next
+          service_data:
+            entity_id: input_select.notifier_tts_notify
+      - type: button
+        state_color: true
+        show_name: false
+        icon_height: 24px
+        entity: input_boolean.notifier_alexa_switch
+        tap_action:
+          action: toggle
+      - show_name: false
+        show_icon: false
+        type: button
+        show_state: true
+        entity: input_select.notifier_alexa_type
+        tap_action:
+          action: call-service
+          service: input_select.select_next
+          service_data:
+            entity_id: input_select.default_alexa_type
+      - type: button
+        state_color: true
+        show_name: false
+        icon_height: 24px
+        entity: input_boolean.notifier_alexa_ssml
+        tap_action:
+          action: toggle
+      - type: button
+        state_color: true
+        show_name: false
+        icon_height: 24px
+        entity: input_boolean.notifier_last_message
+        tap_action:
+          action: toggle
+  - type: entities
+    show_header_toggle: false
+    state_color: true
+    entities:
+      - entity: input_text.notifier_intercom_message
+      - entity: input_number.notifier_intercom_volume

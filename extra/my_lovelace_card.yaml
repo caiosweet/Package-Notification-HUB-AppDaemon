@@ -123,34 +123,6 @@ cards:
       background-color: var(--primary-color)
       height: 1px
 
-  # - type: grid
-  #   square: false
-  #   columns: 3
-  #   cards:
-  #     - type: tile
-  #       entity: sensor.notifier_day_period
-  #       show_entity_picture: true
-  #       name: Giorno
-  #     - type: tile
-  #       entity: sensor.notifier_day_period_volume
-  #       name: Vol
-  #       show_entity_picture: true
-  #     - type: tile
-  #       entity: input_select.notifier_language
-  #       show_entity_picture: true
-  #     - type: tile
-  #       entity: select.notifier_player_alexa
-  #       name: Alexa
-  #       show_entity_picture: true
-  #     - type: tile
-  #       entity: select.notifier_player_google
-  #       name: Google
-  #       show_entity_picture: true
-  #     - type: tile
-  #       entity: input_select.notifier_text_notify
-  #       name: Notify
-  #       show_entity_picture: true
-
   # PAPER BUTTONS Row 2
   - type: custom:paper-buttons-row
     buttons:
@@ -175,12 +147,12 @@ cards:
         name: Alexa
         styles:
           button:
-          - color: >-
-              {{ iif(is_state('binary_sensor.notifier_alexa_speak', 'on'), 'Red', '') }}
-          - animation: >- 
-              {% if is_state('binary_sensor.notifier_alexa_speak', 'on') %}
-                blink 1.5s linear infinite alternate
-              {% endif %}
+            - color: >-
+                {{ iif(is_state('binary_sensor.notifier_alexa_speak', 'on'), 'Red', '') }}
+            - animation: >-
+                {% if is_state('binary_sensor.notifier_alexa_speak', 'on') %}
+                  blink 1.5s linear infinite alternate
+                {% endif %}
       - entity: input_select.notifier_alexa_type
         layout: state
         state:

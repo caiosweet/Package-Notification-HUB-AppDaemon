@@ -1,6 +1,5 @@
-# package_hub_alexa:
-# https://github.com/vigonotion/hass-simpleicons
 homeassistant:
+  # https://github.com/vigonotion/hass-simpleicons
   ######################################-#######################################
   ##                                CUSTOMIZE
   ######################################-#######################################
@@ -17,7 +16,6 @@ homeassistant:
     binary_sensor.notifier_alexa_speak:
       <<: *customize
       friendly_name: "Alexa parla"
-      # icon: si:amazonalexa
     ## INPUT
     input_boolean.notifier_alexa_switch:
       <<: *customize
@@ -61,6 +59,10 @@ homeassistant:
       <<: *customize
       friendly_name: "Tipo Predefinito Alexa"
       icon: mdi:bugle
+    input_text.notifier_player_alexa:
+      <<: *customize
+      friendly_name: "Default Media Player Alexa Selezionato"
+      icon: mdi:multimedia
     ## SCRIPT
     script.notifier_ssml_reset:
       <<: *customize
@@ -175,21 +177,20 @@ input_select:
       ]
 input_text:
   notifier_player_alexa:
-    name: alexa
 #######################################-#######################################
 ##                                 TEMPLATE
 #######################################-#######################################
 template:
   - select:
-      - name: "notifier player alexa" 
+      - name: "notifier_player_alexa"
         state: "{{ states('input_text.notifier_player_alexa') }}"
         optimistic: true
         options: |
           {% set mp = state_attr('group.notifier_player_alexa', 'entity_id')
-            |default(['\0'],true)|join('|') %}
-          {{states |select('search', mp, ignorecase=True)
-            |rejectattr('entity_id', '==','sensor.notifier_player_alexa')
-            |map(attribute='name')|list|unique|sort}}
+            | default(['\0'], true) | join('|') %}
+          {{ states | select('search', mp, ignorecase=True)
+            | rejectattr('entity_id', '==','sensor.notifier_player_alexa')
+            | map(attribute='name') | list | unique | sort }}
         select_option:
           - service: input_text.set_value
             target:
@@ -210,7 +211,7 @@ template:
         entity_id: sensor.notifier_player_alexa
         to: unknown
     sensor:
-      - name: notifier player alexa
+      - name: "notifier_player_alexa"
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
           {% set player = state_attr('group.notifier_player_alexa','entity_id') %}
@@ -226,7 +227,7 @@ template:
             {% endif %}
           {% endfor %}
         icon: >-
-          {% set domains = states.group | list + states.media_player | list + expand('sensor.last_alexa') %}
+          {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
           {% set selected = states('select.notifier_player_alexa') | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain == 'group' %}
@@ -239,7 +240,7 @@ template:
           {% endfor %}
 
   - binary_sensor:
-      - name: Notifier Alexa speak
+      - name: "notifier_alexa_speak"
         state: "off"
 #######################################-#######################################
 ##                                  SCRIPT

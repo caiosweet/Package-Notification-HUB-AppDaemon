@@ -61,7 +61,6 @@ cards:
       - type: section
         label: Monitor
       - entity: sensor.notifier_debug_error
-        name: Centro Notifiche
         hold_action:
           action: call-service
           service: template.reload
@@ -153,6 +152,7 @@ cards:
             entity: group.notifier_player_alexa
             attribute: entity_id
             name: Players
+          - entity: input_text.notifier_player_alexa
 
   # CARD Google
   - type: entities
@@ -174,6 +174,7 @@ cards:
             entity: group.notifier_player_google
             attribute: entity_id
             name: Players
+          - entity: input_text.notifier_player_google
 
   # CARD Gruppo Automazioni
   - type: entities
@@ -182,6 +183,7 @@ cards:
     entities:
       - type: custom:fold-entity-row
         head: group.notifier_automations
+        state_color: true
 
   # CARD VOIP
   - type: entities
