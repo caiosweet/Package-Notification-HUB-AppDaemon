@@ -19,7 +19,7 @@ homeassistant:
     ## INPUT
     input_boolean.notifier_alexa_switch:
       <<: *customize
-      friendly_name: "Alexa"
+      friendly_name: "Alexa Off/On"
       icon: si:amazonalexa
       # icon: mdi:alpha-a-circle
     input_boolean.notifier_alexa_smart_volume:
@@ -28,7 +28,7 @@ homeassistant:
       icon: mdi:volume-equal
     input_boolean.notifier_alexa_ssml:
       <<: *customize
-      friendly_name: "Auto SSML"
+      friendly_name: "SSML Off/On"
       icon: mdi:waveform
     input_number.notifier_alexa_prosody_rate:
       <<: *customize
@@ -61,7 +61,7 @@ homeassistant:
       icon: mdi:bugle
     input_text.notifier_player_alexa:
       <<: *customize
-      friendly_name: "Default Media Player Alexa Selezionato"
+      friendly_name: "Nome Media Player Alexa Salvato"
       icon: mdi:multimedia
     ## SCRIPT
     script.notifier_ssml_reset:
@@ -80,7 +80,7 @@ homeassistant:
       icon: mdi:play-network
     sensor.notifier_player_alexa:
       <<: *customize
-      friendly_name: "Player Alexa Attivo"
+      friendly_name: "Player Alexa Predefinito"
 
 #######################################-#######################################
 ##                                   INPUT
@@ -203,7 +203,7 @@ template:
         entity_id:
           - select.notifier_player_alexa
           - sensor.last_alexa
-        to:
+          - input_text.notifier_player_alexa
       - platform: state
         entity_id: group.notifier_player_alexa
         attribute: entity_id
@@ -238,6 +238,8 @@ template:
               mdi:speaker
             {% endif %}
           {% endfor %}
+        attributes:
+          saved: "{{ states('input_text.notifier_player_alexa') }}"
 
   - binary_sensor:
       - name: "notifier_alexa_speak"

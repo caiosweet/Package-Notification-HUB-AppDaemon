@@ -3,8 +3,6 @@ path: centro_notifiche
 icon: mdi:account-tie-voice
 cards:
   - !include ../cards/card_menu_centro_notifiche.yaml
-  # - !include ../cards/card_test_centro_notifiche.yaml
-  # - !include ../cards/card_test_centro_notifiche_change_me.yaml
 
   # CARD Impostazioni Assistente
   - type: entities
@@ -27,30 +25,42 @@ cards:
           label: FERIALI Orario non disturbare
         entities:
           - entity: input_datetime.notifier_start_weekdays
+            name: Inizio
           - entity: input_datetime.notifier_end_weekdays
+            name: Fine
       - type: custom:fold-entity-row
         head:
           type: section
           label: FESTIVI Orario non disturbare
         entities:
           - entity: input_datetime.notifier_start_holidays
+            name: Inizio
           - entity: input_datetime.notifier_end_holidays
+            name: Fine
       - type: custom:fold-entity-row
         head:
           type: section
           label: VOLUMI di default durante il griorno
         entities:
           - entity: input_datetime.notifier_start_morning
+            name: Mattina
           - entity: input_number.notifier_morning_volume
+            name: Volume
           - type: divider
           - entity: input_datetime.notifier_start_afternoon
+            name: Pomeriggio
           - entity: input_number.notifier_afternoon_volume
+            name: Volume
           - type: divider
           - entity: input_datetime.notifier_start_evening
+            name: Sera
           - entity: input_number.notifier_evening_volume
+            name: Volume
           - type: divider
           - entity: input_datetime.notifier_start_night
+            name: Notte
           - entity: input_number.notifier_night_volume
+            name: Volume
 
   # CARD Centro Notifiche
   - type: entities
@@ -114,7 +124,9 @@ cards:
           - entity: automation.notifier_intercom_message
             name: Off/On
           - entity: input_number.notifier_intercom_volume
+            name: Volume
           - entity: input_text.notifier_intercom_message
+            name: Messaggio
 
   # CARD Alexa
   - type: entities
@@ -143,16 +155,20 @@ cards:
           - entity: input_number.notifier_alexa_prosody_pitch
           - entity: input_number.notifier_alexa_prosody_volume
           - entity: script.notifier_ssml_reset
+      - type: section
+        label: "Info"
       - type: custom:fold-entity-row
         # padding: 0
         head: sensor.notifier_player_alexa
         entities:
+          - type: attribute
+            entity: sensor.notifier_player_alexa
+            attribute: saved
           - entity: group.notifier_player_alexa
           - type: attribute
             entity: group.notifier_player_alexa
             attribute: entity_id
             name: Players
-          - entity: input_text.notifier_player_alexa
 
   # CARD Google
   - type: entities
@@ -165,16 +181,20 @@ cards:
       - entity: input_boolean.notifier_google_switch
       - entity: select.notifier_player_google
       - entity: input_select.notifier_tts_notify
+      - type: section
+        label: "Info"
       - type: custom:fold-entity-row
         # padding: 0
         head: sensor.notifier_player_google
         entities:
+          - type: attribute
+            entity: sensor.notifier_player_google
+            attribute: saved
           - entity: group.notifier_player_google
           - type: attribute
             entity: group.notifier_player_google
             attribute: entity_id
             name: Players
-          - entity: input_text.notifier_player_google
 
   # CARD Gruppo Automazioni
   - type: entities

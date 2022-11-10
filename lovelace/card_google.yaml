@@ -10,10 +10,12 @@ entities:
   - entity: input_select.notifier_tts_notify
   - type: section
     label: Info
+  - entity: sensor.notifier_player_google
+  - type: attribute
+    entity: sensor.notifier_player_google
+    attribute: saved
   - entity: group.notifier_player_google
   - type: attribute
     entity: group.notifier_player_google
     attribute: entity_id
     name: Players
-  - entity: sensor.notifier_player_google
-  - entity: input_text.notifier_player_google

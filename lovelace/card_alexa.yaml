@@ -22,10 +22,13 @@ entities:
   - entity: script.notifier_ssml_reset
   - type: section
     label: Info
+  - entity: sensor.notifier_player_alexa
+  - type: attribute
+    entity: sensor.notifier_player_alexa
+    attribute: saved
   - entity: group.notifier_player_alexa
   - type: attribute
     entity: group.notifier_player_alexa
     attribute: entity_id
     name: Players
-  - entity: sensor.notifier_player_alexa
-  - entity: input_text.notifier_player_alexa
+

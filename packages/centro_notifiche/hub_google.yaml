@@ -14,7 +14,7 @@ homeassistant:
     ## INPUT
     input_boolean.notifier_google_switch:
       <<: *customize
-      friendly_name: "Google"
+      friendly_name: "Google Off/On"
       icon: mdi:dots-horizontal-circle-outline
     input_select.notifier_tts_notify:
       <<: *customize
@@ -22,7 +22,7 @@ homeassistant:
       icon: mdi:form-select
     input_text.notifier_player_google:
       <<: *customize
-      friendly_name: "Default Media Player Google Selezionato"
+      friendly_name: "Nome Media Player Google Salvato"
       icon: mdi:multimedia
     ## SELECT
     select.notifier_player_google:
@@ -32,7 +32,7 @@ homeassistant:
     ## SENSOR
     sensor.notifier_player_google:
       <<: *customize
-      friendly_name: "Player Google Attivo"
+      friendly_name: "Player Google Predefinito"
 
 #######################################-#######################################
 ##                                   INPUT
@@ -44,7 +44,6 @@ input_select:
     options: ["Google Say", "Google Cloud", "Google Assistant", "Reverso"]
 input_text:
   notifier_player_google:
-    name: google
 #######################################-#######################################
 ##                                 TEMPLATE
 #######################################-#######################################
@@ -68,8 +67,9 @@ template:
 
   - trigger:
       - platform: state
-        entity_id: select.notifier_player_google
-        to:
+        entity_id:
+          - select.notifier_player_google
+          - input_text.notifier_player_google
       - platform: state
         entity_id: group.notifier_player_google
         attribute: entity_id
@@ -89,16 +89,11 @@ template:
             {% elif x.domain == 'media_player' %}
               {{ x.entity_id }}
             {% else %}
-              {{ player if player else 'all' }}
+              {{ (player | join(', ')) if player else 'all' }}
             {% endif %}
           {% endfor %}
         icon: >-
-          {% set domains = (states.group | list) + (states.media_player | list) %}
-          {% set selected = states('select.notifier_player_google') | lower %}
-          {% for x in domains if x.name | lower == selected %}
-            {% if x.domain == 'group'%}
-              mdi:speaker-multiple
-            {% else %}
-              mdi:speaker
-            {% endif %}
-          {% endfor %}
+          {{ iif(',' in this.state | default('', true), 
+              'mdi:speaker-multiple', 'mdi:speaker') }}
+        attributes:
+          saved: "{{ states('input_text.notifier_player_google') }}"
