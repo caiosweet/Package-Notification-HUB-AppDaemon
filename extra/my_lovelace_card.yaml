@@ -46,7 +46,7 @@ cards:
         state_styles:
           "not_home":
             button:
-              color: red
+              color: var(--accent-color)
           "home":
             button:
               color: var(--paper-item-icon-active-color)
@@ -148,11 +148,11 @@ cards:
         styles:
           button:
             - color: >-
-                {{ iif(is_state('binary_sensor.notifier_alexa_speak', 'on'), 'Red', '') }}
+                {{ iif(is_state('binary_sensor.notifier_alexa_speak', 'on'), 
+                'var(--accent-color)', '') }}
             - animation: >-
-                {% if is_state('binary_sensor.notifier_alexa_speak', 'on') %}
-                  blink 1.5s linear infinite alternate
-                {% endif %}
+                {{ iif(is_state('binary_sensor.notifier_alexa_speak', 'on'), 
+                'blink 1.5s linear infinite alternate', '') }}
       - entity: input_select.notifier_alexa_type
         layout: state
         state:
