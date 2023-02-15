@@ -211,10 +211,6 @@ cards:
     show_header_toggle: false
     state_color: true
     entities:
-      - type: custom:fold-entity-row
-        head:
-          type: section
-          label: Rubrica
-        entities:
-          - entity: input_text.notifier_called_number
+      - entity: input_boolean.notifier_phone_notifications
+      - entity: input_text.notifier_called_number
       - entity: input_select.notifier_phone_notify
