@@ -2,7 +2,7 @@
 #   @site           :   https://hassiohelp.eu/
 #   @author         :   Caio - https://github.com/caiosweet
 #                   :   Gianpi - https://github.com/jumping2000
-#   @date           :   Started 01/11/2019 - Updated 10/11/2022
+#   @date           :   Started 01/11/2019 - Updated 27/11/2022
 #   @description    :   Package for Appdaemon Notifier Center
 #                       https://github.com/jumping2000/notifier
 #   @package        :   Notification HUB - Centro Notifiche 🔔
@@ -91,7 +91,7 @@ homeassistant:
     input_boolean.notifier_screen_notifications:
       <<: *customize
       friendly_name: "Notifiche Persistenti"
-      icon: mdi:message-bulleted
+      icon: mdi:dock-left #mdi:message-bulleted
     input_boolean.notifier_speech_notifications:
       <<: *customize
       friendly_name: "Notifiche Vocali"
@@ -103,11 +103,11 @@ homeassistant:
     input_boolean.notifier_tts_clock:
       <<: *customize
       friendly_name: "Orario in TTS App"
-      icon: mdi:clock
+      icon: mdi:message-text-clock
     input_boolean.notifier_wrap_text:
       <<: *customize
       friendly_name: "Testo a capo"
-      icon: mdi:text-box-check
+      icon: mdi:wrap
     ## INPUT DATETIME
     input_datetime.notifier_start_morning:
       <<: *customize
@@ -341,7 +341,7 @@ template:
               and is_state('input_boolean.notifier_holidays', 'off')) else 'holidays' %}
           {% set start = state_attr('input_datetime.notifier_start_%s'%day, 'timestamp') %}
           {% set end = state_attr('input_datetime.notifier_end_%s'%day, 'timestamp') %}
-          {% if speech == 'on' and priority == 'off' %} 
+          {% if speech == 'on' and priority == 'off' %}
             {{ (start < t < end) if start < end else ((t > start or t < end) and start != end) }}
           {% elif speech == 'off' and priority == 'off'%}
             True
@@ -693,7 +693,7 @@ automation:
           alexa_media: >
             {{ integration_entities('alexa_media') | select('match', 'media_player') | list }}
           google_cast: >
-            {{ integration_entities('Google Cast') | list }}
+            {{ integration_entities('cast') }}
           google_inc: >
             {% set mp = namespace(player=[]) %}
             {% for state in states.media_player
@@ -701,34 +701,35 @@ automation:
                 {% set mp.player = mp.player + [state.entity_id]  %}
             {% endfor %}
 
-      # Automatic creation of the notifier_location_tracker Group from Person Domain.
-      - service: group.set
+      - alias: Automatic creation of the notifier_location_tracker Group from Person Domain
+        service: group.set
         data:
           object_id: notifier_location_tracker
           entities: >-
             {{ states.person | join(',','entity_id') }}
 
-      - choose:
+      - alias: Automatic creation of the notifier_player_alexa Group, if Alexa exists
+        choose:
           - conditions:
-              - "{{ alexa_media is not none}}"
+              - "{{ alexa_media is not none }}"
             sequence:
-              # Automatic creation of the notifier_player_alexa Group
               - service: group.set
                 data:
                   object_id: notifier_player_alexa
                   entities: "{{ alexa_media }}"
 
-      - choose:
+      - alias: Automatic creation of the notifier_player_google Group, if Google exists
+        choose:
           - conditions:
               - "{{ (google_cast is not none) or (google_inc is not none) }}"
             sequence:
-              # Automatic creation of the notifier_player_google Group
               - service: group.set
                 data:
                   object_id: notifier_player_google
                   entities: "{{ google_cast if google_cast else google_inc }}"
 
-      - choose:
+      - alias: Set input_text.notifier_personal_assistant blank if unknown
+        choose:
           - conditions: "{{ states('input_text.notifier_personal_assistant') == 'unknown' }}"
             sequence:
               - service: input_text.set_value
@@ -736,8 +737,8 @@ automation:
                   entity_id: input_text.notifier_personal_assistant
                   value: ""
 
-      # Automatic creation of an automations_notification_hub Group
-      - service: group.set
+      - alias: Automatic creation of an notifier_automations Group
+        service: group.set
         data:
           object_id: "notifier_automations"
           entities: >-
@@ -746,8 +747,8 @@ automation:
               | select('match','.*[_\s]hub|.*notifier[_\s]', ignorecase=True)
               | map(attribute='entity_id') | list }}
 
-      # Execute notifier_auto_volume Automation.
-      - service: automation.trigger
+      - alias: Execute notifier_auto_volume Automation
+        service: automation.trigger
         entity_id: automation.notifier_auto_volume
         # skip_condition: true
 
@@ -767,30 +768,19 @@ automation:
           list_google: >-
             {{ expand('group.notifier_player_google') | map(attribute='entity_id') | list }}
           volume: "{{ states('sensor.notifier_day_period_volume') | float(10) }}"
+          period: "{{ states('sensor.notifier_day_period') }}"
       - parallel:
           - choose:
               - conditions: "{{ list_alexa | length > 0 }}"
                 sequence:
-                  - repeat:
-                      for_each: "{{ list_alexa }}"
-                      sequence:
-                        - service: notify.alexa_media
-                          data:
-                            data:
-                              type: tts
-                            target: "{{ repeat.item }}"
-                            message: >-
-                              <speak>
-                              <break time="4s"/>
-                              <prosody volume="silent">volume</prosody>
-                              </speak>
-                        - delay: "00:00:02"
-                        - service: media_player.volume_set
-                          data:
-                            entity_id: "{{ repeat.item }}"
-                            volume_level: "{{ (volume | round(2)) / 100 }}"
-                        - service: alexa_media.update_last_called
-                          data: {}
+                  - service: script.my_notify
+                    data:
+                      notify: False
+                      message: "Set Auto Volumes silent. {{ period }} at {{ volume | int(0) }}%"
+                      alexa:
+                        priority: True
+                        auto_volumes: True
+                        media_player: "{{ list_alexa }}"
           - choose:
               - conditions: "{{ list_google | length > 0 }}"
                 sequence:

@@ -20,10 +20,6 @@ homeassistant:
       <<: *customize
       friendly_name: "Servizio TTS"
       icon: mdi:form-select
-    input_text.notifier_player_google:
-      <<: *customize
-      friendly_name: "Nome Media Player Google Salvato"
-      icon: mdi:multimedia
     ## SELECT
     select.notifier_player_google:
       <<: *customize
@@ -42,46 +38,38 @@ input_boolean:
 input_select:
   notifier_tts_notify:
     options: ["Google Say", "Google Cloud", "Google Assistant", "Reverso"]
-input_text:
-  notifier_player_google:
+
 #######################################-#######################################
 ##                                 TEMPLATE
 #######################################-#######################################
 template:
   - select:
       - name: "notifier_player_google"
-        state: "{{ states('input_text.notifier_player_google') }}"
+        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('none', true) }}"
         optimistic: true
         options: |
           {% set mp = state_attr('group.notifier_player_google', 'entity_id')
             | default(['\0'], true) | join('|') %}
           {{ states | select('search', mp, ignorecase=True)
-            | rejectattr('entity_id', '==','sensor.notifier_player_google')
+            | rejectattr('entity_id', 'search','sensor.notifier_.*')
             | map(attribute='name') | list | unique | sort }}
         select_option:
-          - service: input_text.set_value
-            target:
-              entity_id: input_text.notifier_player_google
-            data:
-              value: "{{ option }}"
+          - event: notifier_global_variables
+            event_data: 
+              google_selected: "{{ option }}"
+              app: google
 
   - trigger:
-      - platform: state
-        entity_id:
-          - select.notifier_player_google
-          - input_text.notifier_player_google
-      - platform: state
-        entity_id: group.notifier_player_google
-        attribute: entity_id
-      - platform: state
-        entity_id: sensor.notifier_player_google
-        to: unknown
+      - platform: event
+        event_type: notifier_global_variables
+        event_data:
+          app: google
     sensor:
       - name: "notifier_player_google"
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) %}
           {% set player = state_attr('group.notifier_player_google','entity_id') %}          
-          {% set selected = states('select.notifier_player_google') | lower %}
+          {% set selected = trigger.event.data.google_selected | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain == 'group' and player 
                 and x.attributes.entity_id[0] in player | list %}
@@ -96,4 +84,6 @@ template:
           {{ iif(',' in this.state | default('', true), 
               'mdi:speaker-multiple', 'mdi:speaker') }}
         attributes:
-          saved: "{{ states('input_text.notifier_player_google') }}"
+          selected: "{{ trigger.event.data.google_selected | default }}"
+
+

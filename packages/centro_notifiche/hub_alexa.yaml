@@ -59,10 +59,6 @@ homeassistant:
       <<: *customize
       friendly_name: "Tipo Predefinito Alexa"
       icon: mdi:bugle
-    input_text.notifier_player_alexa:
-      <<: *customize
-      friendly_name: "Nome Media Player Alexa Salvato"
-      icon: mdi:multimedia
     ## SCRIPT
     script.notifier_ssml_reset:
       <<: *customize
@@ -175,47 +171,38 @@ input_select:
         "es-MX",
         "es-US",
       ]
-input_text:
-  notifier_player_alexa:
+
 #######################################-#######################################
 ##                                 TEMPLATE
 #######################################-#######################################
 template:
   - select:
       - name: "notifier_player_alexa"
-        state: "{{ states('input_text.notifier_player_alexa') }}"
+        state: "{{ state_attr('sensor.notifier_player_alexa', 'selected') | default('none', true) }}"
         optimistic: true
         options: |
           {% set mp = state_attr('group.notifier_player_alexa', 'entity_id')
             | default(['\0'], true) | join('|') %}
           {{ states | select('search', mp, ignorecase=True)
-            | rejectattr('entity_id', '==','sensor.notifier_player_alexa')
+            | rejectattr('entity_id', 'search','sensor.notifier_.*')
             | map(attribute='name') | list | unique | sort }}
         select_option:
-          - service: input_text.set_value
-            target:
-              entity_id: input_text.notifier_player_alexa
-            data:
-              value: "{{ option }}"
+          - event: notifier_global_variables
+            event_data: 
+              alexa_selected: "{{ option }}"
+              app: alexa
 
   - trigger:
-      - platform: state
-        entity_id:
-          - select.notifier_player_alexa
-          - sensor.last_alexa
-          - input_text.notifier_player_alexa
-      - platform: state
-        entity_id: group.notifier_player_alexa
-        attribute: entity_id
-      - platform: state
-        entity_id: sensor.notifier_player_alexa
-        to: unknown
+      - platform: event
+        event_type: notifier_global_variables
+        event_data:
+          app: alexa
     sensor:
       - name: "notifier_player_alexa"
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
           {% set player = state_attr('group.notifier_player_alexa','entity_id') %}
-          {% set selected = states('select.notifier_player_alexa') | lower %}
+          {% set selected = trigger.event.data.alexa_selected | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain == 'sensor' and player and x.state in player | list %}
               {{ x.state }}
@@ -228,7 +215,7 @@ template:
           {% endfor %}
         icon: >-
           {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
-          {% set selected = states('select.notifier_player_alexa') | lower %}
+          {% set selected = trigger.event.data.alexa_selected | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain == 'group' %}
               mdi:speaker-multiple
@@ -239,7 +226,7 @@ template:
             {% endif %}
           {% endfor %}
         attributes:
-          saved: "{{ states('input_text.notifier_player_alexa') }}"
+          selected: "{{ trigger.event.data.alexa_selected | default }}"
 
   - binary_sensor:
       - name: "notifier_alexa_speak"
@@ -252,7 +239,9 @@ script:
     sequence:
       - service: input_number.set_value
         data:
-          entity_id: input_number.notifier_alexa_prosody_pitch, input_number.notifier_alexa_prosody_volume
+          entity_id: 
+            - input_number.notifier_alexa_prosody_pitch
+            - input_number.notifier_alexa_prosody_volume
           value: 0
       - service: input_number.set_value
         data:
