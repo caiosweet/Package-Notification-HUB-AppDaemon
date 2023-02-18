@@ -82,12 +82,12 @@ cards:
           action: call-service
           service: input_select.select_next
           service_data:
-            entity_id: input_select.text_notify
+            entity_id: input_select.notifier_text_notify
         hold_action:
           action: call-service
           service: input_select.select_previous
           service_data:
-            entity_id: input_select.text_notify
+            entity_id: input_select.notifier_text_notify
         double_tap_action:
           action: more-info
   - type: horizontal-stack
@@ -126,7 +126,7 @@ cards:
           action: call-service
           service: input_select.select_next
           service_data:
-            entity_id: input_select.default_alexa_type
+            entity_id: input_select.notifier_alexa_type
       - type: button
         state_color: true
         show_name: false

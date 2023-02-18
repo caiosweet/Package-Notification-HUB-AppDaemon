@@ -155,6 +155,7 @@ cards:
           - entity: input_number.notifier_alexa_prosody_pitch
           - entity: input_number.notifier_alexa_prosody_volume
           - entity: script.notifier_ssml_reset
+
       - type: section
         label: "Info"
       - type: custom:fold-entity-row
@@ -163,7 +164,7 @@ cards:
         entities:
           - type: attribute
             entity: sensor.notifier_player_alexa
-            attribute: saved
+            attribute: selected
           - entity: group.notifier_player_alexa
           - type: attribute
             entity: group.notifier_player_alexa
@@ -189,7 +190,7 @@ cards:
         entities:
           - type: attribute
             entity: sensor.notifier_player_google
-            attribute: saved
+            attribute: selected
           - entity: group.notifier_player_google
           - type: attribute
             entity: group.notifier_player_google
