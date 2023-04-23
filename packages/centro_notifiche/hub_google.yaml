@@ -51,7 +51,7 @@ template:
           {% set mp = state_attr('group.notifier_player_google', 'entity_id')
             | default(['\0'], true) | join('|') %}
           {{ states | select('search', mp, ignorecase=True)
-            | rejectattr('entity_id', 'search','sensor.notifier_.*')
+            | selectattr('entity_id', 'match','media_player|group')
             | map(attribute='name') | list | unique | sort }}
         select_option:
           - event: notifier_global_variables
