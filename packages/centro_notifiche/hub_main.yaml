@@ -688,6 +688,8 @@ automation:
         event: start
       - platform: event
         event_type: automation_reloaded
+      - platform: time_pattern
+        hours: "/1"
     action:
       - variables:
           alexa_media: >
