@@ -23,7 +23,7 @@ homeassistant:
       3: &feed_news_ansa https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml
       4: &feed_wikiquote https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd
       5: &feed_dpc https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_criticita
-      6: &feed_dpc_meteo https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_vigilanza #TODO
+      6: &feed_dpc_vigilanza https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=bollettino_vigilanza
       7: &feed_dpc_news https://dpc-web-api.protezionecivile.gov.it/rss/dpcPortalGenerateRss?categoria=notizia #TODO
       8: &feed_cb01 http://feeds.feedburner.com/cineblog01/Film-In-Streaming-Gratis
       9: &feed_hass_alerts https://alerts.home-assistant.io/feed.xml
@@ -54,7 +54,7 @@ homeassistant:
       friendly_name: "CineBlog01"
 
 ###############################################################################
-## COMPONENT
+## HOME ASSISTANT INTEGRATION
 ###############################################################################
 feedreader:
   urls:
@@ -63,7 +63,7 @@ feedreader:
     - *feed_news_ansa
     - *feed_wikiquote
     - *feed_dpc
-    # - *feed_dpc_meteo
+    - *feed_dpc_vigilanza
     # - *feed_dpc_news
     - *feed_cb01
     - *feed_hass_alerts
@@ -71,6 +71,9 @@ feedreader:
     minutes: 30
   max_entries: 10
 
+###############################################################################
+## CUSTOM COMPONENT
+###############################################################################
 #######################################-#######################################
 ##                                  SENSOR
 #######################################-#######################################
@@ -138,6 +141,7 @@ automation:
       feed_news_ansa: *feed_news_ansa
       feed_wikiquote: *feed_wikiquote
       feed_dpc: *feed_dpc
+      feed_dpc_vigilanza: *feed_dpc_vigilanza
       feed_cb01: *feed_cb01
       feed_hass_alerts: *feed_hass_alerts
     action:
@@ -154,9 +158,9 @@ automation:
                   message: "Nuovo Articolo su Hassio Help. {{ feed_title }}"
                   alexa:
                     voice: giorgio
-                    message_tts: &tts1 "è stato pubblicato un nuovo articolo su Hassio Help"
+                    message: &tts1 "è stato pubblicato un nuovo articolo su Hassio Help"
                   google:
-                    message_tts: *tts1
+                    message: *tts1
                   link: "[Articolo HassioHelp]({{ feed_link }})"
           - conditions: "{{ feed_url == feed_hassiohelp_commenti }}"
             sequence:
@@ -190,6 +194,14 @@ automation:
                   title: "⛈️ Protezione Civile"
                   message: "{{ feed_title }}"
                   link: "[Bollettini di criticità]({{ feed_link }})"
+          - conditions: "{{ feed_url == feed_dpc_vigilanza }}"
+            sequence:
+              - service: *notify
+                # enabled: false
+                data:
+                  title: "⛈️ Protezione Civile Vigilanza"
+                  message: "{{ feed_title }}"
+                  link: "[Bollettini di vigilanza meteo]({{ feed_link }})"
           - conditions: "{{ feed_url == feed_cb01 }}"
             sequence:
               - service: *notify

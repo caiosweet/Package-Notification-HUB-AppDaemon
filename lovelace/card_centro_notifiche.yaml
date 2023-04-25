@@ -3,35 +3,38 @@ title: Centro Notifiche
 show_header_toggle: false
 state_color: true
 entities:
+  - entity: sensor.notifier_debug_error
   - type: section
     label: Monitor
-  - entity: group.location_tracker
-  - entity: sensor.period_of_day
-  - entity: sensor.period_of_day_volume
+  - entity: binary_sensor.notifier_people_home
+  - entity: group.notifier_location_tracker
+  - entity: sensor.notifier_day_period
+  - entity: sensor.notifier_day_period_volume
     tap_action:
       action: call-service
       service: input_boolean.toggle
       service_data:
-        entity_id: input_boolean.speech_notifications
-  - entity: binary_sensor.dnd
+        entity_id: input_boolean.notifier_speech_notifications
+  - entity: binary_sensor.notifier_dnd
   - type: call-service
+    entity: input_boolean.notifier_last_message
     name: Ultimo Messaggio
     action_name: Ascolta
     service: input_boolean.turn_on
     service_data:
-      entity_id: input_boolean.last_message
+      entity_id: input_boolean.notifier_last_message
   - type: section
     label: Modalità
-  - entity: input_boolean.holidays
-  - entity: input_boolean.guest_mode
-  - entity: input_boolean.priority_message
-  - entity: input_boolean.phone_notifications
-  - entity: input_boolean.speech_notifications
-  - entity: input_boolean.text_notifications
-  - entity: input_boolean.screen_notifications
+  - entity: input_boolean.notifier_holidays
+  - entity: input_boolean.notifier_guest_mode
+  - entity: input_boolean.notifier_priority_message
+  - entity: input_boolean.notifier_phone_notifications
+  - entity: input_boolean.notifier_speech_notifications
+  - entity: input_boolean.notifier_text_notifications
+  - entity: input_boolean.notifier_screen_notifications
   - type: section
     label: Interfono
-  - entity: automation.send_intercom_message_hub
+  - entity: automation.notifier_intercom_message
     name: Off/On
-  - entity: input_number.intercom_message_volume
-  - entity: input_text.intercom_message_hub
+  - entity: input_number.notifier_intercom_volume
+  - entity: input_text.notifier_intercom_message

@@ -1,4 +1,3 @@
-# package_hub_google:
 homeassistant:
   ######################################-#######################################
   ##                                CUSTOMIZE
@@ -10,76 +9,79 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Google 3.3.2"
+        version: "Google 4.0.0"
 
     ## INPUT
-    input_boolean.google_switch:
+    input_boolean.notifier_google_switch:
       <<: *customize
-      friendly_name: "Google"
-      icon: mdi:google-home
-    input_select.tts_notify:
+      friendly_name: "Google Off/On"
+      icon: mdi:dots-horizontal-circle-outline
+    input_select.notifier_tts_notify:
       <<: *customize
       friendly_name: "Servizio TTS"
       icon: mdi:form-select
-    input_select.notification_media_player_google:
+    ## SELECT
+    select.notifier_player_google:
       <<: *customize
       friendly_name: "Sorgente Google"
       icon: mdi:speaker-wireless
     ## SENSOR
-    sensor.media_player_google:
+    sensor.notifier_player_google:
       <<: *customize
-      friendly_name: "Player Google Attivo"
+      friendly_name: "Player Google Predefinito"
 
 #######################################-#######################################
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
-  google_switch:
-
+  notifier_google_switch:
 input_select:
-  tts_notify:
+  notifier_tts_notify:
     options: ["Google Say", "Google Cloud", "Google Assistant", "Reverso"]
-  notification_media_player_google:
-    options: !secret notification_media_player_google_hub
 
 #######################################-#######################################
 ##                                 TEMPLATE
 #######################################-#######################################
 template:
+  - select:
+      - name: "notifier_player_google"
+        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('none', true) }}"
+        optimistic: true
+        options: |
+          {% set mp = state_attr('group.notifier_player_google', 'entity_id')
+            | default(['\0'], true) | join('|') %}
+          {{ states | select('search', mp, ignorecase=True)
+            | selectattr('entity_id', 'match','media_player|group')
+            | map(attribute='name') | list | unique | sort }}
+        select_option:
+          - event: notifier_global_variables
+            event_data: 
+              google_selected: "{{ option }}"
+              app: google
+
   - trigger:
-      - platform: state
-        entity_id: input_select.notification_media_player_google
-        to:
-      - platform: state
-        entity_id: group.media_player_google
-        attribute: entity_id
-      # - platform: event
-      #   event_type: event_template_reloaded
-      - platform: state
-        entity_id: sensor.media_player_google
-        to: unknown
+      - platform: event
+        event_type: notifier_global_variables
+        event_data:
+          app: google
     sensor:
-      - name: Media Player Google
-        unique_id: media_player_google
+      - name: "notifier_player_google"
         state: >-
-          {% set domains = states.group | list + states.media_player | list %}
-          {% set selected = states('input_select.notification_media_player_google') | lower %}
+          {% set domains = (states.group | list) + (states.media_player | list) %}
+          {% set player = state_attr('group.notifier_player_google','entity_id') %}          
+          {% set selected = trigger.event.data.google_selected | lower %}
           {% for x in domains if x.name | lower == selected %}
-            {% if x.domain == 'group' %}
+            {% if x.domain == 'group' and player 
+                and x.attributes.entity_id[0] in player | list %}
               {{ x.attributes.entity_id | join(', ') }}
-            {% else %}
+            {% elif x.domain == 'media_player' %}
               {{ x.entity_id }}
+            {% else %}
+              {{ (player | join(', ')) if player else 'all' }}
             {% endif %}
           {% endfor %}
         icon: >-
-          {% set domains = states.group | list + states.media_player | list %}
-          {% set selected = states('input_select.notification_media_player_google') | lower %}
-          {% for x in domains if x.name | lower == selected %}
-            {% if x.domain == 'group'%}
-              mdi:speaker-multiple
-            {%elif x.domain == 'sensor' %}
-              mdi:cast-audio
-            {% else %}
-              mdi:speaker
-            {% endif %}
-          {% endfor %}
+          {{ iif(',' in this.state | default('', true), 
+              'mdi:speaker-multiple', 'mdi:speaker') }}
+        attributes:
+          selected: "{{ trigger.event.data.google_selected | default }}"

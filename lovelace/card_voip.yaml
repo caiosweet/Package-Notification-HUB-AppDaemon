@@ -5,5 +5,6 @@ state_color: true
 entities:
   - type: section
     label: ""
-  - entity: input_text.phone_called_number
-  - entity: input_select.phone_notify
+  - entity: input_boolean.notifier_phone_notifications
+  - entity: input_text.notifier_called_number
+  - entity: input_select.notifier_phone_notify

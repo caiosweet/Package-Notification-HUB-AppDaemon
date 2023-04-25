@@ -4,7 +4,7 @@
   {#             MACRO E IMPOSTAZIONI              #}
   {# ********************************************* #}
 
-  {% set nome = states('input_text.personal_assistant_name') %}
+  {% set nome = states('input_text.notifier_personal_assistant') %}
     {% if nome | length == 0 %}
       {% set nome = 'Hassio' %}
     {% endif %}
@@ -21,7 +21,7 @@
   {%- endmacro -%}
 
   {%- macro modo_ospite() -%}
-    {% if is_state ('input_boolean.guest_mode', 'on') %}
+    {% if is_state ('input_boolean.notifier_guest_mode', 'on') %}
       {% set modo_ospite = [
         "Sembra che abbiamo un ospite in casa. ",
         "Abbiamo un ospite. Attiverò la modalità ospite. ",

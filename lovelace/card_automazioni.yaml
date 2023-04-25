@@ -5,4 +5,4 @@ state_color: true
 entities:
   - type: section
     label: ""
-  - entity: group.automations_notification_hub
+  - entity: group.notifier_automations

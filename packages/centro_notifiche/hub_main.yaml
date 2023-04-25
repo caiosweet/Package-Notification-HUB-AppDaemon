@@ -1,9 +1,8 @@
-# package_hub_main:
 ### INFO
 #   @site           :   https://hassiohelp.eu/
 #   @author         :   Caio - https://github.com/caiosweet
 #                   :   Gianpi - https://github.com/jumping2000
-#   @date           :   Started 01/11/2019 - Updated 23/03/2022
+#   @date           :   Started 01/11/2019 - Updated 27/11/2022
 #   @description    :   Package for Appdaemon Notifier Center
 #                       https://github.com/jumping2000/notifier
 #   @package        :   Notification HUB - Centro Notifiche 🔔
@@ -21,184 +20,191 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Main 3.3.2"
+        version: "Main 4.0.0"
 
     ## AUTOMATION
-    automation.auto_volume_hub:
+    automation.notifier_auto_volume:
       <<: *customize
-      friendly_name: "Volume Automatico Hub"
-    automation.initialization_at_startup_hub:
+      friendly_name: "Notifier Volume Automatico"
+    automation.notifier_initialization_startup:
       <<: *customize
-      friendly_name: "Startup HUB"
-    automation.guest_mode_hub:
+      friendly_name: "Notifier Startup"
+    automation.notifier_guest_mode:
       <<: *customize
-      friendly_name: "Modo Ospite"
-    automation.notification_repeat_last_message_hub:
+      friendly_name: "Notifier Modo Ospite"
+    automation.notifier_repeat_message:
       <<: *customize
-      friendly_name: "Ripete Ultimo Messaggio"
-    automation.send_intercom_message_hub:
+      friendly_name: "Notifier Ripete Messaggio"
+    automation.notifier_intercom_message:
       <<: *customize
-      friendly_name: "Invia Messaggio Con Iterfono"
+      friendly_name: "Notifier Messaggio Iterfono"
       icon: mdi:bullhorn
     ## BINARY SENSOR
-    binary_sensor.dnd:
+    binary_sensor.notifier_dnd:
       <<: *customize
       friendly_name: "Modo Silenzioso"
-    binary_sensor.people_home:
+    binary_sensor.notifier_people_home:
       <<: *customize
       friendly_name: "Persone in casa"
     ## GROUP
-    group.automations_notification_hub:
+    group.notifier_automations:
       <<: *customize
-      friendly_name: "Automazioni HUB"
-      icon: mdi:account-tie
-    group.location_tracker:
+      friendly_name: "Automazioni Notifier"
+      icon: mdi:home-automation
+    group.notifier_location_tracker:
       <<: *customize
       friendly_name: "Dispositivi tracciati"
       icon: mdi:target-account
-    group.media_player_alexa:
+    group.notifier_player_alexa:
       <<: *customize
       friendly_name: "Gruppo Alexa"
       icon: mdi:speaker-multiple
-    group.media_player_google:
+    group.notifier_player_google:
       <<: *customize
       friendly_name: "Gruppo Google"
       icon: mdi:speaker-multiple
     ## INPUT BOOLEAN
-    input_boolean.guest_mode:
+    input_boolean.notifier_guest_mode:
       <<: *customize
       friendly_name: "Modo Ospite"
       icon: mdi:account-multiple-plus
-    input_boolean.holidays:
+    input_boolean.notifier_holidays:
       <<: *customize
       friendly_name: "Modo Vacanza"
       icon: mdi:beach
-    input_boolean.html_mode:
+    input_boolean.notifier_html_mode:
       <<: *customize
       friendly_name: "Modo Markdown/Html"
-      icon: mdi:language-html5
-      # icon: mdi:language-markdown
-    input_boolean.last_message:
+      icon: mdi:language-html5 #language-markdown
+    input_boolean.notifier_last_message:
       <<: *customize
       friendly_name: "Ultimo Messaggio"
       icon: mdi:repeat-once
-    input_boolean.phone_notifications:
+    input_boolean.notifier_phone_notifications:
       <<: *customize
       friendly_name: "Notifiche VoIP"
       icon: mdi:phone-in-talk
-    input_boolean.priority_message:
+    input_boolean.notifier_priority_message:
       <<: *customize
       friendly_name: "Modo Prioritario"
       icon: mdi:alarm-light
-    input_boolean.screen_notifications:
+    input_boolean.notifier_screen_notifications:
       <<: *customize
       friendly_name: "Notifiche Persistenti"
-      icon: mdi:message-bulleted
-    input_boolean.speech_notifications:
+      icon: mdi:dock-left #mdi:message-bulleted
+    input_boolean.notifier_speech_notifications:
       <<: *customize
       friendly_name: "Notifiche Vocali"
       icon: mdi:account-tie-voice
-    input_boolean.text_notifications:
+    input_boolean.notifier_text_notifications:
       <<: *customize
       friendly_name: "Notifiche Testo"
       icon: mdi:cellphone-message
-    input_boolean.tts_clock:
+    input_boolean.notifier_tts_clock:
       <<: *customize
-      friendly_name: "TTS clock"
-      icon: mdi:clock
-    input_boolean.wrap_text:
+      friendly_name: "Orario in TTS App"
+      icon: mdi:message-text-clock
+    input_boolean.notifier_wrap_text:
       <<: *customize
       friendly_name: "Testo a capo"
-      icon: mdi:text-box-check
+      icon: mdi:wrap
     ## INPUT DATETIME
-    input_datetime.start_morning:
+    input_datetime.notifier_start_morning:
       <<: *customize
-      friendly_name: "Mattina"
-      icon: mdi:timetable
-    input_datetime.start_afternoon:
+      friendly_name: "Inizio Mattina"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_afternoon:
       <<: *customize
-      friendly_name: "Pomeriggio"
-      icon: mdi:timetable
-    input_datetime.start_evening:
+      friendly_name: "Inizio Pomeriggio"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_evening:
       <<: *customize
-      friendly_name: "Sera"
-      icon: mdi:timetable
-    input_datetime.start_night:
+      friendly_name: "Inizio Sera"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_night:
       <<: *customize
-      friendly_name: "Notte"
-      icon: mdi:timetable
+      friendly_name: "Inizio Notte"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_weekdays:
+      <<: *customize
+      friendly_name: "Inizio DND Feriali"
+    input_datetime.notifier_end_weekdays:
+      <<: *customize
+      friendly_name: "Fine DND Feriali"
+    input_datetime.notifier_start_holidays:
+      <<: *customize
+      friendly_name: "Inizio DND Vacanze"
+    input_datetime.notifier_end_holidays:
+      <<: *customize
+      friendly_name: "Fine DND Vacanze"
     ## INPUT NUMBER
-    input_number.morning_volume:
+    input_number.notifier_morning_volume:
       <<: *customize
       friendly_name: "Vol Mattina"
       icon: mdi:volume-medium
-    input_number.afternoon_volume:
+    input_number.notifier_afternoon_volume:
       <<: *customize
       friendly_name: "Vol Pomeriggio"
       icon: mdi:volume-high
-    input_number.evening_volume:
+    input_number.notifier_evening_volume:
       <<: *customize
       friendly_name: "Vol Sera"
       icon: mdi:volume-medium
-    input_number.night_volume:
+    input_number.notifier_night_volume:
       <<: *customize
       friendly_name: "Vol Notte"
       icon: mdi:volume-low
-    input_number.default_restore_volume:
+    input_number.notifier_intercom_volume:
       <<: *customize
-      friendly_name: "Volume Rispristino"
+      friendly_name: "Volume Interfono"
       icon: mdi:volume-source
-    input_number.intercom_message_volume:
+    input_number.notifier_tts_wait_time:
       <<: *customize
-      friendly_name: "Volume"
-      icon: mdi:volume-source
-    input_number.tts_wait_time:
-      <<: *customize
-      friendly_name: "Regolazione attesa TTS"
+      friendly_name: "TTS tempo di attesa"
       icon: mdi:av-timer
       unit_of_measurement: "sec"
     ## INPUT SELECT
-    input_select.language:
+    input_select.notifier_language:
       <<: *customize
       friendly_name: "Lingua"
       icon: mdi:flag-variant
-    input_select.phone_notify:
+    input_select.notifier_phone_notify:
       <<: *customize
       friendly_name: "Notifica Telefonica"
       icon: mdi:phone-forward
-    input_select.text_notify:
+    input_select.notifier_text_notify:
       <<: *customize
       friendly_name: "Notifica Testo"
       icon: mdi:message-cog
     ## INPUT TEXT
-    input_text.phone_called_number:
+    input_text.notifier_called_number:
       <<: *customize
       friendly_name: "N. Tel / @user"
       icon: mdi:phone-classic
-    input_text.last_message:
+    input_text.notifier_last_message:
       <<: *customize
       friendly_name: "Salva Ultimo Messaggio"
       icon: mdi:repeat
-    input_text.intercom_message_hub:
+    input_text.notifier_intercom_message:
       <<: *customize
-      friendly_name: "Messaggio"
+      friendly_name: "Messaggio Interfono"
       icon: mdi:bullhorn-outline
-    input_text.personal_assistant_name:
+    input_text.notifier_personal_assistant:
       <<: *customize
       friendly_name: "Nome Assistente"
     ## SCRIPT
     script.my_notify:
       <<: *customize
-      friendly_name: "HUB"
+      friendly_name: "My Notify"
     ## SENSOR
-    sensor.centro_notifiche:
+    sensor.notifier_debug_error:
       <<: *customize
-      friendly_name: "Centro Notifiche"
+      friendly_name: "Notifier Debug Error"
       icon: mdi:account-tie-outline
-    sensor.period_of_day:
+    sensor.notifier_day_period:
       <<: *customize
       friendly_name: "Periodo del Giorno"
-    sensor.period_of_day_volume:
+    sensor.notifier_day_period_volume:
       <<: *customize
       friendly_name: "Volume Notifica"
 
@@ -206,21 +212,19 @@ homeassistant:
   ##                             CUSTOMIZE GLOB
   ############################################################################
   customize_glob:
-    automation.*_hub:
+    automation.notifier_*:
       <<: *customize
       icon: mdi:alpha-a-circle-outline
-    input_datetime.dnd_start_*:
+    input_datetime.notifier_start_*days:
       <<: *customize
-      friendly_name: "Non disturbare inizio"
       icon: mdi:clock-start
-    input_datetime.dnd_end_*:
+    input_datetime.notifier_end_*days:
       <<: *customize
-      friendly_name: "Non disturbare fine"
       icon: mdi:clock-end
-    input_number.*_volume:
+    input_number.notifier_*_volume:
       <<: *customize
       unit_of_measurement: "%"
-    sensor.*_volume:
+    sensor.notifier_*_volume:
       <<: *customize
       unit_of_measurement: "%"
 
@@ -237,77 +241,73 @@ media_extractor:
 ##                                   INPUT
 #######################################-#######################################
 input_boolean:
-  guest_mode:
-  holidays:
-  html_mode:
-  last_message:
-  phone_notifications:
-  priority_message:
-  screen_notifications:
-  speech_notifications:
-  text_notifications:
-  tts_clock:
-  wrap_text:
+  notifier_guest_mode:
+  notifier_holidays:
+  notifier_html_mode:
+  notifier_last_message:
+  notifier_phone_notifications:
+  notifier_priority_message:
+  notifier_screen_notifications:
+  notifier_speech_notifications:
+  notifier_text_notifications:
+  notifier_tts_clock:
+  notifier_wrap_text:
 input_datetime:
-  dnd_start_weekdays:
+  notifier_start_weekdays:
     has_date: false
     has_time: true
-  dnd_end_weekdays:
+  notifier_end_weekdays:
     has_date: false
     has_time: true
-  dnd_start_holidays:
+  notifier_start_holidays:
     has_date: false
     has_time: true
-  dnd_end_holidays:
+  notifier_end_holidays:
     has_date: false
     has_time: true
-  start_morning:
+  notifier_start_morning:
     has_date: false
     has_time: true
-  start_afternoon:
+  notifier_start_afternoon:
     has_date: false
     has_time: true
-  start_evening:
+  notifier_start_evening:
     has_date: false
     has_time: true
-  start_night:
+  notifier_start_night:
     has_date: false
     has_time: true
 input_number:
-  morning_volume:
+  notifier_morning_volume:
     min: 0
     max: 100
     step: 10
-  afternoon_volume:
+  notifier_afternoon_volume:
     min: 0
     max: 100
     step: 10
-  evening_volume:
+  notifier_evening_volume:
     min: 0
     max: 100
     step: 10
-  night_volume:
+  notifier_night_volume:
     min: 0
     max: 100
     step: 10
-  intercom_message_volume:
+  notifier_intercom_volume:
     min: 0
     max: 100
     step: 10
-  default_restore_volume:
-    min: 0
-    max: 100
-    step: 10
-  tts_wait_time:
+  notifier_tts_wait_time:
     min: 0
     max: 5
     step: 0.1
 input_select:
-  text_notify:
+  notifier_text_notify:
     options: !secret text_notify_hub
-  phone_notify:
+  notifier_phone_notify:
     options: ["Telegram Call", "Voip Call"]
-  language:
+  notifier_language:
     options:
       - it-IT
       - en-GB
@@ -315,24 +315,14 @@ input_select:
       - fr-FR
       - de-DE
       - es-ES
-      # Extra Only For Alexa
-      - en-CA
-      - en-AU
-      - en-IN
-      - fr-CA
-      - hi-IN
-      - ja-JP
-      - pt-BR
-      - es-US
-      - es-MX
 input_text:
-  last_message:
+  notifier_last_message:
     max: 255
-  intercom_message_hub:
+  notifier_intercom_message:
     max: 255
-  personal_assistant_name:
+  notifier_personal_assistant:
     max: 255
-  phone_called_number:
+  notifier_called_number:
     max: 30
     mode: password
 
@@ -341,129 +331,97 @@ input_text:
 #######################################-#######################################
 template:
   - binary_sensor:
-      - name: dnd
-        unique_id: dnd
+      - name: "notifier_dnd"
         state: >-
-          {% set speech = states('input_boolean.speech_notifications') %}
-          {% set priority = states('input_boolean.priority_message') %}
+          {% set speech = states('input_boolean.notifier_speech_notifications') %}
+          {% set priority = states('input_boolean.notifier_priority_message') %}
           {% set t = now().time() %}
           {% set t = (t.hour * 60 + t.minute) * 60 + 60 %}
           {% set day = 'weekdays' if (is_state('binary_sensor.workday_sensor', 'on')
-              and is_state('input_boolean.holidays', 'off')) else 'holidays' %}
-          {% set start = state_attr('input_datetime.dnd_start_%s'%day, 'timestamp') %}
-          {% set stop = state_attr('input_datetime.dnd_end_%s'%day, 'timestamp') %}
-          {% if speech == 'on' and priority == 'off' %} 
-            {{ (start < t < stop) if start < stop 
-              else ((t > start or t < stop) and start != stop) }}
+              and is_state('input_boolean.notifier_holidays', 'off')) else 'holidays' %}
+          {% set start = state_attr('input_datetime.notifier_start_%s'%day, 'timestamp') %}
+          {% set end = state_attr('input_datetime.notifier_end_%s'%day, 'timestamp') %}
+          {% if speech == 'on' and priority == 'off' %}
+            {{ (start < t < end) if start < end else ((t > start or t < end) and start != end) }}
           {% elif speech == 'off' and priority == 'off'%}
             True
           {% else %}
             False
           {% endif %}
         icon: >-
-          {% if is_state('binary_sensor.dnd','off') %}
-            mdi:minus-circle-off
-          {% else %}
-            mdi:minus-circle
-          {% endif %}
+          {{ iif(this.state | default('off', true), ' mdi:minus-circle-off', 'mdi:minus-circle') }}
 
-      - name: People Home
-        unique_id: people_home
+      - name: "notifier_people_home"
         device_class: presence
         state: >-
-          {{ expand(states.person) 
-            | selectattr('state', 'eq', 'home') | list | count > 0 }}
+          {{ states.person | selectattr('state', 'eq', 'home') | list | count > 0 }}
         icon: >-
-          {% set people = expand(states.person) | selectattr('state', 'eq', 'home')
-            | list | count + (1 if is_state('input_boolean.guest_mode', 'on') else 0) %}
+          {% set people = states.person | selectattr('state', 'eq', 'home') | list
+            | count + iif(is_state('input_boolean.notifier_guest_mode', 'on'), 1, 0) %}
           {% set icon = {
                     0 :'mdi:account-off', 
                     1 :'mdi:account', 
                     2 :'mdi:account-multiple', 
                     3 :'mdi:account-multiple-check'
                   } %}
-          {{ icon[people] if people in icon else 'mdi:account-group' }}
+          {{ iif(people in icon, icon[people], 'mdi:account-group') }}
         attributes:
           number: >-
-            {{ expand(states.person) 
+            {{ states.person 
               | selectattr('state', 'eq', 'home') | list | count 
-              + (1 if is_state('input_boolean.guest_mode', 'on') else 0) }}
+              + iif(is_state('input_boolean.notifier_guest_mode', 'on'),1,0) }}
           name: >-
-            {{ expand(states.person) 
+            {{ states.person
               | selectattr('state', 'eq', 'home') | join(', ', attribute = 'name')
-              + (', Ospiti' if is_state('input_boolean.guest_mode', 'on') else '') }}
+              + iif(is_state('input_boolean.notifier_guest_mode', 'on'), ', Ospiti', '') }}
           entity: >-
-            {{ expand(states.person)
+            {{ states.person
               | selectattr('state', 'eq', 'home') | join(', ', attribute = 'entity_id')
-              + (', Ospiti' if is_state('input_boolean.guest_mode', 'on') else '') }}
+              + iif(is_state('input_boolean.notifier_guest_mode', 'on'), ', Ospiti', '') }}
 
   - sensor:
-      - name: Period of Day
-        unique_id: period_of_day
+      - name: "notifier_day_period"
         state: >-
+          {% set morning = state_attr('input_datetime.notifier_start_morning', 'timestamp') %}
+          {% set afternoon = state_attr('input_datetime.notifier_start_afternoon', 'timestamp') %}
+          {% set evening = state_attr('input_datetime.notifier_start_evening', 'timestamp') %}
+          {% set night = state_attr('input_datetime.notifier_start_night', 'timestamp') %}
           {% set nt = now().time() %}
           {% set nt = (nt.hour * 60 + nt.minute) * 60 + nt.second %}
-          {% if state_attr('input_datetime.start_morning', 'timestamp') 
-                <= nt < state_attr('input_datetime.start_afternoon', 'timestamp') %}
-            Mattino
-          {% elif state_attr('input_datetime.start_afternoon', 'timestamp') 
-                <= nt < state_attr('input_datetime.start_evening', 'timestamp') %}
-            Pomeriggio
-          {% elif state_attr('input_datetime.start_evening', 'timestamp') 
-                <= nt < state_attr('input_datetime.start_night', 'timestamp') %}
-            Sera
-          {% elif (state_attr('input_datetime.start_evening', 'timestamp') 
-                > state_attr('input_datetime.start_night', 'timestamp'))
-                and (nt > state_attr('input_datetime.start_evening', 'timestamp') 
-                or nt < state_attr('input_datetime.start_night', 'timestamp')) %}
-            Sera
-          {% else %} 
-            Notte 
-          {% endif %}
+          {% if morning <= nt < afternoon %} Mattino
+          {% elif afternoon <= nt < evening %} Pomeriggio
+          {% elif evening <= nt < night %} Sera
+          {% elif (evening > night) and (nt > evening or nt < night) %} Sera
+          {% else %} Notte {% endif %}
         icon: >-
-          {% if is_state('sensor.period_of_day', 'Mattino') %}
-            mdi:weather-sunset-up
-          {% elif is_state('sensor.period_of_day', 'Pomeriggio') %}
-            mdi:weather-sunny
-          {% elif is_state('sensor.period_of_day', 'Sera') %}
-            mdi:weather-sunset-down
-          {% else %}
-            mdi:weather-night 
-          {% endif %}
+          {{ {  'Mattino': 'mdi:weather-sunset-up',
+                'Pomeriggio': 'mdi:weather-sunny',
+                'Sera': 'mdi:weather-sunset-down',
+                'Notte': 'mdi:weather-night',
+                'unknown': 'mdi:theme-light-dark', 
+                'unavailable': 'mdi:weather-sunny-off',
+            } [this.state | default('unknown', true)] | default }}
 
-      - name: Period of Day Volume
-        unique_id: period_of_day_volume
+      - name: "notifier_day_period_volume"
         state: >-
-          {% if is_state('sensor.period_of_day', 'Mattino') %}
-            {{ states('input_number.morning_volume') | int(0) }}
-          {% elif is_state('sensor.period_of_day', 'Pomeriggio') %}
-            {{ states('input_number.afternoon_volume') | int(0) }}
-          {% elif is_state('sensor.period_of_day', 'Sera') %}
-            {{ states('input_number.evening_volume') | int(0) }}
-          {% else%}
-            {{ states('input_number.night_volume') | int(0) }}
-          {% endif %}
+          {{ {  'Mattino': states('input_number.notifier_morning_volume'),
+                'Pomeriggio': states('input_number.notifier_afternoon_volume'),
+                'Sera': states('input_number.notifier_evening_volume'),
+                'Notte': states('input_number.notifier_night_volume'),
+                'unknown': 10, 'unavailable': 10,
+            } [states('sensor.notifier_day_period') | default('unknown', true)] | int(10) }}
         icon: >-
-          {% if is_state('sensor.period_of_day_volume', '0') %}
-            mdi:volume-off
-          {% elif (0 < states('sensor.period_of_day_volume') | int(0) <= 30) %}
-            mdi:volume-low
-          {% elif (40 <= states('sensor.period_of_day_volume') | int(0) <= 60) %}
-            mdi:volume-medium
-          {% else %}
-            mdi:volume-high
-          {% endif %}
+          {% set volume = this.state | default(0, true) | int(0) %}
+          {% if volume == 0 %} mdi:volume-off
+          {% elif 0 < volume <= 30 %} mdi:volume-low
+          {% elif 40 <= volume <= 60 %} mdi:volume-medium
+          {% else %} mdi:volume-high {% endif %}
         attributes:
           vol: >-
-            {% if is_state('sensor.period_of_day', 'Mattino') %}
-              {{ (states('input_number.morning_volume') | float(10)) / 100 }}
-            {% elif is_state('sensor.period_of_day', 'Pomeriggio') %}
-              {{ (states('input_number.afternoon_volume') | float(10)) / 100 }}
-            {% elif is_state('sensor.period_of_day', 'Sera') %}
-              {{ (states('input_number.evening_volume') | float(10)) / 100 }}
-            {% else %}
-              {{ (states('input_number.night_volume') | float(10)) / 100 }}
-            {% endif %}
+            {{ (this.state | default(10, true) | float(10)) / 100 }}
+
+      - name: "notifier_debug_error"
+        state: "OK"
 
 #######################################-#######################################
 ##                                  SCRIPT
@@ -473,10 +431,196 @@ script:
   # MAIN SCRIPT - Variables to be passed to the HUB + template file event if included
   #------------------------------------------------------------------------------------#
   my_notify:
-    alias: HUB
+    alias: Notifier
+    description: "Cross-platform notification sorting center"
+    fields:
+      title:
+        name: title
+        description: "Title for your notification."
+        example: &ex_title "⭐ Star Notifier app on GitHub!."
+        default: *ex_title
+        selector:
+          text:
+            multiline: true
+      message:
+        name: message
+        description: "Message body of the notification."
+        example: &ex_message "Star Notifier app on GitHub!"
+        default: *ex_message
+        required: false
+        selector:
+          text:
+            multiline: true
+      alexa:
+        name: alexa
+        description: "Parameter for TTS Alexa. Bool (True/Flase) or Dict (media_player, message, audio)"
+        example: &ex_alexa |
+          media_player: media_player.studio
+          message: Cucù! Sono le 10:00, accipicchia!
+          audio: "soundbank://soundlibrary/foley/amzn_sfx_clock_ticking_01"
+        default: *ex_alexa
+        required: false
+        selector:
+          object:
+      google:
+        name: google
+        description: "Parameter for TTS Google. Bool (True/Flase) or Dict (media_player, message, audio)"
+        example: &ex_google |
+          message: test more Google.
+          media_player: media_player.red,media_player.black2
+          volume: 0.5
+        default: *ex_google
+        required: false
+        selector:
+          object:
+      called_number:
+        name: called_number
+        description: "called number"
+        example: "3331122343"
+        default: "3331122343"
+        required: false
+        selector:
+          object:
+      caption:
+        name: caption
+        description: "The title of the image."
+        example: "Picture Title"
+        default: "Picture Title"
+        required: false
+        selector:
+          object:
+      discord:
+        name: discord
+        description: "All extended functionality under discord"
+        example: &ex_discord |
+          embed:
+            title: 'title'
+            description: 'description'
+            url: 'https://hassiohelp.eu/'
+            color: 199363
+            author:
+              name: 'Author Hassio Help'
+              url: 'https://hassiohelp.eu/'
+              icon_url: 'https://hassiohelp.eu/wp-content/uploads/2019/03/hassiohelp-192.png'
+            footer:
+              text: 'Footer Text'
+              icon_url: 'https://www.hassiohelp.eu'
+            thumbnail:
+              url: 'https://hassiohelp.eu/wp-content/uploads/2019/03/hassiohelp-192.png'
+            image:
+              url: 'https://hassiohelp.eu/wp-content/uploads/2019/03/hassiohelp-192.png'
+        default: *ex_discord
+        required: false
+        selector:
+          object:
+      html:
+        name: html
+        description: "HTML management in Telegram messages."
+        example: "false"
+        default: false
+        required: false
+        selector:
+          boolean:
+      image:
+        name: image
+        description: "image"
+        example: "/config/www/hassiohelp/pkg_natural_events/burze.png"
+        default: "https://hassiohelp.eu/wp-content/uploads/2020/11/Notifer-3.0-00-2-2048x1451.jpg"
+        required: false
+        selector:
+          object:
+      link:
+        name: link
+        description: "link"
+        example: "https://github.com/jumping2000/notifier"
+        default: "https://github.com/caiosweet/Package-Notification-HUB-AppDaemon"
+        required: false
+        selector:
+          object:
+      location:
+        name: location
+        description: "Send notification only if at home (home) or if you are away (not_home)."
+        example: "home"
+        default: "home"
+        required: false
+        selector:
+          object:
+      mobile:
+        name: mobile
+        description: "All extended functionality under Mobile App."
+        example: &ex_mobile |
+          # iOS URL
+          url: "https://github.com/jumping2000/notifier"
+          # Android URL
+          clickAction: "https://github.com/jumping2000/notifier"
+        default: *ex_mobile
+        required: false
+        selector:
+          object:
+      no_show:
+        name: no_show
+        description: "Disables persistent notification."
+        example: "true"
+        default: true
+        required: false
+        selector:
+          boolean:
+      notify:
+        name: notify
+        description: |-
+          [0, false, off, no] does not send the text notification.
+          Notify name or entity_id send notification to a device other than the default one.
+          Multiple notification service is allowed"
+        example: "telegram, pushover, mobile_app_oneplus_a5010"
+        default: "telegram, pushover, mobile_app_oneplus_a5010"
+        required: false
+        selector:
+          object:
+      priority:
+        name: priority
+        description: "by-pass DND (do not disturb) and all switches or booleans."
+        example: "false"
+        default: false
+        required: false
+        selector:
+          boolean:
+      pushover:
+        name: pushover
+        description: "All extended functionality under pushover"
+        example: &ex_pushover |
+          sound: bike
+          priority: 0
+          expire: 300
+          retry: 30
+        default: *ex_pushover
+        required: false
+        selector:
+          object:
+      telegram:
+        name: telegram, pushover, discord
+        description: "All extended functionality under telegram"
+        example: &ex_telegram |
+          inline_keyboard:
+            🔔 Menu:/menu
+        default: *ex_telegram
+        required: false
+        selector:
+          object:
+      whatsapp:
+        name: whatsapp
+        description: "whatsapp addon by Giuseppe Castaldo"
+        example: &ex_whatsapp |
+          clientId: default
+          to: 391234567890@s.whatsapp.net # User ID
+          body:
+            text: ⭐ Star Notifier app on GitHub! https://github.com/jumping2000/notifier
+        default: *ex_whatsapp
+        required: false
+        selector:
+          object:
     mode: queued
     sequence:
-      - event: hub
+      - event: notifier
         event_data:
           # --------------------------------------------- #
           # VARIABLES (String)
@@ -507,8 +651,16 @@ script:
             {{ notify | default }}
           priority: >-
             {{ priority | default }}
+          pushover: >-
+            {{ pushover | default }}
+          target: >-
+            {{ target | default }}
+          telegram: >-
+            {{ telegram | default }}
           title: >-
             {{ title | default }}
+          whatsapp: >-
+            {{ whatsapp | default }}
           #----------------------------------------------------------------------------#
           # FILE TO BE INCLUDED IF MACROS ARE USED - DO NOT MODIFY THE .yml EXTENSION
           #----------------------------------------------------------------------------#
@@ -520,7 +672,7 @@ script:
 # https://www.callmebot.com/blog/telegram-call-from-home-assistant/
 shell_command:
   telegram_call: "/usr/bin/wget {{ url }} -O /dev/null"
-  #telegram_call: '/usr/bin/curl {{ url }} -O /dev/null' # alternative
+  # telegram_call: '/usr/bin/curl {{ url }} -O /dev/null'  # alternative
 
 #######################################-#######################################
 ##                                 AUTOMATION
@@ -529,190 +681,185 @@ automation:
   #------------------------------------------------------------------------------------#
   # INITIALIZE
   #------------------------------------------------------------------------------------#
-  - alias: Initialization At Startup Hub
+  - alias: notifier_initialization_startup
     initial_state: true
     trigger:
       - platform: homeassistant
         event: start
       - platform: event
         event_type: automation_reloaded
+      - platform: time_pattern
+        hours: "/1"
     action:
-      # Automatic creation of the location_tracker Group from Person Domain.
-      # {{expand(states.person)|map(attribute='entity_id')|list}}
-      - service: group.set
+      - variables:
+          alexa_media: >
+            {{ integration_entities('alexa_media') | select('match', 'media_player') | list }}
+          google_cast: >
+            {{ integration_entities('cast') }}
+          google_inc: >
+            {% set mp = namespace(player=[]) %}
+            {% for state in states.media_player
+                if is_device_attr(state.entity_id, 'manufacturer', 'Google Inc.') %}
+                {% set mp.player = mp.player + [state.entity_id]  %}
+            {% endfor %}
+
+      - alias: Automatic creation of the notifier_location_tracker Group from Person Domain
+        service: group.set
         data:
-          object_id: location_tracker
+          object_id: notifier_location_tracker
           entities: >-
             {{ states.person | join(',','entity_id') }}
 
-      - choose:
+      - alias: Automatic creation of the notifier_player_alexa Group, if Alexa exists
+        choose:
           - conditions:
-              - "{{ state_attr('input_select.notification_media_player_alexa', 'options') is not none }}"
+              - "{{ alexa_media is not none }}"
             sequence:
-              # Automatic creation of the media_player_alexa Group
-              # from entity input_select.notification_media_player_alexa if it exists.
               - service: group.set
                 data:
-                  object_id: media_player_alexa
-                  entities: >-
-                    {% set lista_alexa = state_attr('input_select.notification_media_player_alexa', 'options') %}
-                    {{ states.media_player
-                      | selectattr('attributes.friendly_name', 'defined')
-                      | selectattr('attributes.friendly_name', 'in', lista_alexa | default([], true))
-                      | map(attribute='entity_id') | list }}
+                  object_id: notifier_player_alexa
+                  entities: "{{ alexa_media }}"
 
-      - choose:
+      - alias: Automatic creation of the notifier_player_google Group, if Google exists
+        choose:
           - conditions:
-              - "{{ state_attr('input_select.notification_media_player_google', 'options') is not none }}"
+              - "{{ (google_cast is not none) or (google_inc is not none) }}"
             sequence:
-              # Automatic creation of the media_player_google Group
-              # from entity input_select.notification_media_player_google if it exists.
               - service: group.set
                 data:
-                  object_id: media_player_google
-                  entities: >-
-                    {% set lista_google = state_attr('input_select.notification_media_player_google', 'options') %}
-                    {{ states.media_player 
-                      | selectattr('attributes.friendly_name', 'defined')
-                      | selectattr('attributes.friendly_name', 'in', lista_google | default([], true))
-                      | map(attribute='entity_id') | list }}
+                  object_id: notifier_player_google
+                  entities: "{{ google_cast if google_cast else google_inc }}"
 
-      - choose:
-          - conditions: "{{ states('input_text.personal_assistant_name') == 'unknown' }}"
+      - alias: Set input_text.notifier_personal_assistant blank if unknown
+        choose:
+          - conditions: "{{ states('input_text.notifier_personal_assistant') == 'unknown' }}"
             sequence:
               - service: input_text.set_value
                 data:
-                  entity_id: input_text.personal_assistant_name
+                  entity_id: input_text.notifier_personal_assistant
                   value: ""
 
-      # Automatic creation of an automations_notification_hub Group
-      # if the "id:" attribute or the "name" of the automations ends with "hub".
-      - service: group.set
+      - alias: Automatic creation of an notifier_automations Group
+        service: group.set
         data:
-          object_id: "automations_notification_hub"
+          object_id: "notifier_automations"
           entities: >-
-            {% for item in states.automation if (item.attributes.id is defined 
-                and (item.attributes.id|lower).endswith('hub'))
-                or (item.attributes.friendly_name|lower).endswith('hub') %}
-            {{ item.entity_id }} {% if not loop.last %},{% endif %} {% endfor %}
-      # Execute auto_volume_hub Automation.
-      - service: automation.trigger
-        entity_id: automation.auto_volume_hub
+            {# nuovo anche per backword compatible .endswith('hub') #}
+            {{states.automation
+              | select('match','.*[_\s]hub|.*notifier[_\s]', ignorecase=True)
+              | map(attribute='entity_id') | list }}
+
+      - alias: Execute notifier_auto_volume Automation
+        service: automation.trigger
+        entity_id: automation.notifier_auto_volume
         # skip_condition: true
 
   #------------------------------------------------------------------------------------#
-  # Automatic Volume - Media player volume adjustment, based on period_of_day_volume sensor
+  # Auto Volume - Media player volume adjustment, based on period_of_day_volume sensor
   #------------------------------------------------------------------------------------#
-  - alias: Auto Volume Hub
+  - alias: notifier_auto_volume
     mode: queued
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.period_of_day_volume
+        entity_id: sensor.notifier_day_period_volume
+        not_to:
+          - "unknown"
+          - "unavailable"
     action:
       - variables:
           list_alexa: >-
-            {{ expand('group.media_player_alexa') | map(attribute='entity_id') | list }}
+            {{ expand('group.notifier_player_alexa') | map(attribute='entity_id') | list }}
           list_google: >-
-            {{ expand('group.media_player_google') | map(attribute='entity_id') | list }}
-          all_entity: "{{ list_alexa + list_google }}"
-          volume: "{{ states('sensor.period_of_day_volume') | float(10) }}"
-      - choose:
-          - conditions: "{{ list_alexa | length > 0 }}"
-            sequence:
-              - service: notify.alexa_media
-                data:
-                  data:
-                    type: tts
-                  target: "{{ list_alexa }}"
-                  message: >-
-                    <speak>
-                    <break time="4s"/>
-                    <prosody volume="silent">volume</prosody>
-                    </speak>
-              - delay: "00:00:02"
-      - choose:
-          - conditions: "{{ all_entity | length > 0 }}"
-            sequence:
-              - service: media_player.volume_set
-                data:
-                  entity_id: "{{ all_entity }}"
-                  volume_level: "{{ (volume | round(2)) / 100 }}"
-              - service: input_number.set_value
-                data:
-                  entity_id:
-                    - input_number.intercom_message_volume
-                    - input_number.default_restore_volume
-                  value: "{{ volume }}"
+            {{ expand('group.notifier_player_google') | map(attribute='entity_id') | list }}
+          volume: "{{ states('sensor.notifier_day_period_volume') | float(10) }}"
+          period: "{{ states('sensor.notifier_day_period') }}"
+      - parallel:
+          - choose:
+              - conditions: "{{ list_alexa | length > 0 }}"
+                sequence:
+                  - service: script.my_notify
+                    data:
+                      notify: False
+                      message: "Set Auto Volumes silent. {{ period }} at {{ volume | int(0) }}%"
+                      alexa:
+                        priority: True
+                        auto_volumes: True
+                        media_player: "{{ list_alexa }}"
+          - choose:
+              - conditions: "{{ list_google | length > 0 }}"
+                sequence:
+                  - service: media_player.volume_set
+                    data:
+                      entity_id: "{{ list_google }}"
+                      volume_level: "{{ (volume | round(2)) / 100 }}"
+          - service: input_number.set_value
+            data:
+              entity_id:
+                - input_number.notifier_intercom_volume
+              value: "{{ volume }}"
 
   #------------------------------------------------------------------------------------#
   # LAST MESSAGE - Repeat the last text sent (Excluding tts messages)
   #------------------------------------------------------------------------------------#
-  - alias: Notification Repeat Last Message Hub
+  - alias: notifier_repeat_message
     initial_state: true
     mode: queued
     trigger:
       - platform: state
-        entity_id: input_boolean.last_message
+        entity_id: input_boolean.notifier_last_message
         to: "on"
     action:
-      # - service: input_boolean.turn_on
-      #   data:
-      #     entity_id: input_boolean.priority_message
       - service: script.my_notify
         data:
           title: "Ultimo messaggio"
-          message: >-
-            {{ states('input_text.last_message') }}
+          message: "{{ states('input_text.notifier_last_message') }}"
           <<: &common
             call_no_annuncio: true
             alexa:
               volume: &intercom_volume >
-                {{ states('input_number.intercom_message_volume') | int(0) / 100 }}
+                {{ states('input_number.notifier_intercom_volume') | int(0) / 100 }}
             google:
               volume: *intercom_volume
       - service: input_boolean.turn_off
         entity_id:
-          # - input_boolean.priority_message
-          - input_boolean.last_message
+          - input_boolean.notifier_last_message
 
   #------------------------------------------------------------------------------------#
   # INTERCOM - To send messages from the GUI (graphical user interface)
   #------------------------------------------------------------------------------------#
-  - alias: Send Intercom Message Hub
+  - alias: notifier_intercom_message
     initial_state: true
     mode: queued
     trigger:
       - platform: state
-        entity_id: input_text.intercom_message_hub
-    condition: "{{ states('input_text.intercom_message_hub') | trim != '' }}"
+        entity_id: input_text.notifier_intercom_message
+    condition: "{{ states('input_text.notifier_intercom_message') | trim != '' }}"
     action:
       - service: script.my_notify
         data:
           title: "Interfono"
-          message: >-
-            {{ states('input_text.intercom_message_hub')~' ' }}
+          message: "{{ states('input_text.notifier_intercom_message')~' ' }}"
           <<: *common
       - service: input_text.set_value
         data:
-          entity_id: input_text.intercom_message_hub
+          entity_id: input_text.notifier_intercom_message
           value: ""
 
   #------------------------------------------------------------------------------------#
   # GUEST - On and Off guest mode - The TTS works even if you are away from home.
   #         Useful even if you want to exclude automations if there are guests in the house
   #------------------------------------------------------------------------------------#
-  - alias: Guest Mode Hub
+  - alias: notifier_guest_mode
     initial_state: true
     mode: queued
     trigger:
       platform: state
-      entity_id: input_boolean.guest_mode
+      entity_id: input_boolean.notifier_guest_mode
     action:
       - service: script.my_notify
         data:
-          title: >-
-            Modalità Ospite - {{ trigger.to_state.state | upper }}
+          title: "Modalità Ospite - {{ trigger.to_state.state | upper }}"
           call_no_annuncio: true
           call_modo_ospite: true
           alexa: true

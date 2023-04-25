@@ -16,27 +16,27 @@ cards:
           background: content-box radial-gradient(var(--light-primary-color), var(--primary-color));
           box-shadow: none;
         }
+
   # MARKDOWN SENSOR NOTIFIER APP CONDITIONAL
   - type: conditional
     conditions:
-      - entity: sensor.centro_notifiche
+      - entity: sensor.notifier_debug_error
         state_not: "on"
+      - entity: sensor.notifier_debug_error
+        state_not: "OK"
     card:
       type: markdown
-      card_mod:
-        style: |
-          ha-card {
-            border-radius: var(--ha-card-border-radius) var(--ha-card-border-radius) 0px 0px; 
-            background: red; box-shadow: none; color: yellow;
-          }
       content: >-
-        ⛔ {{states('sensor.centro_notifiche')}}
+        <ha-alert title="Notifier Debug Error" alert-type="error">
+        {{states('sensor.notifier_debug_error')}}
+        </ha-alert>
+
   # PAPER BUTTONS Row 1
   - type: custom:paper-buttons-row
     buttons:
-      - entity: binary_sensor.people_home
+      - entity: binary_sensor.notifier_people_home
         layout: icon
-      - entity: group.location_tracker
+      - entity: group.notifier_location_tracker
         layout: icon
         tap_action:
           action: more-info
@@ -46,39 +46,39 @@ cards:
         state_styles:
           "not_home":
             button:
-              color: red
+              color: var(--accent-color)
           "home":
             button:
               color: var(--paper-item-icon-active-color)
-      - entity: input_boolean.phone_notifications
+      - entity: input_boolean.notifier_phone_notifications
         layout: icon
         state_icons:
           "off": "mdi:phone-off"
-      - entity: input_boolean.speech_notifications
+      - entity: input_boolean.notifier_speech_notifications
         layout: icon
         state_icons:
           "on": "mdi:account-tie-voice"
           "off": "mdi:account-tie-voice-off"
-      - entity: input_boolean.text_notifications
+      - entity: input_boolean.notifier_text_notifications
         layout: icon
         state_icons:
           "off": "mdi:cellphone-message-off"
-      - entity: input_boolean.screen_notifications
+      - entity: input_boolean.notifier_screen_notifications
         layout: icon
         state_icons:
           "off": "mdi:message-bulleted-off"
-      - entity: input_boolean.guest_mode
+      - entity: input_boolean.notifier_guest_mode
         layout: icon
         state_icons:
           "on": "mdi:account-multiple-plus"
           "off": "mdi:account-multiple-minus-outline"
-      - entity: input_boolean.priority_message
+      - entity: input_boolean.notifier_priority_message
         layout: icon
         state_icons:
           "off": "mdi:alarm-light-outline"
-      - entity: input_boolean.holidays
+      - entity: input_boolean.notifier_holidays
         layout: icon
-      - entity: binary_sensor.dnd
+      - entity: binary_sensor.notifier_dnd
         layout: icon
         state_icons:
           "on": "mdi:minus-circle"
@@ -87,111 +87,76 @@ cards:
     style:
       background-color: var(--primary-color)
       height: 1px
+
   # GLANCE
   - type: glance
     card_mod:
       style: |
         ha-card {
-          overflow: hidden; box-shadow: none; background: none; border-radius: 0px; font-size: 0.9em;
+          overflow: hidden; box-shadow: none; background: none; 
+          border-radius: 0px; font-size: 0.9em;
         }
     columns: 3
     show_icon: false
     state_color: true
     entities:
-      - entity: sensor.period_of_day
-      - entity: sensor.period_of_day_volume
-      - entity: input_number.default_restore_volume
-      - entity: input_select.notification_media_player_alexa
+      - entity: sensor.notifier_day_period
+      - entity: sensor.notifier_day_period_volume
+      - entity: input_select.notifier_language
+      - entity: select.notifier_player_alexa
+      - entity: select.notifier_player_google
+      - entity: input_select.notifier_text_notify
         tap_action:
           action: call-service
           service: input_select.select_next
           service_data:
-            entity_id: input_select.notification_media_player_alexa
+            entity_id: input_select.notifier_text_notify
         hold_action:
           action: call-service
           service: input_select.select_previous
           service_data:
-            entity_id: input_select.notification_media_player_alexa
-        double_tap_action:
-          action: more-info
-      - entity: input_select.notification_media_player_google
-        tap_action:
-          action: call-service
-          service: input_select.select_next
-          service_data:
-            entity_id: input_select.notification_media_player_google
-        hold_action:
-          action: call-service
-          service: input_select.select_previous
-          service_data:
-            entity_id: input_select.notification_media_player_google
-        double_tap_action:
-          action: more-info
-      - entity: input_select.text_notify
-        tap_action:
-          action: call-service
-          service: input_select.select_next
-          service_data:
-            entity_id: input_select.text_notify
-        hold_action:
-          action: call-service
-          service: input_select.select_previous
-          service_data:
-            entity_id: input_select.text_notify
+            entity_id: input_select.notifier_text_notify
         double_tap_action:
           action: more-info
   - type: divider
     style:
       background-color: var(--primary-color)
       height: 1px
+
   # PAPER BUTTONS Row 2
   - type: custom:paper-buttons-row
     buttons:
-      - entity: input_boolean.google_switch
+      - entity: input_boolean.notifier_google_switch
         layout: icon|name
         name: Google
-      - entity: input_select.tts_notify
+      - entity: input_select.notifier_tts_notify
         layout: icon|state
         icon: false
-        # state_icons:
-        #   "google say": "mdi:google"
-        #   "google cloud": "mdi:google-cloud"
-        #   "google assistant": "mdi:google-assistant"
-        #   "reverso": "mdi:cached"
         state_text:
           "google say": "Say"
           "google cloud": "Cloud"
           "google assistant": "Assistant"
           "reverso": "Reverso"
-        # state_styles:
-        #   "on":
-        #     button:
-        #     icon:
-        #       color: var(--paper-item-icon-active-color)
-        #     ripple:
-        #       color: orange
         tap_action:
           action: call-service
           service: input_select.select_next
           service_data:
-            entity_id: input_select.tts_notify
-
-      - entity: input_boolean.alexa_switch
+            entity_id: input_select.notifier_tts_notify
+      - entity: input_boolean.notifier_alexa_switch
         layout: icon|name
         name: Alexa
-      - entity: input_select.default_alexa_type
+        styles:
+          button:
+            - color: >-
+                {{ iif(is_state('binary_sensor.notifier_alexa_speak', 'on'), 
+                'var(--accent-color)', '') }}
+            - animation: >-
+                {{ iif(is_state('binary_sensor.notifier_alexa_speak', 'on'), 
+                'blink 1.5s linear infinite alternate', '') }}
+      - entity: input_select.notifier_alexa_type
         layout: state
         state:
           case: first
-        # state_icons:
-        #   "TTS": "mdi:text-shadow"
-        #   "Push": "mdi:cellphone-text"
-        #   "Dropin": "mdi:form-dropdown"
-        # state_text:
-        #   "tts": "TTS"
-        #   "announce": "Announce"
-        #   "push": "Push"
-        #   "dropin": "Dropin"
         state_styles:
           "announce":
             button:
@@ -200,10 +165,11 @@ cards:
           action: call-service
           service: input_select.select_next
           service_data:
-            entity_id: input_select.default_alexa_type
-      - entity: input_boolean.alexa_ssml
+            entity_id: input_select.notifier_alexa_type
+      - entity: input_boolean.notifier_alexa_ssml
         layout: icon|name
         name: SSML
+
   # TEXT INPUT ROW
   - type: divider
     style:
@@ -231,7 +197,7 @@ cards:
             action: call-service
             service: input_boolean.turn_on
             service_data:
-              entity_id: input_boolean.last_message
+              entity_id: input_boolean.notifier_last_message
         entities:
           - type: custom:lovelace-multiline-text-input-card
             card_mod:
@@ -243,7 +209,7 @@ cards:
                 textarea.textarea {margin-top: 0;}
                 .card-content {padding-top: 0;}
             # autosave: true
-            entity: input_text.intercom_message_hub
+            entity: input_text.notifier_intercom_message
             max_length: 255
             min_length: 1
             placeholder_text: "Messaggio da inviare..."
@@ -257,6 +223,6 @@ cards:
               paste: mdi:content-paste
               clear: mdi:delete-forever
           - type: custom:slider-entity-row
-            entity: input_number.intercom_message_volume
+            entity: input_number.notifier_intercom_volume
             name: hide_state
             full_row: true

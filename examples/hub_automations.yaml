@@ -43,7 +43,7 @@ automation:
             {% else %}❗❓
             {% endif %}
           notify_service: >-
-            {% set DEFAULT_NOTIFY = states('input_select.text_notify') %}
+            {% set DEFAULT_NOTIFY = states('input_select.notifier_text_notify') %}
             {{ (DEFAULT_NOTIFY|replace('notify.','')|regex_replace(find=" *, *", replace=",")|lower).rsplit(",") 
             if DEFAULT_NOTIFY is string else DEFAULT_NOTIFY }}
       - choose:
@@ -69,7 +69,7 @@ automation:
                                 - sensor.verifica_tempi_setup
                             - wait_for_trigger:
                                 - platform: state
-                                  entity_id: sensor.centro_notifiche
+                                  entity_id: sensor.notifier_debug_error
                                   to: "on"
                               timeout: 120
                               continue_on_timeout: true
@@ -81,15 +81,14 @@ automation:
                                   📬 Centro Notifiche operativo! 🕵
                                   🟩 {{ states('sensor.ha_start') }}
                                 alexa:
-                                  message_tts: >-
+                                  message: >-
                                     Il sistema è operativo!.
                                   voice: Giorgio
                                   type: tts
                                 google:
-                                  message_tts: >-
+                                  priority: true
+                                  message: >-
                                     Il sistema è operativo!.
-                                  # media_content_type: sound
-                                #   media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
         default:
           - service: "notify.{{ (notify_service | default(['notify']))[0] | replace(' ','_') | lower }}"
             data:
@@ -97,7 +96,7 @@ automation:
 
   #----------------------------------------------------------------------------------------------------#
   # Accesso Fallito # Banned IP persistent_notification.ip_ban title: Banning IP address
-  # message: Too many login attempts from xxx.xxx.xxx.xxx
+  # message: Too many login attempts from xxx.xxx.xxx.xxx ## https://whatismyipaddress.com/ip/
   #----------------------------------------------------------------------------------------------------#
   - alias: Accesso Fallito Hub
     description: "Notification Message Too many login attempts"
@@ -113,22 +112,15 @@ automation:
           title: "⛔ Home Assistant Accesso Fallito. "
           message_tts: &tts_login "Attenzione. Accesso Fallito"
           message: "Tentativo di accesso o richiesta con autenticazione non valida."
-          link: >-
+          link: &link >-
             {% set message = state_attr('persistent_notification.http_login','message') %}
             {{ 'http://www.ip-tracker.org/locator/ip-lookup.php?ip=' ~ message.split('from ')[1] if message }}
-          # notify: alert
+          notify: telegram, pushover
           priority: 1
           alexa:
-            message_tts: *tts_login
-
-      - service: notify.pushover
-        data:
-          title: "⛔ Home Assistant Accesso Fallito"
-          message: "Accesso Fallito. "
-          data:
-            url: >
-              {% set message = state_attr('persistent_notification.http_login','message') %}
-              {{ 'https://whatismyipaddress.com/ip/' ~ message.split('from ')[1] if message }}
+            message: *tts_login
+          pushover:
+            url: *link
             priority: 1
             #attachment: "http://example.com/image.png"
             #sound: pianobar
@@ -145,17 +137,18 @@ automation:
     description: "Notification New Update for Home Assistant"
     initial_state: true
     trigger:
-      # - platform: state
-      #   entity_id: updater.updater
       - platform: state
-        entity_id: binary_sensor.updater
+        entity_id: binary_sensor.home_assistant_versions_update_available
+        to: "on"
+      - platform: state
+        entity_id: binary_sensor.docker_hub_update_available
         to: "on"
     action:
       - service: script.my_notify
         data:
           title: "🆕 Nuovo Aggiornamento Home Assistant"
-          message: "Home Assistant {{ state_attr('binary_sensor.updater','newest_version') }} è disponibile."
-          link: "[Release Notes]({{ state_attr('binary_sensor.updater','release_notes') }})"
+          message: "Home Assistant {{ states('sensor.home_assistant_versions') }} è disponibile. {{ trigger.description }}"
+          # link: "[Release Notes]({{ state_attr('binary_sensor.updater','release_notes') }})"
 
   #----------------------------------------------------------------------------------------------------#
   # Benvenuto # Esempio Macro elaborata al di fuori di build_message, dove al suo interno va inserito {{ benvenuto|default }}
@@ -318,33 +311,33 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   # Condizioni Climatiche
   #----------------------------------------------------------------------------------------------------#
-  - alias: Condizioni Tempo Dopo Lavoro Hub
-    initial_state: true
-    trigger:
-      - platform: time
-        at: "16:00:00"
-    condition:
-      - condition: time
-        weekday:
-          - mon
-          - tue
-          - wed
-          - thu
-          - fri
-      - condition: and
-        conditions:
-          - condition: numeric_state
-            entity_id: "sensor.dark_sky_precip_intensity"
-            above: 0.5
-    action:
-      - service: script.my_notify
-        data:
-          alexa:
-            type: tts
-          call_avviso_pioggia: 1
-          evento: "Dopo Lavoro"
-          sensore_pioggia: >-
-            {{ states('sensor.dark_sky_precip_intensity') | round(2)~" "~state_attr('sensor.dark_sky_precip_intensity', 'unit_of_measurement') }}
+  # - alias: Condizioni Tempo Dopo Lavoro Hub
+  #   initial_state: true
+  #   trigger:
+  #     - platform: time
+  #       at: "16:00:00"
+  #   condition:
+  #     - condition: time
+  #       weekday:
+  #         - mon
+  #         - tue
+  #         - wed
+  #         - thu
+  #         - fri
+  #     - condition: and
+  #       conditions:
+  #         - condition: numeric_state
+  #           entity_id: "sensor.dark_sky_precip_intensity"
+  #           above: 0.5
+  #   action:
+  #     - service: script.my_notify
+  #       data:
+  #         alexa:
+  #           type: tts
+  #         call_avviso_pioggia: 1
+  #         evento: "Dopo Lavoro"
+  #         sensore_pioggia: >-
+  #           {{ states('sensor.dark_sky_precip_intensity') | round(2)~" "~state_attr('sensor.dark_sky_precip_intensity', 'unit_of_measurement') }}
 
   #----------------------------------------------------------------------------------------------------#
   # Buongiorno Info
@@ -368,10 +361,11 @@ automation:
         data:
           message: |
             Sono le {{ states('sensor.time') }}, 
-            ed è {{ states('sensor.dark_sky_summary') }}. 
-            La temperatura esterna è di {{ states('sensor.dark_sky_apparent_temperature') | int }} gradi, 
-            mentre la temperatura interna è di {{ states('sensor.temperatura_media') | int }} gradi. 
-            *Previsioni.* {{ states('sensor.dark_sky_hourly_summary') }} 
+            
+            La temperatura esterna è di {{ states('sensor.gw1100a_v2_1_9_outdoor_temperature') | int(-273) }} gradi,
+            con una percentuale di umidità di {{ states('sensor.gw1100a_v2_1_9_humidity') | int(0) }},
+            mentre la temperatura interna è di {{ states('sensor.temperatura_media') | int(-273) }} gradi,
+            con {{ states('sensor.gw1100a_v2_1_9_indoor_humidity') | int(0) }}% di umidità,
             *Citazione.* {{ state_attr('sensor.feed_wikiquote', 'entries')[-1].summary | striptags }}.
       - delay: "00:01:00"
       - service: script.my_notify
@@ -394,38 +388,58 @@ automation:
         # - binary_sensor.motion_sensor_158d0001e5cfdd #corridoio
         - binary_sensor.pir_corridoio
         - binary_sensor.pir_sala
-        - binary_sensor.cam_sala
-      from: "off"
+      # from: "off"
       to: "on"
     action:
       - variables:
-          studio: "{{ is_state('binary_sensor.motion_sensor_158d000222ccb7', 'on') }}"
-          corridoio: "{{ is_state('binary_sensor.pir_corridoio', 'on') }}"
-          sala: "{{ is_state('binary_sensor.pir_sala', 'on') or is_state('binary_sensor.cam_sala', 'on') }}"
-      - service: input_select.select_option
-        entity_id: input_select.notification_media_player_alexa
+          studio: "{{ true if 'motion_sensor' in trigger.description else false }}"
+          corridoio: "{{ true if 'corridoio' in trigger.description else false }}"
+          sala: "{{ true if 'sala' in trigger.description else false }}"
+      - service: select.select_option
+        entity_id: select.notifier_player_alexa
         data:
-          option: >-
-            {% if studio %} Studio
+          option: >- # Studio
+            {% if studio or corridoio %} Gruppo Alexa Notte
             {% elif sala %} Sala
-            {% else %} Gruppo Alexa {% endif %}
-      - service: input_select.select_option
-        entity_id: input_select.notification_media_player_google
+            {% else %} last alexa {% endif %}
+      - service: select.select_option
+        entity_id: select.notifier_player_google
         data:
-          option: >-
-            {% if studio %} Red
+          option: >- #Red
+            {% if studio %} Black due
             {% elif sala %} Black
             {% elif corridoio %} Black due
             {% else %} Gruppo Google {% endif %}
 
   #----------------------------------------------------------------------------------------------------#
-  # HACS - Updates
+  # HACS - Home Assistant Community Store - Updates
+  # Create a sensor hucs below
+  # template:
+  # - sensor:
+  #     - name: "hacs"
+  #       unique_id: "hacs"
+  #       state: >-
+  #         {{ expand(integration_entities("hacs"))
+  #            | selectattr('state', 'eq', 'on')
+  #            | map(attribute='entity_id')                                   
+  #            | list | count }}        
+  #       icon: "hacs:hacs"
+  #       state_class: measurement
   #----------------------------------------------------------------------------------------------------#
-  - alias: HACS Updates Hub
+  - alias: HACS New Updates Hub
     mode: queued
     trigger:
       - platform: state
-        entity_id: sensor.hacs
+        entity_id: sensor.hacs 
+        # update.hacs_update
+        not_from:
+          - "unknown"
+          - "unavailable"
+        not_to: 
+          - "0"
+          - "unknown"
+          - "unavailable"
+        id: "hacs"
       - platform: event
         event_type: hacs/repository
         event_data:
@@ -433,44 +447,125 @@ automation:
     max_exceeded: silent
     max: 50
     action:
-      - choose:
-          - conditions:
-              - "{{ trigger.entity_id is defined }}"
-              - "{{ states(trigger.entity_id) != 'unknown' }}"
-              - "{{ states(trigger.entity_id) != '0' }}"
-            sequence:
-              - service: script.my_notify
+      # - choose:
+      #     - conditions: "{{ conxxx }}"
+      #       sequence:
+      - if: "{{ 'hacs' in trigger.id }}"
+        then:
+          - delay: "00:00:10"
+          - variables:
+              updates: >
+                {{ states.update
+                |selectattr('entity_id', 'in', integration_entities('hacs'))
+                |rejectattr('attributes.in_progress', '!=', false)
+                |selectattr('state', 'eq', 'on')|map(attribute='entity_id')|list }}
+
+          - service: notify.telegram
+            data:
+              message: |
+                Nuovi Aggiornamenti in HACS: {{updates}}
+
+          - if: "{{ (updates | length > 0) and (trigger.to_state.state|int(0) > trigger.from_state.state|int(0)) }}"
+            then:
+              - service: notify.telegram
+                data:
+                  message: |
+                    UPDATES: {{updates}}
+
+              - service: script.my_notify 
                 data:
                   call_no_annuncio: 1
                   title: >-
-                    Aggiornamenti HACS ({{states('sensor.hacs')}})
+                    Aggiornamenti HACS ({{ states('sensor.hacs') }})
                   message: |
-                    Nuovi Aggiornamenti HACS:
+                    Nuovi Aggiornamenti in HACS ({{ states('sensor.hacs') }})
                   alexa:
-                    message_tts: >-
+                    message: >-
                       Ci sono {{states('sensor.hacs')}} aggiornamenti in HACS.
                   link: |
                     {{"\n"}}
-                    {% for repo in state_attr(trigger.entity_id, 'repositories') %}
-                    [{{ repo.display_name }}](https://github.com/{{ repo.name }}) {{ repo["installed_version"] }} -> {{ repo["available_version"] }}
+                    {% for entity in updates %} {# integration_entities('hacs') if is_state(entity, 'on') #}
+                    [{{ state_attr(entity, 'friendly_name') }}]({{ state_attr(entity, 'release_url') }}) 
+                    🔴 {{ state_attr(entity, 'installed_version') }} --> 🟢 {{ state_attr(entity, 'latest_version') }}
+                    {{ state_attr(entity, 'release_summary') }}
                     {% endfor %}
-          # - choose:
-          - conditions:
-              - "{{ trigger.event is defined }}"
-              - "{{ trigger.event.data.repository is defined }}"
-            sequence:
-              - service: script.my_notify
-                data:
-                  title: Nuovo repository in HACS
-                  message: |
-                    Nuovo Repository aggiunto.
-                  link: |
-                    {% set repo = trigger.event.data.repository %}
-                    [{{ repo }}](https://github.com/{{ repo }})
-        # default:
-        #   - service: script.my_notify
-        #     data:
-        #       message: " HACS: {{trigger.description}}"
+                  # link: |
+                  #   {% for entity in integration_entities('hacs') if is_state(entity, 'on') and  is_state_attr(entity, 'in_progress', false) %}
+                  #   [{{ state_attr(entity, 'friendly_name') }}]({{ state_attr(entity, 'release_url') }}) {{ state_attr(entity, 'installed_version') }} -> {{ state_attr(entity, 'latest_version') }}
+                  #   {{ state_attr(entity, 'release_summary') }}
+                  #   {% endfor %}
+
+                  ## OLD
+                  #{% set old_hacs = state_attr('sensor.hacs', 'repositories') %} #{{ 'repositories' in states.sensor.hacs.attributes }}
+                  #{% set updates = iif(old_hacs, old_hacs, integration_entities('hacs')) %}
+                  # link: |
+                  #   {{"\n"}}
+                  #   {% for repo in state_attr(trigger.entity_id, 'repositories') %}
+                  #   [{{ repo.display_name }}](https://github.com/{{ repo.name }}) {{ repo["installed_version"] }} -> {{ repo["available_version"] }}
+                  #   {% endfor %}
+        else:
+          - service: script.my_notify
+            data:
+              title: Nuovo repository in HACS
+              message: |
+                Nuovo Repository aggiunto.
+              link: |
+                {% set repo = trigger.event.data.repository %}
+                [{{ repo }}](https://github.com/{{ repo }})
+          
+  # #----------------------------------------------------------------------------------------------------#
+  # # HACS - Updates
+  # #----------------------------------------------------------------------------------------------------#
+  # - alias: HACS Updates Hub
+  #   mode: queued
+  #   trigger:
+  #     - platform: state
+  #       entity_id: sensor.hacs
+  #     - platform: event
+  #       event_type: hacs/repository
+  #       event_data:
+  #         action: registration
+  #   max_exceeded: silent
+  #   max: 50
+  #   action:
+  #     - choose:
+  #         - conditions:
+  #             - "{{ trigger.entity_id is defined }}"
+  #             - "{{ states(trigger.entity_id) != 'unknown' }}"
+  #             - "{{ states(trigger.entity_id) != '0' }}"
+  #           sequence:
+  #             - service: script.my_notify
+  #               data:
+  #                 call_no_annuncio: 1
+  #                 title: >-
+  #                   Aggiornamenti HACS ({{states('sensor.hacs')}})
+  #                 message: |
+  #                   Nuovi Aggiornamenti HACS:
+  #                 alexa:
+  #                   message: >-
+  #                     Ci sono {{states('sensor.hacs')}} aggiornamenti in HACS.
+  #                 link: |
+  #                   {{"\n"}}
+  #                   {% for repo in state_attr(trigger.entity_id, 'repositories') %}
+  #                   [{{ repo.display_name }}](https://github.com/{{ repo.name }}) {{ repo["installed_version"] }} -> {{ repo["available_version"] }}
+  #                   {% endfor %}
+  #         # - choose:
+  #         - conditions:
+  #             - "{{ trigger.event is defined }}"
+  #             - "{{ trigger.event.data.repository is defined }}"
+  #           sequence:
+  #             - service: script.my_notify
+  #               data:
+  #                 title: Nuovo repository in HACS
+  #                 message: |
+  #                   Nuovo Repository aggiunto.
+  #                 link: |
+  #                   {% set repo = trigger.event.data.repository %}
+  #                   [{{ repo }}](https://github.com/{{ repo }})
+  #       # default:
+  #       #   - service: script.my_notify
+  #       #     data:
+  #       #       message: " HACS: {{trigger.description}}"
 
   #----------------------------------------------------------------------------------------------------#
   # ALEXA - Riautenticazione - Login
