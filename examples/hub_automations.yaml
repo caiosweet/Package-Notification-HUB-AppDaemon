@@ -43,7 +43,7 @@ automation:
             {% else %}❗❓
             {% endif %}
           notify_service: >-
-            {% set DEFAULT_NOTIFY = states('input_select.text_notify') %}
+            {% set DEFAULT_NOTIFY = states('input_select.notifier_text_notify') %}
             {{ (DEFAULT_NOTIFY|replace('notify.','')|regex_replace(find=" *, *", replace=",")|lower).rsplit(",") 
             if DEFAULT_NOTIFY is string else DEFAULT_NOTIFY }}
       - choose:
@@ -69,7 +69,7 @@ automation:
                                 - sensor.verifica_tempi_setup
                             - wait_for_trigger:
                                 - platform: state
-                                  entity_id: sensor.centro_notifiche
+                                  entity_id: sensor.notifier_debug_error
                                   to: "on"
                               timeout: 120
                               continue_on_timeout: true
@@ -86,10 +86,9 @@ automation:
                                   voice: Giorgio
                                   type: tts
                                 google:
+                                  priority: true
                                   message: >-
                                     Il sistema è operativo!.
-                                  # media_content_type: sound
-                                  # media_content_id: https://actions.google.com/sounds/v1/human_voices/human_fart.ogg
         default:
           - service: "notify.{{ (notify_service | default(['notify']))[0] | replace(' ','_') | lower }}"
             data:
@@ -312,33 +311,33 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   # Condizioni Climatiche
   #----------------------------------------------------------------------------------------------------#
-  - alias: Condizioni Tempo Dopo Lavoro Hub
-    initial_state: true
-    trigger:
-      - platform: time
-        at: "16:00:00"
-    condition:
-      - condition: time
-        weekday:
-          - mon
-          - tue
-          - wed
-          - thu
-          - fri
-      - condition: and
-        conditions:
-          - condition: numeric_state
-            entity_id: "sensor.dark_sky_precip_intensity"
-            above: 0.5
-    action:
-      - service: script.my_notify
-        data:
-          alexa:
-            type: tts
-          call_avviso_pioggia: 1
-          evento: "Dopo Lavoro"
-          sensore_pioggia: >-
-            {{ states('sensor.dark_sky_precip_intensity') | round(2)~" "~state_attr('sensor.dark_sky_precip_intensity', 'unit_of_measurement') }}
+  # - alias: Condizioni Tempo Dopo Lavoro Hub
+  #   initial_state: true
+  #   trigger:
+  #     - platform: time
+  #       at: "16:00:00"
+  #   condition:
+  #     - condition: time
+  #       weekday:
+  #         - mon
+  #         - tue
+  #         - wed
+  #         - thu
+  #         - fri
+  #     - condition: and
+  #       conditions:
+  #         - condition: numeric_state
+  #           entity_id: "sensor.dark_sky_precip_intensity"
+  #           above: 0.5
+  #   action:
+  #     - service: script.my_notify
+  #       data:
+  #         alexa:
+  #           type: tts
+  #         call_avviso_pioggia: 1
+  #         evento: "Dopo Lavoro"
+  #         sensore_pioggia: >-
+  #           {{ states('sensor.dark_sky_precip_intensity') | round(2)~" "~state_attr('sensor.dark_sky_precip_intensity', 'unit_of_measurement') }}
 
   #----------------------------------------------------------------------------------------------------#
   # Buongiorno Info
@@ -362,10 +361,11 @@ automation:
         data:
           message: |
             Sono le {{ states('sensor.time') }}, 
-            ed è {{ states('sensor.dark_sky_summary') }}. 
-            La temperatura esterna è di {{ states('sensor.dark_sky_apparent_temperature') | int }} gradi, 
-            mentre la temperatura interna è di {{ states('sensor.temperatura_media') | int }} gradi. 
-            *Previsioni.* {{ states('sensor.dark_sky_hourly_summary') }} 
+            
+            La temperatura esterna è di {{ states('sensor.gw1100a_v2_1_9_outdoor_temperature') | int(-273) }} gradi,
+            con una percentuale di umidità di {{ states('sensor.gw1100a_v2_1_9_humidity') | int(0) }},
+            mentre la temperatura interna è di {{ states('sensor.temperatura_media') | int(-273) }} gradi,
+            con {{ states('sensor.gw1100a_v2_1_9_indoor_humidity') | int(0) }}% di umidità,
             *Citazione.* {{ state_attr('sensor.feed_wikiquote', 'entries')[-1].summary | striptags }}.
       - delay: "00:01:00"
       - service: script.my_notify
@@ -388,7 +388,6 @@ automation:
         # - binary_sensor.motion_sensor_158d0001e5cfdd #corridoio
         - binary_sensor.pir_corridoio
         - binary_sensor.pir_sala
-        - binary_sensor.cam_sala
       # from: "off"
       to: "on"
     action:
@@ -396,18 +395,18 @@ automation:
           studio: "{{ true if 'motion_sensor' in trigger.description else false }}"
           corridoio: "{{ true if 'corridoio' in trigger.description else false }}"
           sala: "{{ true if 'sala' in trigger.description else false }}"
-      - service: input_select.select_option
-        entity_id: input_select.notification_media_player_alexa
+      - service: select.select_option
+        entity_id: select.notifier_player_alexa
         data:
-          option: >-
-            {% if studio or corridoio %} Studio
+          option: >- # Studio
+            {% if studio or corridoio %} Gruppo Alexa Notte
             {% elif sala %} Sala
-            {% else %} Gruppo Alexa {% endif %}
-      - service: input_select.select_option
-        entity_id: input_select.notification_media_player_google
+            {% else %} last alexa {% endif %}
+      - service: select.select_option
+        entity_id: select.notifier_player_google
         data:
-          option: >-
-            {% if studio %} Red
+          option: >- #Red
+            {% if studio %} Black due
             {% elif sala %} Black
             {% elif corridoio %} Black due
             {% else %} Gruppo Google {% endif %}

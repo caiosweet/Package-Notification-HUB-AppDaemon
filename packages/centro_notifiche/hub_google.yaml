@@ -85,5 +85,3 @@ template:
               'mdi:speaker-multiple', 'mdi:speaker') }}
         attributes:
           selected: "{{ trigger.event.data.google_selected | default }}"
-
-
