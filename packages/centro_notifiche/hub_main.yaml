@@ -751,8 +751,10 @@ automation:
 
       - alias: Execute notifier_auto_volume Automation
         service: automation.trigger
-        entity_id: automation.notifier_auto_volume
-        # skip_condition: true
+        target:
+          entity_id: automation.notifier_auto_volume
+        data:
+          skip_condition: true
 
   #------------------------------------------------------------------------------------#
   # Auto Volume - Media player volume adjustment, based on period_of_day_volume sensor
