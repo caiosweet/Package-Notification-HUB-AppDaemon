@@ -20,7 +20,7 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Main 4.0.0"
+        version: "Main 4.0.1"
 
     ## AUTOMATION
     automation.notifier_auto_volume:
@@ -349,7 +349,7 @@ template:
             False
           {% endif %}
         icon: >-
-          {{ iif(this.state | default('off', true), ' mdi:minus-circle-off', 'mdi:minus-circle') }}
+          {{ iif(this.state | default('off', true), 'mdi:minus-circle-off', 'mdi:minus-circle') }}
 
       - name: "notifier_people_home"
         device_class: presence
@@ -400,7 +400,7 @@ template:
                 'Notte': 'mdi:weather-night',
                 'unknown': 'mdi:theme-light-dark', 
                 'unavailable': 'mdi:weather-sunny-off',
-            } [this.state | default('unknown', true)] | default }}
+            } [this.state ] | default('unknown', true) }}
 
       - name: "notifier_day_period_volume"
         state: >-
@@ -408,8 +408,7 @@ template:
                 'Pomeriggio': states('input_number.notifier_afternoon_volume'),
                 'Sera': states('input_number.notifier_evening_volume'),
                 'Notte': states('input_number.notifier_night_volume'),
-                'unknown': 10, 'unavailable': 10,
-            } [states('sensor.notifier_day_period') | default('unknown', true)] | int(10) }}
+            } [states('sensor.notifier_day_period')] | default('Notte', true) |int(10) }}
         icon: >-
           {% set volume = this.state | default(0, true) | int(0) %}
           {% if volume == 0 %} mdi:volume-off
@@ -751,18 +750,21 @@ automation:
 
       - alias: Execute notifier_auto_volume Automation
         service: automation.trigger
-        entity_id: automation.notifier_auto_volume
-        # skip_condition: true
+        target:
+          entity_id: automation.notifier_auto_volume
+        data:
+          skip_condition: true
 
   #------------------------------------------------------------------------------------#
   # Auto Volume - Media player volume adjustment, based on period_of_day_volume sensor
   #------------------------------------------------------------------------------------#
   - alias: notifier_auto_volume
-    mode: queued
+    mode: restart
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.notifier_day_period_volume
+        entity_id: 
+          - sensor.notifier_day_period_volume
         not_to:
           - "unknown"
           - "unavailable"
@@ -773,26 +775,41 @@ automation:
           list_google: >-
             {{ expand('group.notifier_player_google') | map(attribute='entity_id') | list }}
           volume: "{{ states('sensor.notifier_day_period_volume') | float(10) }}"
+          vol: "{{ state_attr('sensor.notifier_day_period_volume', 'vol') }}"
           period: "{{ states('sensor.notifier_day_period') }}"
       - parallel:
           - choose:
               - conditions: "{{ list_alexa | length > 0 }}"
                 sequence:
-                  - service: script.my_notify
-                    data:
-                      notify: False
-                      message: "Set Auto Volumes silent. {{ period }} at {{ volume | int(0) }}%"
-                      alexa:
-                        priority: True
-                        auto_volumes: True
-                        media_player: "{{ list_alexa }}"
+                  - if: "{{ is_state('input_boolean.notifier_alexa_smart_volume', 'on') }}"
+                    then:
+                      - service: script.my_notify
+                        data:
+                          notify: False
+                          call_no_annuncio: True
+                          message: "Set Auto Volumes silent. {{ period }} at {{ volume | int(0) }}%"
+                          no_show: "{{ True if trigger.platform is none else False }}"
+                          alexa:
+                            priority: True
+                            auto_volumes: True
+                            media_player: "{{ list_alexa }}"
+                            volume: "{{ vol }}"
+                    else:
+                      - service: media_player.volume_set
+                        data:
+                          volume_level: "{{ vol }}"
+                        target:
+                          entity_id: "{{ list_alexa }}"
+
           - choose:
               - conditions: "{{ list_google | length > 0 }}"
                 sequence:
                   - service: media_player.volume_set
                     data:
+                      volume_level: "{{ vol }}"
+                    target:
                       entity_id: "{{ list_google }}"
-                      volume_level: "{{ (volume | round(2)) / 100 }}"
+
           - service: input_number.set_value
             data:
               entity_id:
