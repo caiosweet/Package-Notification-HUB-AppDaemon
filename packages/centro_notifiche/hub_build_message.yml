@@ -4,7 +4,7 @@
   {#             MACRO E IMPOSTAZIONI              #}
   {# ********************************************* #}
 
-  {% set nome = states('input_text.notifier_personal_assistant') %}
+  {% set nome = states('sensor.notifier_config') | default('Maggiordomo') %}
     {% if nome | length == 0 %}
       {% set nome = 'Hassio' %}
     {% endif %}

@@ -9,8 +9,12 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Google 4.0.0"
+        version: "Google 5.0.0"
 
+    group.notifier_player_google:
+      <<: *customize
+      friendly_name: "Gruppo Google"
+      icon: mdi:speaker-multiple
     ## INPUT
     input_boolean.notifier_google_switch:
       <<: *customize
@@ -45,43 +49,61 @@ input_select:
 template:
   - select:
       - name: "notifier_player_google"
-        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('none', true) }}"
+        state: "{{ state_attr('sensor.notifier_config', 'google_select') | default('unknown', true) }}"
         optimistic: true
+        # options: |
+        #   {{ (expand('group.notifier_player_google') | map(attribute='name') | list) }}
         options: |
-          {% set mp = state_attr('group.notifier_player_google', 'entity_id')
-            | default(['\0'], true) | join('|') %}
-          {{ states | select('search', mp, ignorecase=True)
-            | selectattr('entity_id', 'match','media_player|group')
-            | map(attribute='name') | list | unique | sort }}
+          {{ (state_attr('sensor.notifier_config', 'google_media_player') | map('state_attr', 'friendly_name') | list) }}
         select_option:
-          - event: notifier_global_variables
-            event_data: 
-              google_selected: "{{ option }}"
-              app: google
+          - variables:
+              option: "{{ option }}"
+
+## per sicurezza se non si creano i gruppi
+          # {{ ((expand('group.notifier_player_google') | map(attribute='name') | list) +
+          #  (state_attr('sensor.notifier_config', 'google_media_player') | map('state_attr', 'friendly_name') | list)) 
+          #  | unique | list }}
 
   - trigger:
-      - platform: event
-        event_type: notifier_global_variables
-        event_data:
-          app: google
+      - platform: state
+        entity_id:
+          - select.notifier_player_google
     sensor:
       - name: "notifier_player_google"
+        # state: >-
+        #   {% set domains = (states.group | list) + (states.media_player | list) %}
+        #   {% set player = state_attr('group.notifier_player_google','entity_id') %}          
+        #   {% set selected = trigger.to_state.state | lower %}
+        #   {% for x in domains if x.name | lower == selected %}
+        #     {% if x.domain == 'group' and player 
+        #         and x.attributes.entity_id[0] in player | list %}
+        #       {{ x.attributes.entity_id | join(', ') }}
+        #     {% elif x.domain == 'media_player' %}
+        #       {{ x.entity_id }}
+        #     {% else %}
+        #       {{ (player | join(', ')) if player else 'all' }}
+        #     {% endif %}
+        #   {% endfor %}
+
+        ## TODO namespace unique plyer comma separate
+        ## ora bug (manca virgola con doppioni)
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) %}
           {% set player = state_attr('group.notifier_player_google','entity_id') %}          
-          {% set selected = trigger.event.data.google_selected | lower %}
+          {% set selected = trigger.to_state.state | lower %}
           {% for x in domains if x.name | lower == selected %}
-            {% if x.domain == 'group' and player 
-                and x.attributes.entity_id[0] in player | list %}
-              {{ x.attributes.entity_id | join(', ') }}
+            {% if x.domain in ['group', 'media_player'] and x.attributes.entity_id is defined 
+                and player and x.attributes.entity_id[0] in player | list %}
+               {{ x.attributes.entity_id | join(', ') }}
             {% elif x.domain == 'media_player' %}
               {{ x.entity_id }}
             {% else %}
               {{ (player | join(', ')) if player else 'all' }}
             {% endif %}
           {% endfor %}
+
         icon: >-
           {{ iif(',' in this.state | default('', true), 
               'mdi:speaker-multiple', 'mdi:speaker') }}
         attributes:
-          selected: "{{ trigger.event.data.google_selected | default }}"
+          selected: "{{ trigger.to_state.state | default }}"
