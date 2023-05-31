@@ -54,10 +54,15 @@ template:
         # options: |
         #   {{ (expand('group.notifier_player_google') | map(attribute='name') | list) }}
         options: |
-          {{ (state_attr('sensor.notifier_config', 'google_media_player') | map('state_attr', 'friendly_name') | list) }}
-        select_option:
+          {{ (state_attr('sensor.notifier_config', 'google_media_player')
+            | map('state_attr', 'friendly_name') | reject('none') | list)
+          + (state_attr('sensor.notifier_config', 'google_group_player')
+            | map('state_attr', 'friendly_name') | reject('none') | list)
+          }}
+        select_option: 
           - variables:
               option: "{{ option }}"
+
 
 ## per sicurezza se non si creano i gruppi
           # {{ ((expand('group.notifier_player_google') | map(attribute='name') | list) +
@@ -70,26 +75,10 @@ template:
           - select.notifier_player_google
     sensor:
       - name: "notifier_player_google"
-        # state: >-
-        #   {% set domains = (states.group | list) + (states.media_player | list) %}
-        #   {% set player = state_attr('group.notifier_player_google','entity_id') %}          
-        #   {% set selected = trigger.to_state.state | lower %}
-        #   {% for x in domains if x.name | lower == selected %}
-        #     {% if x.domain == 'group' and player 
-        #         and x.attributes.entity_id[0] in player | list %}
-        #       {{ x.attributes.entity_id | join(', ') }}
-        #     {% elif x.domain == 'media_player' %}
-        #       {{ x.entity_id }}
-        #     {% else %}
-        #       {{ (player | join(', ')) if player else 'all' }}
-        #     {% endif %}
-        #   {% endfor %}
-
-        ## TODO namespace unique plyer comma separate
-        ## ora bug (manca virgola con doppioni)
+        #{% set player = state_attr('group.notifier_player_google','entity_id') %} 
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) %}
-          {% set player = state_attr('group.notifier_player_google','entity_id') %}          
+          {% set player = state_attr('sensor.notifier_config', 'google_media_player') %}
           {% set selected = trigger.to_state.state | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain in ['group', 'media_player'] and x.attributes.entity_id is defined 
@@ -101,9 +90,19 @@ template:
               {{ (player | join(', ')) if player else 'all' }}
             {% endif %}
           {% endfor %}
-
         icon: >-
-          {{ iif(',' in this.state | default('', true), 
-              'mdi:speaker-multiple', 'mdi:speaker') }}
+          {% set status = trigger.to_state.state
+              in integration_entities('group') | map('state_attr', 'friendly_name') %}
+          {{ iif(status, 'mdi:speaker-multiple', 'mdi:speaker') }}
         attributes:
           selected: "{{ trigger.to_state.state | default }}"
+          entities: >-
+            {% set status = trigger.to_state.state
+                in integration_entities('group') | map('state_attr', 'friendly_name') %}
+            {% set group = state_attr('sensor.notifier_config', 'google_group_player')
+                | select('is_state_attr', 'friendly_name', states('select.notifier_player_google'))
+                | list | expand | map(attribute='entity_id') | list %}
+            {% set single = expand(state_attr('sensor.notifier_config', 'google_media_player'))
+              | selectattr('name', '==', states('select.notifier_player_google'))
+              | map(attribute='entity_id') | list %}
+            {{ iif(status, group, single) }}
