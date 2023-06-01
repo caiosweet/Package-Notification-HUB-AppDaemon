@@ -344,9 +344,9 @@ template:
           {% set nt = now().time() %} {% set nt = (nt.hour * 60 + nt.minute) * 60 + nt.second %}
           {% set speech = is_state('input_boolean.notifier_speech_notifications', 'on') %}
           {% set priority = is_state('input_boolean.notifier_priority_message', 'on') %}
-          {% set workday = is_state('binary_sensor.workday_sensor', 'on') %}
+          {% set no_workday = integration_entities('workday') | select('is_state', 'off') | list %}
           {% set holidays = is_state('input_boolean.notifier_holidays', 'on') %}
-          {% set day = iif(workday and not holidays, 'weekdays', 'holidays') %}
+          {% set day = iif(holidays or no_workday, 'holidays', 'weekdays') %}
           {% set start = state_attr('input_datetime.notifier_start_%s'%day, 'timestamp') %}
           {% set end = state_attr('input_datetime.notifier_end_%s'%day, 'timestamp') %}
           {% set dnd = iif(start <= end, (start <= nt < end), (nt >= start or nt < end)) %}
@@ -401,7 +401,7 @@ template:
           {% for entity in lst %}
           {% set ns.notify = ns.notify + [entity | replace('notify.','') | replace("_"," ") | title] %}
           {% endfor %}
-          {{ ns.notify | list | unique | sort }}
+          {{ ns.notify | list | unique }}
         select_option:
           - variables:
               option: "{{ option }}"

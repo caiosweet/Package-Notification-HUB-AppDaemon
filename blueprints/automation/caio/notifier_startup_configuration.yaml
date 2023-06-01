@@ -1,17 +1,25 @@
 blueprint:
   name: Notifier startup configuration
-  description: |-
-    Author [Caio](https://github.com/caiosweet), [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
+  description: >
+    Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
+    per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
+    Authors [Caio](https://github.com/caiosweet), [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
     Date Started 01/11/2019 - Updated 20/05/2023
-    Package [last_release](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
-    for Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) Notification HUB - Centro Notifiche 🔔
+
+    Guida di riferimento per l'utilizzo del Progetto Centro Notifiche, ed altre informazioni le trovi sul [wiki](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki)
+
   domain: automation
   author: Caio Sweet
   input:
     personal_assistant:
       name: Personal Assistant
       description: |-
-        Name Personal assistant
+        Imposta il nome del tuo assistente personale.
+        Verrà utilizzato nei titoli dei messaggi testuali e in dashborad.
+        Esempio **[Jarvis - 20:43:12] Garage**
+
+        _Choose a name for your personal assistant_
+        default empty
       selector:
         text: {}
       default: ""
@@ -19,7 +27,13 @@ blueprint:
     person:
       name: Person
       description: |-
-        People group
+        Aggiungi una o più [persone](https://www.home-assistant.io/integrations/person/) per la gestione delle presenze in casa.
+        Verranno creati un gruppo e un sensore in base alla lista. Il sensore, in oltre, avrà gli attributi number e name, corrispondenti al numero di persone in casa e i rispettivi nomi.
+
+        _List of People_
+        default empty
+
+        [![Open your Home Assistant instance and show your people.](https://my.home-assistant.io/badges/people.svg)](https://my.home-assistant.io/redirect/people/)
       selector:
         entity:
           multiple: true
@@ -30,7 +44,13 @@ blueprint:
     alexa_media_player:
       name: Alexa Media Player
       description: |-
-        Alexa Media Player list
+        Aggiungi uno o più media player se utilizzi [Alexa Media](https://github.com/custom-components/alexa_media_player).
+        Verrà creato un gruppo dalla lista risultante. 
+        Inoltre, sarà autocompilato il selettore dei media player Alexa, per la scelta di un dispositivo predefinito, 
+        da usare con il Centro Notifiche.
+
+        _Alexa Media Player list_
+        default empty
       selector:
         entity:
           multiple: true
@@ -42,7 +62,14 @@ blueprint:
     alexa_group_player:
       name: Alexa Group Player
       description: |-
-        Alexa Group Player list
+        Scegli uno o più gruppi di media player per Alexa.
+        Verranno aggiunti nel selettore per la scelta del dispositivo predefinito, insieme ai precedenti media player Alexa.
+
+        _Alexa Group Player list_
+        default empty
+        
+        [![Open your Home Assistant instance and show your helper entities.](https://my.home-assistant.io/badges/helpers.svg)](https://my.home-assistant.io/redirect/helpers/)
+
       selector:
         entity:
           multiple: true
@@ -53,7 +80,12 @@ blueprint:
     google_media_player:
       name: Google Media Player
       description: |-
-        Google Media Player list
+        Aggiungi uno o più media player se utilizzi [Google Cast](https://www.home-assistant.io/integrations/cast/)
+
+        _List of Google Media Player_
+        default empty
+
+        [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=cast)
       selector:
         entity:
           multiple: true
@@ -65,7 +97,13 @@ blueprint:
     google_group_player:
       name: Google Group Player
       description: |-
-        google Group Player list
+        Scegli uno o più gruppi di media player per Google.
+        Verranno aggiunti nel selettore per la scelta del dispositivo predefinito, insieme ai precedenti media player Google.
+
+        _List of google Group Player_
+        default empty
+
+        [![Open your Home Assistant instance and show your helper entities.](https://my.home-assistant.io/badges/helpers.svg)](https://my.home-assistant.io/redirect/helpers/)
       selector:
         entity:
           multiple: true
@@ -76,7 +114,25 @@ blueprint:
     notify_service_list:
       name: Notify list
       description: |-
-        List of notify service
+        Aggiungi i servizi notify, per ricevere le notifiche testuali.
+        Se desideri inviare notifiche multiple a dispositivi diversi, 
+        e non hai creato un [gruppo di notify](https://www.home-assistant.io/integrations/group/#notify-groups), basta aggiungere più servizi separati da una virgola. 
+        `(es. - notify.notify, notify.mobile_app_pixel_7)`
+
+        Esempio completo, di come compilare la lista a mano, con servizi multipli e singoli.
+        ```
+        - notify.telegram
+        - notify.mobile_app_pixel_7
+        - notify.notify, notify.mobile_app_pixel_7
+        - notify.discord, notify.telegram, notify.pushover
+        - notify.persistent_notification
+        ```
+
+        _List of notify service_
+        default - notify.persistent_notification, notify.notify
+
+        [![Open your Home Assistant instance and show your service developer tools.](https://my.home-assistant.io/badges/developer_services.svg)](https://my.home-assistant.io/redirect/developer_services/)
+
       selector:
         object:
       default: ['notify.persistent_notification','notify.notify']
@@ -84,7 +140,11 @@ blueprint:
     enabled_home_assistant_event:
       name: Notification Home Assistant Start
       description: |-
-        Notification Home Assistant Start/Final Write/Close/Stop/Restart
+        Abilitazione per la ricezione dei seguentio eventi di home assistant:
+        Avvio, Scrittura finale, Chiusura, Stop e Riavvio manuale.
+
+        _Notification Home Assistant Start/Final Write/Close/Stop/Restart_
+        default: on
       selector:
         boolean: {}
       default: true
@@ -92,15 +152,23 @@ blueprint:
     enabled_auto_volume:
       name: Auto volume
       description: |-
-        Media player volume adjustment, based on Period of day volume sensor
+        I volumi vengono aggiornati in base al sensore del periodo del giorno, da impostare dalla interfaccia grafica (Dashborad o cards).
+        Le entità da impostare sono gli orari e i volumi a partire dal primo mattino fino a notte fonda.
+
+        _Media player volume adjustment, based on Period of day volume sensor_
+        default: on
       selector:
         boolean: {}
       default: true
 
     time_pattern_hours:
       name: Pattern hours
-      description: >-
-        updates every x hours.
+      description: |-
+        Aggiornamento dei volumi che si ripete in base al numero di ore selezionate.
+        Es. 4, l'aggiornamento verrà ripetuto ogni 4 ore.
+
+        _updates every x hours._
+        default: 0
       selector:
         number:
           min: 0
@@ -113,7 +181,10 @@ blueprint:
     exclude_media_player:
       name: Exclude Media Player
       description: |-
-        Exclude Media Player from auto volume sequence
+        Selezionare gli eventuali media player (vale per entrambi Alexa-Google), da escludere dall'auto-volume.
+
+        _Exclude Media Player from auto volume sequence_
+        default: empty
       selector:
         entity:
           multiple: true
@@ -125,7 +196,10 @@ blueprint:
     tts_google:
       name: Service TTS Google
       description: |-
-        Service Text-to-Speech (TTS): Say a TTS message with google_translate
+        Inserire il servizio per il [TTS Google Translate](https://www.home-assistant.io/integrations/google_translate/).
+
+        _Service [Text-to-Speech (TTS)](https://www.home-assistant.io/integrations/tts/#service-say-legacy): 
+        Say a TTS message with Google Translate_
         default: google_translate_say
       selector:
         text: {}
@@ -134,7 +208,10 @@ blueprint:
     tts_google_cloud:
       name: Service TTS Google Cloud
       description: |-
-        Service TTS Google Cloud
+        Inserire il servizio per il TTS Google Cloud.
+
+        _Service TTS Google Cloud_
+        default: google_cloud
       selector:
         text: {}
       default: "google_cloud"
@@ -142,7 +219,10 @@ blueprint:
     reverso_tts:
       name: Service Reverso TTS
       description: |-
-        Service Reverso TTS
+        Inserire il servizio per il componente personalizzato di [Reverso TTS](https://github.com/rt400/ReversoTTS-HA).
+
+        _Service Reverso TTS_
+        default: reversotts_say
       selector:
         text: {}
       default: "reversotts_say"
@@ -150,7 +230,11 @@ blueprint:
     sip_server_name:
       name: Service Sip server name
       description: |-
-        Service Sip server name
+        N. Tel / @user: inserire qui il numero di telefono da chiamare o l’utente telegram.
+        [Addon](https://github.com/sdesalve/hassio-addons/tree/master/dss_voip) del nostro Admin SDesalve o chiamata tramite [CallMeBot Telegram](https://www.callmebot.com/telegram-call-api/)
+
+        _Service Sip server name_
+        default: fritz.box:5060
       selector:
         text: {}
       default: "fritz.box:5060"
@@ -158,7 +242,11 @@ blueprint:
     alexa_skill_id:
       name: Notifier Alexa actionable skill ID
       description: |-
-        Notifier Alexa actionable skill ID
+
+        Inserire l'ID Alexa Skills per [Alexa Actionable notifications](https://github.com/keatontaylor/alexa-actions)
+
+        _Notifier Alexa actionable skill ID_
+        default: empty
       selector:
         text: {}
       default: ""
@@ -166,7 +254,10 @@ blueprint:
     debug:
       name: Debug and extra info
       description: |-
-        Show entra information for trigger e configuration
+        Modalità di debug.
+
+        _Show entra information for trigger e configuration_
+        default: off
       selector:
         boolean: {}
       default: false
@@ -278,6 +369,7 @@ action:
       sip_server_name: !input sip_server_name
       alexa_skill_id: !input alexa_skill_id
       debug: !input debug
+      is_script: "{{ has_value('script.my_notify') }}"
 
   - alias: "Test trigger"
     if:
@@ -307,6 +399,8 @@ action:
             - "{{ trigger.platform is none }}"
         sequence:
           - variables:
+              # is_script: >- #"{{ has_value('script.my_notify') }}"
+              #   {{ states('script.my_notify') in ['on', 'off'] }}
               zero_time: >
                 {% set a = states('input_datetime.notifier_start_early_morning') %}
                 {% set b = states('input_datetime.notifier_start_morning') %}
@@ -316,21 +410,18 @@ action:
                 {% set f = states('input_datetime.notifier_start_late_night') %}
                 {% set lst = [a,b,c,d,e,f] %}
                 {{ lst[:-1] == lst[1:] and not 'unknown' in lst }}
-              # is_script: >
-              #   {{ not states('script.my_notify') in ['unavailable', 'unknown'] }}
-              is_script: >
-                {{ states('script.my_notify') in ['on', 'off'] }}
 
-              # Rettifiche check TODO
+              # Data Validation - Check User Input # Group in integration group and integration Alexa-Google
               person: "{{ person | select('in', integration_entities('person')) | list}}"
               alexa_media_player: "{{ alexa_media_player | select('in', integration_entities('alexa_media')) | list }}"
               alexa_group_player: "{{ alexa_group_player | select('in', integration_entities('group')) | list }}"
               google_media_player: "{{ google_media_player | select('in', integration_entities('cast')) | list }}"
               google_group_player: "{{ google_group_player | select('in', integration_entities('group')) | list }}"
-              workday: "{{ not not integration_entities('workday') }}"
 
-          - alias: "StartUp Check script my notify"
-            if: "{{ is_script }}"
+          - alias: "Creation groups"
+            if: 
+              - "{{ is_script }}" ## TODO dd limit ['hass_start', 'reload', 'reset_config'] 
+              - "{{ trigger.id in ['hass_start', 'reload'] }}"
             then:
               - alias: Creation of the notifier_location_tracker Group from Person
                 service: group.set
@@ -338,7 +429,6 @@ action:
                   object_id: notifier_location_tracker
                   entities: >-
                     {{ person }}
-                  #, input_boolean.notifier_guest_mode
 
               - alias: "Creation of the notifier_player_alexa Group, if Alexa exists"
                 choose:
@@ -368,10 +458,20 @@ action:
                       | select('match','.*[_\s]hub|.*notifier[_\s]', ignorecase=True)
                       | map(attribute='entity_id') | list }}
 
+              - service: persistent_notification.create
+                data:
+                  notification_id: "centro_notifiche_config_group"
+                  title: "GROUP Setting"
+                  message: |-
+                    {{ state_attr('persistent_notification.centro_notifiche_config_group', 'message') }}
+                    GROUP SETTING
+                    {{ integration_entities('group') }}
+
           - alias: "Remove orphaned groups and clean the recorder"
-            if: 
+            if:
+              - "{{ not is_script }}"
               - "{{ trigger.id in ['reload'] }}"
-              - "{{ zero_time and not is_script }}"
+              - "{{ has_value('group.notifier_automations') }}"
             then:
               - alias: Remove group
                 repeat:
@@ -386,14 +486,14 @@ action:
                       - service: group.remove
                         data:
                           object_id: "{{ repeat.item.split('.')[1] }}"
-              # - service: recorder.purge_entities
-              #   data:
-              #     keep_days: 0
-              #     # entity_globs: ".notifier_*"
-              #   target:
-              #     entity_id: >-
-              #       {{ ['script.my_notify'] + states | selectattr('object_id', 'match', 'notifier_*') 
-              #           | map(attribute='entity_id') | list }}
+              - service: recorder.purge_entities
+                data:
+                  keep_days: 0
+                  # entity_globs: ".notifier_*"
+                target:
+                  entity_id: >-
+                    {{ ['script.my_notify'] + states | selectattr('object_id', 'match', 'notifier_*') 
+                        | map(attribute='entity_id') | list }}
               - service: persistent_notification.create
                 data:
                   notification_id: "centro_notifiche_config_purge"
@@ -404,7 +504,8 @@ action:
           
           - alias: "Set the default settings to get started"
             if: 
-              - "{{ trigger.id == 'reset_config' or (zero_time and is_script) }}"
+              - "{{ is_script }}"
+              - "{{ trigger.id == 'reset_config' or zero_time }}"
             then:
               - alias: "Set the default times"
                 repeat:
@@ -693,8 +794,8 @@ action:
     choose:
       - conditions:
           - "{{ enabled_home_assistant_event }}"
-          - "{{ trigger.id is defined }}" # evita se si esegue l'automazione o automation.trigger
-          - "{{ trigger.id is search('^(hass_)', ignorecase=True) }}" # reload | 
+          # - "{{ trigger.id is defined }}" # stop for run automation or automation.trigger 
+          - "{{ trigger.id is defined and trigger.id is search('^(hass_)', ignorecase=True) }}"
         sequence:
           - variables:
               title: >
