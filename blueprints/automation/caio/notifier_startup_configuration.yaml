@@ -307,7 +307,7 @@ action:
             - "{{ trigger.platform is none }}"
         sequence:
           - variables:
-              input_date: >
+              zero_time: >
                 {% set a = states('input_datetime.notifier_start_early_morning') %}
                 {% set b = states('input_datetime.notifier_start_morning') %}
                 {% set c = states('input_datetime.notifier_start_afternoon') %}
@@ -316,6 +316,10 @@ action:
                 {% set f = states('input_datetime.notifier_start_late_night') %}
                 {% set lst = [a,b,c,d,e,f] %}
                 {{ lst[:-1] == lst[1:] and not 'unknown' in lst }}
+              # is_script: >
+              #   {{ not states('script.my_notify') in ['unavailable', 'unknown'] }}
+              is_script: >
+                {{ states('script.my_notify') in ['on', 'off'] }}
 
               # Rettifiche check TODO
               person: "{{ person | select('in', integration_entities('person')) | list}}"
@@ -326,7 +330,7 @@ action:
               workday: "{{ not not integration_entities('workday') }}"
 
           - alias: "StartUp Check script my notify"
-            if: "{{ not states('script.my_notify') in ['unavailable', 'unknown'] }}"
+            if: "{{ is_script }}"
             then:
               - alias: Creation of the notifier_location_tracker Group from Person
                 service: group.set
@@ -367,7 +371,7 @@ action:
           - alias: "Remove orphaned groups and clean the recorder"
             if: 
               - "{{ trigger.id in ['reload'] }}"
-              - "{{ input_date and states('script.my_notify') in ['unavailable', 'unknown'] }}"
+              - "{{ zero_time and not is_script }}"
             then:
               - alias: Remove group
                 repeat:
@@ -400,8 +404,7 @@ action:
           
           - alias: "Set the default settings to get started"
             if: 
-              - "{{ trigger.id == 'reset_config' 
-                or (input_date and not states('script.my_notify') in ['unavailable', 'unknown']) }}"
+              - "{{ trigger.id == 'reset_config' or (zero_time and is_script) }}"
             then:
               - alias: "Set the default times"
                 repeat:
@@ -436,9 +439,9 @@ action:
                 repeat:
                   for_each:
                     - target: input_number.notifier_early_morning_volume
-                      volume: 10
-                    - target: input_number.notifier_morning_volume
                       volume: 20
+                    - target: input_number.notifier_morning_volume
+                      volume: 30
                     - target: input_number.notifier_afternoon_volume
                       volume: 40
                     - target: input_number.notifier_evening_volume
@@ -727,7 +730,7 @@ action:
                 - choose:
                     - conditions: 
                         - "{{ 'start' in title }}"
-                        - "{{ not states('script.my_notify') in ['unavailable', 'unknown'] }}"
+                        - "{{ is_script }}"
                       sequence:
                         - if: "{{ states.sensor.ha_start.state is defined }}"
                           then:
