@@ -401,7 +401,7 @@ template:
           {% for entity in lst %}
           {% set ns.notify = ns.notify + [entity | replace('notify.','') | replace("_"," ") | title] %}
           {% endfor %}
-          {{ ns.notify | list | unique }}
+          {{ ns.notify | unique | list }}
         select_option:
           - variables:
               option: "{{ option }}"
