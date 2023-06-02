@@ -11,6 +11,17 @@ blueprint:
   domain: automation
   author: Caio Sweet
   input:
+    packages_folder:
+      name: Package folder
+      description: |-
+        Inserisci il percorso della cartella [packages](https://www.home-assistant.io/docs/configuration/packages/#create-a-packages-folder) nella directory di configurazione di Home Assistant.
+
+        _Path packages folder in your Home Assistant configuration directory_
+        default /config/packages
+      selector:
+        text: {}
+      default: "/config/packages"
+
     personal_assistant:
       name: Personal Assistant
       description: |-
@@ -269,12 +280,13 @@ max_exceeded: silent
 
 trigger_variables:
   time_pattern_hours: !input time_pattern_hours
+  enabled: !input enabled_auto_volume
 
 trigger:
   - id: "time_pattern_hours"
     platform: template
     value_template: >-
-      {{ time_pattern_hours > 0 and now().hour % time_pattern_hours == 0
+      {{ enabled and time_pattern_hours > 0 and now().hour % time_pattern_hours == 0
         and now().minute == 0 and now().second == 0 }}
 
   - id: "notifier_on"
@@ -352,6 +364,7 @@ action:
   # INITIALIZE
   #------------------------------------------------------------------------------------#
   - variables:
+      packages_folder: !input packages_folder
       personal_assistant: !input personal_assistant
       person: !input person
       alexa_media_player: !input alexa_media_player
@@ -627,6 +640,7 @@ action:
             event: notifier_config
             event_data: &data
               # User Input variables
+              packages_folder: "{{ packages_folder }}"
               personal_assistant: "{{ personal_assistant }}"
               person: "{{ person }}"
               alexa_media_player: "{{ alexa_media_player }}"
