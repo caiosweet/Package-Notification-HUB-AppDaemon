@@ -10,7 +10,6 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Alexa 5.0.0"
 
     ## BINARY SENSOR
     binary_sensor.notifier_alexa_speak:
@@ -22,6 +21,11 @@ homeassistant:
       <<: *customize
       friendly_name: "Ripristina SSML"
       # icon: mdi:restore
+    ## GROUP
+    group.notifier_player_alexa:
+      <<: *customize
+      friendly_name: "Gruppo Alexa"
+      icon: mdi:speaker-multiple
     ## INPUT
     input_boolean.notifier_alexa_switch:
       <<: *customize
@@ -208,12 +212,9 @@ template:
 
   - select:
       - name: "notifier_player_alexa"
-        # state: "{{ state_attr('sensor.notifier_config', 'alexa_select') | default('unknown', true) }}" #unknown
-        state: "{{ state_attr('sensor.notifier_player_alexa', 'selected') | default('unknown', true) }}" #unknown
+        state: "{{ state_attr('sensor.notifier_player_alexa', 'selected') | default('unknown', true) }}"
         optimistic: true
-        # options: |
-        #   {{ (expand('group.notifier_player_alexa') | map(attribute='name') | list) + ['Last Alexa', 'none'] }}
-        options: | ##{{ (state_attr('sensor.notifier_config', 'alexa_media_player') | map('state_attr', 'friendly_name') | list) + ['Last Alexa', 'none'] }}
+        options: |
           {{ (state_attr('sensor.notifier_config', 'alexa_media_player')
             | map('state_attr', 'friendly_name') | reject('none') | list)
           + (state_attr('sensor.notifier_config', 'alexa_group_player')
@@ -264,21 +265,8 @@ template:
               | selectattr('name', '==', states('select.notifier_player_alexa'))
               | map(attribute='entity_id') | list %}
             {{ iif(status, group, single) }}
+
   # Use modern configuration (BUG in namespace AppDaemon)
   # - binary_sensor:
   #     - name: "notifier_alexa_speak"
   #       state: "off"
-
-        # icon: >-
-        #   {# iif(',' in this.state | default('', true), 'mdi:speaker-multiple', 'mdi:speaker') #}
-        #   {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
-        #   {% set selected = trigger.to_state.state | lower %}
-        #   {% for x in domains if x.name | lower == selected %}
-        #     {% if x.domain == 'group' %}
-        #       mdi:speaker-multiple
-        #     {% elif x.domain == 'sensor' %}
-        #       mdi:cast-audio
-        #     {% else %}
-        #       mdi:speaker
-        #     {% endif %}
-        #   {% endfor %}

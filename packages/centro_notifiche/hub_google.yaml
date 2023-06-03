@@ -9,8 +9,7 @@ homeassistant:
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Google 5.0.0"
-
+    ## GROUP
     group.notifier_player_google:
       <<: *customize
       friendly_name: "Gruppo Google"
@@ -49,11 +48,8 @@ input_select:
 template:
   - select:
       - name: "notifier_player_google"
-        # state: "{{ state_attr('sensor.notifier_config', 'google_select') | default('unknown', true) }}"
-        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('unknown', true) }}" #unknown
+        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('unknown', true) }}"
         optimistic: true
-        # options: |
-        #   {{ (expand('group.notifier_player_google') | map(attribute='name') | list) }}
         options: |
           {{ (state_attr('sensor.notifier_config', 'google_media_player')
             | map('state_attr', 'friendly_name') | reject('none') | list)
@@ -62,13 +58,7 @@ template:
           }}
         select_option: 
           - variables:
-              option: "{{ option }}"
-
-
-## per sicurezza se non si creano i gruppi
-          # {{ ((expand('group.notifier_player_google') | map(attribute='name') | list) +
-          #  (state_attr('sensor.notifier_config', 'google_media_player') | map('state_attr', 'friendly_name') | list)) 
-          #  | unique | list }}
+              option: "{{ state_attr('sensor.notifier_player_google', 'selected') }}"
 
   - trigger:
       - platform: state
@@ -80,7 +70,6 @@ template:
           - "none"
     sensor:
       - name: "notifier_player_google"
-        #{% set player = state_attr('group.notifier_player_google','entity_id') %} 
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) %}
           {% set player = state_attr('sensor.notifier_config', 'google_media_player') %}

@@ -16,12 +16,11 @@ homeassistant:
   customize:
     ## NODE ANCHORS
     package.cn:
-      version: "5.0.1"
+      version: "5.0.2"
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Main 5.0.0"
 
     ## AUTOMATION
     automation.notifier_startup_configuration:
@@ -47,10 +46,6 @@ homeassistant:
       <<: *customize
       friendly_name: "Dispositivi tracciati"
       icon: mdi:target-account
-    group.notifier_player_alexa:
-      <<: *customize
-      friendly_name: "Gruppo Alexa"
-      icon: mdi:speaker-multiple
     ## INPUT BOOLEAN
     input_boolean.notifier_guest_mode:
       <<: *customize
@@ -92,11 +87,10 @@ homeassistant:
       <<: *customize
       friendly_name: "Testo a capo"
       icon: mdi:wrap
-
+    ## INPUT BUTTON
     input_button.notifier_reset_config:
       <<: *customize
       friendly_name: "Reset Configurazione"
-
     ## INPUT DATETIME
     input_datetime.notifier_start_early_morning:
       <<: *customize
@@ -307,8 +301,6 @@ input_text:
     max: 255
   notifier_intercom_message:
     max: 255
-  # notifier_personal_assistant:
-  #   max: 255
   notifier_called_number:
     max: 30
     mode: password
@@ -425,7 +417,6 @@ template:
   - select: 
       - name: "notifier_text_notify"
         state: "{{ state_attr('sensor.notifier_text_notify', 'selected') | default('unknown', true) }}"
-        # state: "{{ state_attr('sensor.notifier_config', 'notify_select') | default('unknown', true) }}"
         optimistic: true
         options: |
           {% set lst = state_attr('sensor.notifier_config', 'notify_service_list') | default(['unknown'], true)  %}
