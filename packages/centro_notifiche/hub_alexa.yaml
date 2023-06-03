@@ -5,7 +5,7 @@ homeassistant:
   ######################################-#######################################
   customize:
     ## NODE ANCHORS
-    package.node_anchors:
+    package.cn:
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
@@ -177,6 +177,8 @@ binary_sensor:
   - platform: template
     sensors:
       notifier_alexa_speak:
+        friendly_name: "Alexa Speak"
+        icon_template: "mdi:speaker-message"
         value_template: "off"
 #######################################-#######################################
 ##                                 TEMPLATE
@@ -206,7 +208,8 @@ template:
 
   - select:
       - name: "notifier_player_alexa"
-        state: "{{ state_attr('sensor.notifier_config', 'alexa_select') | default('unknown', true) }}" #unknown
+        # state: "{{ state_attr('sensor.notifier_config', 'alexa_select') | default('unknown', true) }}" #unknown
+        state: "{{ state_attr('sensor.notifier_player_alexa', 'selected') | default('unknown', true) }}" #unknown
         optimistic: true
         # options: |
         #   {{ (expand('group.notifier_player_alexa') | map(attribute='name') | list) + ['Last Alexa', 'none'] }}
@@ -224,12 +227,15 @@ template:
       - platform: state
         entity_id:
           - select.notifier_player_alexa
+        not_to:
+          - "unavailable"
+          - "unknown"
+          - "none"
     sensor:
       - name: "notifier_player_alexa"
          ## TODO namespace unique plyer comma separate
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
-          {# set player = state_attr('group.notifier_player_alexa','entity_id') #}
           {% set player = state_attr('sensor.notifier_config', 'alexa_media_player') %}   
           {% set selected = trigger.to_state.state | lower %}
           {% for x in domains if x.name | lower == selected %}

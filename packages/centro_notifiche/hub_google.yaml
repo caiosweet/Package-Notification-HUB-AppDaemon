@@ -4,7 +4,7 @@ homeassistant:
   ######################################-#######################################
   customize:
     ## NODE ANCHORS
-    package.node_anchors:
+    package.cn:
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
@@ -49,7 +49,8 @@ input_select:
 template:
   - select:
       - name: "notifier_player_google"
-        state: "{{ state_attr('sensor.notifier_config', 'google_select') | default('unknown', true) }}"
+        # state: "{{ state_attr('sensor.notifier_config', 'google_select') | default('unknown', true) }}"
+        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('unknown', true) }}" #unknown
         optimistic: true
         # options: |
         #   {{ (expand('group.notifier_player_google') | map(attribute='name') | list) }}
@@ -73,6 +74,10 @@ template:
       - platform: state
         entity_id:
           - select.notifier_player_google
+        not_to:
+          - "unavailable"
+          - "unknown"
+          - "none"
     sensor:
       - name: "notifier_player_google"
         #{% set player = state_attr('group.notifier_player_google','entity_id') %} 

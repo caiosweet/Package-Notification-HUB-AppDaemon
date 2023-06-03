@@ -15,7 +15,8 @@
 homeassistant:
   customize:
     ## NODE ANCHORS
-    package.node_anchors:
+    package.cn:
+      version: "5.0.1"
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
@@ -212,6 +213,10 @@ homeassistant:
     sensor.notifier_day_period_volume:
       <<: *customize
       friendly_name: "Volume Notifica"
+    sensor.notifier_text_notify:
+      <<: *customize
+      friendly_name: "Notify Predefinito"
+      icon: mdi:send-check
 
   ############################################################################
   ##                             CUSTOMIZE GLOB
@@ -313,6 +318,8 @@ sensor:
   - platform: template
     sensors:
       notifier_debug_error:
+        friendly_name: "Notifier Debug Error"
+        icon_template: "mdi:account-wrench"
         value_template: "OK"
 
 #######################################-#######################################
@@ -330,13 +337,37 @@ template:
           person: "{{ trigger.event.data.person }}"
           alexa_media_player: "{{ trigger.event.data.alexa_media_player }}"
           alexa_group_player: "{{ trigger.event.data.alexa_group_player }}"
-          alexa_select: "{{ trigger.event.data.alexa_select }}"
           google_media_player: "{{ trigger.event.data.google_media_player }}"
           google_group_player: "{{ trigger.event.data.google_group_player }}"
-          google_select: "{{ trigger.event.data.google_select }}"
           exclude_media_player: "{{ trigger.event.data.exclude_media_player }}"
           notify_service_list: "{{ trigger.event.data.notify_service_list }}"
+
+          alexa_select: "{{ trigger.event.data.alexa_select }}"
+          google_select: "{{ trigger.event.data.google_select }}"
           notify_select: "{{ trigger.event.data.notify_select }}"
+
+  - trigger:
+      - platform: state
+        entity_id:
+          - select.notifier_text_notify
+        not_to:
+          - "unavailable"
+          - "unknown"
+          - "none"
+    sensor:
+      - name: "notifier_text_notify"
+        state: >-
+          {% set selected = (trigger.to_state.state 
+            | regex_replace(find=" *, *", replace=",") | lower).rsplit(",") %} 
+          {% set lst = selected %}
+          {% set ns = namespace(notify=[]) %}
+          {% for entity in lst %}
+          {% set ns.notify = ns.notify + ['notify.'+ entity |slugify(separator="_") ] %}
+          {% endfor %}
+          {{ ns.notify |join(', ') }}
+        attributes:
+          selected: "{{ trigger.to_state.state | default }}"
+
 
   - binary_sensor:
       - name: "notifier_dnd"
@@ -393,7 +424,8 @@ template:
 
   - select: 
       - name: "notifier_text_notify"
-        state: "{{ state_attr('sensor.notifier_config', 'notify_select') | default('unknown', true) }}"
+        state: "{{ state_attr('sensor.notifier_text_notify', 'selected') | default('unknown', true) }}"
+        # state: "{{ state_attr('sensor.notifier_config', 'notify_select') | default('unknown', true) }}"
         optimistic: true
         options: |
           {% set lst = state_attr('sensor.notifier_config', 'notify_service_list') | default(['unknown'], true)  %}
