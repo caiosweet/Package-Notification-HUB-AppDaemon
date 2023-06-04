@@ -20,29 +20,16 @@ views:
               </ha-alert>
 
               {% endif %}
-          - type: grid
-            columns: 10
-            square: true
+          - square: true
+            type: grid
+            columns: 8
             cards:
               - show_name: false
                 show_icon: true
                 type: button
                 show_state: false
-                entity: binary_sensor.notifier_people_home
-                tap_action:
-                  action: more-info
-              - show_name: false
-                show_icon: true
-                type: button
-                show_state: false
-                entity: group.notifier_location_tracker
-                tap_action:
-                  action: more-info
-              - show_name: false
-                show_icon: true
-                type: button
-                show_state: false
-                entity: input_boolean.notifier_phone_notifications
+                entity: group.notifier_group_notification
+                icon: mdi:message-badge
               - show_name: false
                 show_icon: true
                 type: button
@@ -62,6 +49,11 @@ views:
                 show_icon: true
                 type: button
                 show_state: false
+                entity: input_boolean.notifier_phone_notifications
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: false
                 entity: input_boolean.notifier_guest_mode
               - show_name: false
                 show_icon: true
@@ -73,18 +65,50 @@ views:
                 type: button
                 show_state: false
                 entity: input_boolean.notifier_holidays
+          - square: true
+            type: grid
+            columns: 5
+            cards:
               - show_name: false
                 show_icon: true
                 type: button
-                show_state: false
+                show_state: true
                 entity: binary_sensor.notifier_dnd
                 tap_action:
                   action: more-info
-          - show_name: true
-            show_icon: false
-            show_state: true
-            type: glance
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: true
+                entity: binary_sensor.notifier_people_home
+                tap_action:
+                  action: more-info
+              - show_name: false
+                show_icon: true
+                type: button
+                show_state: true
+                entity: group.notifier_location_tracker
+                tap_action:
+                  action: more-info
+              - show_name: false
+                show_icon: true
+                icon: ''
+                type: button
+                show_state: true
+                tap_action:
+                  action: more-info
+                entity: sensor.notifier_config
+              - show_name: false
+                show_icon: true
+                icon: mdi:account-wrench
+                type: button
+                show_state: true
+                tap_action:
+                  action: more-info
+                entity: sensor.notifier_debug_error
+          - type: glance
             columns: 3
+            show_icon: false
             entities:
               - entity: sensor.notifier_day_period
               - entity: sensor.notifier_day_period_volume
@@ -97,23 +121,6 @@ views:
                     entity_id: select.notifier_player_alexa
                   data:
                     cycle: true
-              - entity: input_select.notifier_alexa_type
-                name: ''
-                tap_action:
-                  action: call-service
-                  service: input_select.select_next
-                  service_data:
-                    entity_id: input_select.notifier_alexa_type
-              - entity: input_boolean.notifier_alexa_ssml
-                tap_action:
-                  action: toggle
-            state_color: true
-          - show_name: true
-            show_icon: false
-            show_state: true
-            type: glance
-            columns: 3
-            entities:
               - entity: select.notifier_player_google
                 tap_action:
                   action: call-service
@@ -122,12 +129,6 @@ views:
                     entity_id: select.notifier_player_google
                   data:
                     cycle: true
-          - show_name: true
-            show_icon: false
-            show_state: true
-            type: glance
-            columns: 1
-            entities:
               - entity: select.notifier_text_notify
                 tap_action:
                   action: call-service
@@ -136,44 +137,32 @@ views:
                     entity_id: select.notifier_text_notify
                   data:
                     cycle: true
+                hold_action:
+                  action: call-service
+                  service: input_select.select_previous
+                  service_data:
+                    entity_id: input_select.text_notify
+                double_tap_action:
+                  action: more-info
           - type: horizontal-stack
             cards:
-              - type: entity-filter
-                show_empty: false
-                entities:
-                  - input_boolean.notifier_google_switch
-                state_filter:
-                  - operator: in
-                    value:
-                      - 'on'
-                      - 'off'
-                card:
-                  type: button
-                  state_color: true
-                  show_name: false
-                  icon_height: 24px
-                  entity: input_boolean.notifier_google_switch
-                  tap_action:
-                    action: toggle
-              - type: entity-filter
-                show_empty: false
-                entities:
-                  - input_select.notifier_tts_notify
-                state_filter:
-                  - operator: '!='
-                    value: ''
-                card:
-                  type: button
-                  state_color: true
-                  show_name: false
-                  show_icon: false
-                  show_state: true
-                  entity: input_select.notifier_tts_notify
-                  tap_action:
-                    action: call-service
-                    service: input_select.select_next
-                    service_data:
-                      entity_id: input_select.notifier_tts_notify
+              - show_name: false
+                show_icon: true
+                type: button
+                icon_height: 24px
+                entity: input_boolean.notifier_google_switch
+                tap_action:
+                  action: toggle
+              - type: button
+                show_name: false
+                show_icon: false
+                show_state: true
+                entity: input_select.notifier_tts_notify
+                tap_action:
+                  action: call-service
+                  service: input_select.select_next
+                  service_data:
+                    entity_id: input_select.notifier_tts_notify
               - show_name: false
                 show_icon: true
                 type: button
@@ -193,14 +182,12 @@ views:
                   service_data:
                     entity_id: input_select.notifier_alexa_type
               - type: button
-                state_color: true
                 show_name: false
                 icon_height: 24px
                 entity: input_boolean.notifier_alexa_ssml
                 tap_action:
                   action: toggle
               - type: button
-                state_color: true
                 show_name: false
                 icon_height: 24px
                 entity: button.notifier_last_message
@@ -212,13 +199,15 @@ views:
             entities:
               - entity: input_text.notifier_intercom_message
               - entity: input_number.notifier_intercom_volume
-              - entity: button.notifier_last_message
       - type: entities
+        title: Impostazioni Assistente
+        show_header_toggle: false
+        state_color: true
         entities:
           - entity: automation.notifier_startup_configuration
-          - entity: group.notifier_group_notification
           - entity: sensor.notifier_config
-          - entity: binary_sensor.workday_sensor
+          - entity: sensor.notifier_debug_error
+          - entity: input_button.notifier_reset_config
           - type: buttons
             entities:
               - entity: sensor.notifier_config
@@ -231,53 +220,6 @@ views:
                   service_data:
                     ad:
                       command: restart
-        state_color: true
-      - type: entities
-        title: Alexa
-        show_header_toggle: false
-        state_color: true
-        entities:
-          - type: section
-            label: ''
-          - entity: input_boolean.notifier_alexa_switch
-          - entity: select.notifier_player_alexa
-          - entity: input_select.notifier_alexa_type
-          - entity: input_select.notifier_alexa_method
-          - entity: input_boolean.notifier_alexa_smart_volume
-          - entity: binary_sensor.notifier_alexa_speak
-          - type: section
-            label: SSML
-          - entity: input_boolean.notifier_alexa_ssml
-          - entity: input_select.notifier_alexa_voice
-          - entity: input_select.notifier_alexa_language
-          - entity: input_number.notifier_alexa_prosody_rate
-          - entity: input_number.notifier_alexa_prosody_pitch
-          - entity: input_number.notifier_alexa_prosody_volume
-          - entity: button.notifier_ssml_reset
-          - type: section
-            label: Info
-          - entity: sensor.notifier_player_alexa
-          - type: attribute
-            entity: sensor.notifier_player_alexa
-            attribute: selected
-          - type: attribute
-            name: Entities list
-            entity: sensor.notifier_player_alexa
-            attribute: entities
-          - entity: group.notifier_player_alexa
-          - type: attribute
-            entity: group.notifier_player_alexa
-            attribute: entity_id
-            name: Players
-      - type: entities
-        title: Impostazioni Assistente
-        show_header_toggle: false
-        state_color: true
-        entities:
-          - entity: automation.notifier_startup_configuration
-          - entity: sensor.notifier_config
-          - entity: sensor.notifier_debug_error
-          - entity: input_button.notifier_reset_config
           - type: section
             label: ''
           - entity: input_select.notifier_language
@@ -312,13 +254,45 @@ views:
           - entity: input_datetime.notifier_start_late_night
           - entity: input_number.notifier_late_night_volume
       - type: entities
-        title: Automazioni
+        title: Alexa
         show_header_toggle: false
         state_color: true
         entities:
           - type: section
             label: ''
-          - entity: group.notifier_automations
+          - entity: input_boolean.notifier_alexa_switch
+            icon: mdi:dots-circle
+          - entity: select.notifier_player_alexa
+          - entity: input_select.notifier_alexa_type
+          - entity: input_select.notifier_alexa_method
+          - entity: input_boolean.notifier_alexa_smart_volume
+          - entity: binary_sensor.notifier_alexa_speak
+            icon: mdi:speaker-message
+            name: Alexa Parla
+          - type: section
+            label: SSML
+          - entity: input_boolean.notifier_alexa_ssml
+          - entity: input_select.notifier_alexa_voice
+          - entity: input_select.notifier_alexa_language
+          - entity: input_number.notifier_alexa_prosody_rate
+          - entity: input_number.notifier_alexa_prosody_pitch
+          - entity: input_number.notifier_alexa_prosody_volume
+          - entity: button.notifier_ssml_reset
+          - type: section
+            label: Info
+          - entity: sensor.notifier_player_alexa
+          - type: attribute
+            name: Entities list
+            entity: sensor.notifier_player_alexa
+            attribute: entities
+          - type: attribute
+            entity: sensor.notifier_player_alexa
+            attribute: selected
+          - entity: group.notifier_player_alexa
+          - type: attribute
+            entity: group.notifier_player_alexa
+            attribute: entity_id
+            name: Players
       - type: entities
         title: Centro Notifiche
         show_header_toggle: false
@@ -331,7 +305,6 @@ views:
           - entity: sensor.notifier_day_period
           - entity: sensor.notifier_day_period_volume
           - entity: binary_sensor.notifier_dnd
-          - entity: button.notifier_last_message
           - type: section
             label: Modalità
           - entity: input_boolean.notifier_holidays
@@ -345,6 +318,7 @@ views:
             label: Interfono
           - entity: input_number.notifier_intercom_volume
           - entity: input_text.notifier_intercom_message
+          - entity: button.notifier_last_message
       - type: entities
         title: Google
         show_header_toggle: false
@@ -359,17 +333,25 @@ views:
             label: Info
           - entity: sensor.notifier_player_google
           - type: attribute
-            name: Selected
-            entity: sensor.notifier_player_google
-            attribute: selected
-          - type: attribute
             name: Entities list
             entity: sensor.notifier_player_google
             attribute: entities
+          - type: attribute
+            name: Selected
+            entity: sensor.notifier_player_google
+            attribute: selected
           - entity: group.notifier_player_google
           - type: attribute
             entity: group.notifier_player_google
             attribute: entity_id
+      - type: entities
+        title: Automazioni
+        show_header_toggle: false
+        state_color: true
+        entities:
+          - type: section
+            label: ''
+          - entity: group.notifier_automations
       - type: entities
         title: VoIP
         show_header_toggle: false
@@ -442,7 +424,3 @@ views:
           - type: tile
             entity: input_number.notifier_late_night_volume
         columns: 2
-      - type: tile
-        entity: sensor.notifier_config
-        vertical: false
-        color: accent

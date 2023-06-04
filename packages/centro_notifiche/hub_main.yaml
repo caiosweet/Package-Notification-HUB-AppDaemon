@@ -16,7 +16,7 @@ homeassistant:
   customize:
     ## NODE ANCHORS
     package.cn:
-      version: "5.0.2"
+      version: "5.0.3"
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
@@ -128,10 +128,10 @@ homeassistant:
       friendly_name: "Fine DND Feriali"
     input_datetime.notifier_start_holidays:
       <<: *customize
-      friendly_name: "Inizio DND Vacanze"
+      friendly_name: "Inizio DND Festivi"
     input_datetime.notifier_end_holidays:
       <<: *customize
-      friendly_name: "Fine DND Vacanze"
+      friendly_name: "Fine DND Festivi"
     ## INPUT NUMBER
     input_number.notifier_early_morning_volume:
       <<: *customize

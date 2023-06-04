@@ -162,7 +162,7 @@ blueprint:
 
     ha_event_notify:
       name: Notification Home Assistant Start
-      description: |-
+      description: >-
         Puoi scegliere un o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
 
         _You can choose one or more different "notify" services for Home Assistant notifications instead of the default one._
