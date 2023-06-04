@@ -1,36 +1,29 @@
 type: vertical-stack
 cards:
   - type: markdown
-    content: |
-      <font size=5><center>🤵 {{states('input_text.notifier_personal_assistant')}}</center></font>
+    content: >
+      <font size=5><center>🤵
+      {{states('sensor.notifier_config')}}</center></font>
+
       {% if not states('sensor.notifier_debug_error') in ['on','OK']%}
+
       <ha-alert title="Centro Notifiche" alert-type="error">
+
       {{states('sensor.notifier_debug_error')}}
+
       </ha-alert>
+
       {% endif %}
-  - type: grid
-    columns: 10
-    square: true
+  - square: true
+    type: grid
+    columns: 8
     cards:
       - show_name: false
         show_icon: true
         type: button
         show_state: false
-        entity: binary_sensor.notifier_people_home
-        tap_action:
-          action: more-info
-      - show_name: false
-        show_icon: true
-        type: button
-        show_state: false
-        entity: group.notifier_location_tracker
-        tap_action:
-          action: more-info
-      - show_name: false
-        show_icon: true
-        type: button
-        show_state: false
-        entity: input_boolean.notifier_phone_notifications
+        entity: group.notifier_group_notification
+        icon: mdi:message-badge
       - show_name: false
         show_icon: true
         type: button
@@ -50,6 +43,11 @@ cards:
         show_icon: true
         type: button
         show_state: false
+        entity: input_boolean.notifier_phone_notifications
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: false
         entity: input_boolean.notifier_guest_mode
       - show_name: false
         show_icon: true
@@ -61,13 +59,47 @@ cards:
         type: button
         show_state: false
         entity: input_boolean.notifier_holidays
+  - square: true
+    type: grid
+    columns: 5
+    cards:
       - show_name: false
         show_icon: true
         type: button
-        show_state: false
+        show_state: true
         entity: binary_sensor.notifier_dnd
         tap_action:
           action: more-info
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: true
+        entity: binary_sensor.notifier_people_home
+        tap_action:
+          action: more-info
+      - show_name: false
+        show_icon: true
+        type: button
+        show_state: true
+        entity: group.notifier_location_tracker
+        tap_action:
+          action: more-info
+      - show_name: false
+        show_icon: true
+        icon: ''
+        type: button
+        show_state: true
+        tap_action:
+          action: more-info
+        entity: sensor.notifier_config
+      - show_name: false
+        show_icon: true
+        icon: mdi:account-wrench
+        type: button
+        show_state: true
+        tap_action:
+          action: more-info
+        entity: sensor.notifier_debug_error
   - type: glance
     columns: 3
     show_icon: false
@@ -76,31 +108,54 @@ cards:
       - entity: sensor.notifier_day_period_volume
       - entity: input_select.notifier_language
       - entity: select.notifier_player_alexa
-      - entity: select.notifier_player_google
-      - entity: input_select.notifier_text_notify
         tap_action:
           action: call-service
-          service: input_select.select_next
+          service: select.select_next
           service_data:
-            entity_id: input_select.notifier_text_notify
+            entity_id: select.notifier_player_alexa
         hold_action:
           action: call-service
           service: input_select.select_previous
           service_data:
-            entity_id: input_select.notifier_text_notify
+            entity_id: select.notifier_player_alexa
+        double_tap_action:
+          action: more-info
+      - entity: select.notifier_player_google
+        tap_action:
+          action: call-service
+          service: select.select_next
+          service_data:
+            entity_id: select.notifier_player_google
+        hold_action:
+          action: call-service
+          service: input_select.select_previous
+          service_data:
+            entity_id: select.notifier_player_google
+        double_tap_action:
+          action: more-info
+      - entity: select.notifier_text_notify
+        tap_action:
+          action: call-service
+          service: select.select_next
+          service_data:
+            entity_id: select.notifier_text_notify
+        hold_action:
+          action: call-service
+          service: input_select.select_previous
+          service_data:
+            entity_id: select.notifier_text_notify
         double_tap_action:
           action: more-info
   - type: horizontal-stack
     cards:
-      - type: button
-        state_color: true
-        show_name: false
+      - show_name: false
+        show_icon: true
+        type: button
         icon_height: 24px
         entity: input_boolean.notifier_google_switch
         tap_action:
           action: toggle
       - type: button
-        state_color: true
         show_name: false
         show_icon: false
         show_state: true
@@ -110,13 +165,14 @@ cards:
           service: input_select.select_next
           service_data:
             entity_id: input_select.notifier_tts_notify
-      - type: button
-        state_color: true
-        show_name: false
+      - show_name: false
+        show_icon: true
+        type: button
         icon_height: 24px
         entity: input_boolean.notifier_alexa_switch
         tap_action:
           action: toggle
+        icon: mdi:dots-circle
       - show_name: false
         show_icon: false
         type: button
@@ -128,17 +184,15 @@ cards:
           service_data:
             entity_id: input_select.notifier_alexa_type
       - type: button
-        state_color: true
         show_name: false
         icon_height: 24px
         entity: input_boolean.notifier_alexa_ssml
         tap_action:
           action: toggle
       - type: button
-        state_color: true
         show_name: false
         icon_height: 24px
-        entity: input_boolean.notifier_last_message
+        entity: button.notifier_last_message
         tap_action:
           action: toggle
   - type: entities

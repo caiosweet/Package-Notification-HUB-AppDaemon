@@ -30,6 +30,8 @@ TTS Google and Alexa, Voip notifications to you and/or your devices such as Pcs,
 
 To get started, head over to the **[Notifier Wiki][Wiki]**.
 
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fcaiosweet%2FPackage-Notification-HUB-AppDaemon%2Fblob%2Fbeta%2Fblueprints%2Fautomation%2Fcaiosweet%2Fnotifier_startup_configuration.yaml)
+
 ___
 
 <div align="center">
@@ -84,7 +86,7 @@ ___
 
 ## If you've found this useful and want to support our work:
 
-[![support](https://img.shields.io/static/v1.svg?label=keep%20us%20awake%20at%20night:&message=HassioHelp&color=6f4e37&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=6f4e37)](https://paypal.me/hassiohelp)
+[![support](https://img.shields.io/static/v1.svg?label=keep%20me%20awake%20at%20night:&message=caiosweet&color=6f4e37&logo=buy%20me%20a%20coffee&logoColor=white&labelColor=6f4e37)](https://paypal.me/caiosweet)
 
 </div>
 

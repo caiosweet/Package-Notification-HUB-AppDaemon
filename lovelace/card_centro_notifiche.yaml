@@ -16,13 +16,6 @@ entities:
       service_data:
         entity_id: input_boolean.notifier_speech_notifications
   - entity: binary_sensor.notifier_dnd
-  - type: call-service
-    entity: input_boolean.notifier_last_message
-    name: Ultimo Messaggio
-    action_name: Ascolta
-    service: input_boolean.turn_on
-    service_data:
-      entity_id: input_boolean.notifier_last_message
   - type: section
     label: Modalità
   - entity: input_boolean.notifier_holidays
@@ -34,7 +27,6 @@ entities:
   - entity: input_boolean.notifier_screen_notifications
   - type: section
     label: Interfono
-  - entity: automation.notifier_intercom_message
-    name: Off/On
+  - entity: button.notifier_last_message
   - entity: input_number.notifier_intercom_volume
   - entity: input_text.notifier_intercom_message
