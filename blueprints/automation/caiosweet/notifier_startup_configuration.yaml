@@ -9,7 +9,7 @@ blueprint:
     Guida di riferimento per l'utilizzo del Progetto Centro Notifiche, ed altre informazioni le trovi sul [wiki](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki)
 
   domain: automation
-  author: Caio Sweet
+  author: https://github.com/caiosweet
   input:
     packages_folder:
       name: Package folder
@@ -149,7 +149,7 @@ blueprint:
       default: ['notify.persistent_notification','notify.notify']
 
     enabled_home_assistant_event:
-      name: Notification Home Assistant Start
+      name: Notification Home Assistant Event
       description: |-
         Abilitazione per la ricezione dei seguentio eventi di home assistant:
         Avvio, Scrittura finale, Chiusura, Stop e Riavvio manuale.
@@ -159,6 +159,17 @@ blueprint:
       selector:
         boolean: {}
       default: true
+
+    ha_event_notify:
+      name: Notification Home Assistant Start
+      description: |-
+        Puoi scegliere un o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
+
+        _You can choose one or more different "notify" services for Home Assistant notifications instead of the default one._
+        default: the state of the text notification selector
+      selector:
+        object:
+      default: []
 
     enabled_auto_volume:
       name: Auto volume
@@ -178,7 +189,7 @@ blueprint:
         Aggiornamento dei volumi che si ripete in base al numero di ore selezionate.
         Es. 4, l'aggiornamento verrà ripetuto ogni 4 ore.
 
-        _updates every x hours._
+        _Updates every x hours._
         default: 0
       selector:
         number:
@@ -267,7 +278,18 @@ blueprint:
       description: |-
         Scarica automaticamente le nuove versioni del pacchetto da Github.
 
-        _Download_
+        _Download the new stable version of the package from Github._
+        default: off
+      selector:
+        boolean: {}
+      default: false
+
+    beta_version:
+      name: Beta Version
+      description: |-
+        Scarica la versiona beta invece della stabile.
+
+        _Download the beta version instead of the stable one._
         default: off
       selector:
         boolean: {}
@@ -391,17 +413,18 @@ action:
   #------------------------------------------------------------------------------------#
 
   - variables: &ui_config_all
-      _person: !input person
-      _alexa_media_player: !input alexa_media_player
-      _alexa_group_player: !input alexa_group_player
-      _google_media_player: !input google_media_player
-      _google_group_player: !input google_group_player
+      ui_person: !input person
+      ui_alexa_player: !input alexa_media_player
+      ui_alexa_group: !input alexa_group_player
+      ui_google_player: !input google_media_player
+      ui_google_group: !input google_group_player
 
   - variables: &ui_check_config
       packages_folder: !input packages_folder
       personal_assistant: !input personal_assistant
       notify_service_list: !input notify_service_list
       enabled_home_assistant_event: !input enabled_home_assistant_event
+      ha_event_notify: !input ha_event_notify
       enabled_auto_volume: !input enabled_auto_volume
       time_pattern_hours: !input time_pattern_hours
       exclude_media_player: !input exclude_media_player
@@ -412,13 +435,14 @@ action:
       alexa_skill_id: !input alexa_skill_id
       debug: !input debug
       download: !input download
+      beta_version: !input beta_version
       is_script: "{{ has_value('script.my_notify') }}"
 
-      person: "{{ _person | select('in', integration_entities('person')) | list}}"
-      alexa_media_player: "{{ _alexa_media_player | select('in', integration_entities('alexa_media')) | list }}"
-      alexa_group_player: "{{ _alexa_group_player | select('in', integration_entities('group')) | list }}"
-      google_media_player: "{{ _google_media_player | select('in', integration_entities('cast')) | list }}"
-      google_group_player: "{{ _google_group_player | select('in', integration_entities('group')) | list }}"
+      person: "{{ ui_person | select('in', integration_entities('person')) | list}}"
+      alexa_media_player: "{{ ui_alexa_player | select('in', integration_entities('alexa_media')) | list }}"
+      alexa_group_player: "{{ ui_alexa_group | select('in', integration_entities('group')) | list }}"
+      google_media_player: "{{ ui_google_player | select('in', integration_entities('cast')) | list }}"
+      google_group_player: "{{ ui_google_group | select('in', integration_entities('group')) | list }}"
 
   # - alias: "Test trigger"
   #   if:
@@ -468,8 +492,7 @@ action:
                 service: group.set
                 data:
                   object_id: notifier_location_tracker
-                  entities: >-
-                    {{ person }}
+                  entities: "{{ person }}"
 
               - alias: "Creation of the notifier_player_alexa Group, if Alexa exists"
                 choose:
@@ -507,9 +530,11 @@ action:
                       notification_id: "centro_notifiche_config_group"
                       title: "GROUP Setting"
                       message: |-
+                        ```yaml
                         {{ state_attr('persistent_notification.centro_notifiche_config_group', 'message') }}
                         GROUP SETTING
                         {{ integration_entities('group') }}
+                        ```
 
           - alias: "Remove orphaned groups and clean the recorder"
             if:
@@ -551,6 +576,13 @@ action:
               - "{{ is_script }}"
               - "{{ trigger.id == 'reset_config' or zero_time }}"
             then:
+              - alias: "Set Guest if the people list is empty."
+                if: "{{ not not person }}"
+                then:
+                  service: input_boolean.turn_on
+                  target:
+                    entity_id: 
+                      - input_boolean.notifier_guest_mode
               - alias: "Set the default times"
                 repeat:
                   for_each:
@@ -702,7 +734,7 @@ action:
                     {% set message = data %}
                     ```json
                     {{ message | to_json(pretty_print=true,sort_keys=False) }}
-                        ```
+                    ```
                   
   #------------------------------------------------------------------------------------#
   # AUTO VOLUME - Media player volume adjustment, based on period_of_day_volume sensor
@@ -745,7 +777,6 @@ action:
                               volume_level: "{{ vol }}"
                             target:
                               entity_id: "{{ list_alexa }}"
-
               - choose:
                   - conditions: "{{ list_google | length > 0 }}"
                     sequence:
@@ -754,7 +785,6 @@ action:
                           volume_level: "{{ vol }}"
                         target:
                           entity_id: "{{ list_google }}"
-
               - service: input_number.set_value
                 data:
                   entity_id:
@@ -828,7 +858,7 @@ action:
                     'Call' in title: '📞',
                     }.get(True, '❗') }}
               notify_service: >- 
-                {% set CN_NOTIFY = states('select.notifier_text_notify') %}
+                {% set CN_NOTIFY = iif(ha_event_notify, ha_event_notify, states('select.notifier_text_notify')) %}
                 {% set HA_NOTIFY = ['persistent_notification', 'notify'] %}
                 {% set DEFAULT_NOTIFY = iif(CN_NOTIFY in ['unavailable', 'unknown'], HA_NOTIFY, CN_NOTIFY)%}
                 {{ iif(DEFAULT_NOTIFY is string, (DEFAULT_NOTIFY

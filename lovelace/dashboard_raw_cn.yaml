@@ -215,12 +215,22 @@ views:
               - entity: button.notifier_last_message
       - type: entities
         entities:
-          - entity: sensor.notifier_day_period
-          - entity: binary_sensor.notifier_dnd
-          - entity: binary_sensor.workday_sensor
-          - entity: binary_sensor.notifier_people_home
           - entity: automation.notifier_startup_configuration
+          - entity: group.notifier_group_notification
           - entity: sensor.notifier_config
+          - entity: binary_sensor.workday_sensor
+          - type: buttons
+            entities:
+              - entity: sensor.notifier_config
+                name: Restart Notifier App
+                tap_action:
+                  action: call-service
+                  confirmation:
+                    text: Sei sicuro di voler riavviare l'App Notifier?
+                  service: script.my_notify
+                  service_data:
+                    ad:
+                      command: restart
         state_color: true
       - type: entities
         title: Alexa
@@ -288,6 +298,7 @@ views:
           - entity: input_datetime.notifier_end_holidays
           - type: section
             label: VOLUME di default durante il griorno
+          - entity: group.notifier_group_volumes
           - entity: input_datetime.notifier_start_early_morning
           - entity: input_number.notifier_early_morning_volume
           - entity: input_datetime.notifier_start_morning

@@ -2,7 +2,7 @@
 #   @site           :   https://hassiohelp.eu/
 #   @author         :   Caio - https://github.com/caiosweet
 #                   :   Gianpi - https://github.com/jumping2000
-#   @date           :   Started 01/11/2019 - Updated 24/05/2023
+#   @date           :   Started 01/11/2019 - Updated 04/06/2023
 #   @description    :   Package for Appdaemon Notifier Center
 #                       https://github.com/jumping2000/notifier
 #   @package        :   Notification HUB - Centro Notifiche 🔔
@@ -46,6 +46,10 @@ homeassistant:
       <<: *customize
       friendly_name: "Dispositivi tracciati"
       icon: mdi:target-account
+    group.notifier_group_volumes:
+      <<: *customize
+      friendly_name: "Volumi"
+      icon: mdi:knob
     ## INPUT BOOLEAN
     input_boolean.notifier_guest_mode:
       <<: *customize
@@ -244,6 +248,31 @@ media_extractor:
 #######################################-#######################################
 ##                                   INPUT
 #######################################-#######################################
+group:
+  notifier_group_volumes:
+    name: "Notifier group volumes"
+    entities:
+      - input_number.notifier_intercom_volume
+      - input_number.notifier_early_morning_volume
+      - input_number.notifier_morning_volume
+      - input_number.notifier_afternoon_volume
+      - input_number.notifier_evening_volume
+      - input_number.notifier_night_volume
+      - input_number.notifier_late_night_volume
+      - input_boolean.notifier_speech_notifications
+      - binary_sensor.notifier_dnd
+      - sensor.notifier_day_period_volume
+
+  notifier_group_notification:
+    name: "Notifier group notification"
+    entities:
+      - input_boolean.notifier_text_notifications
+      - input_boolean.notifier_screen_notifications
+      - input_boolean.notifier_speech_notifications
+      - input_boolean.notifier_phone_notifications
+#######################################-#######################################
+##                                   INPUT
+#######################################-#######################################
 input_boolean:
   notifier_guest_mode:
   notifier_holidays:
@@ -354,9 +383,9 @@ template:
           {% set lst = selected %}
           {% set ns = namespace(notify=[]) %}
           {% for entity in lst %}
-          {% set ns.notify = ns.notify + ['notify.'+ entity |slugify(separator="_") ] %}
+          {% set ns.notify = ns.notify + ['notify.'+ entity | slugify(separator="_") ] %}
           {% endfor %}
-          {{ ns.notify |join(', ') }}
+          {{ ns.notify | join(', ') }}
         attributes:
           selected: "{{ trigger.to_state.state | default }}"
 
@@ -698,6 +727,8 @@ script:
           # --------------------------------------------- #
           # VARIABLES (String)
           # --------------------------------------------- #
+          ad: >-
+            {{ ad | default }}
           alexa: >-
             {{ alexa | default }}
           called_number: >-
