@@ -16,7 +16,7 @@ homeassistant:
   customize:
     ## NODE ANCHORS
     package.cn:
-      version: "5.0.3"
+      version: "5.0.4"
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
@@ -50,6 +50,10 @@ homeassistant:
       <<: *customize
       friendly_name: "Volumi"
       icon: mdi:knob
+    group.notifier_group_notification:
+      <<: *customize
+      friendly_name: "Gruppo notifiche"
+      icon: mdi:message-badge
     ## INPUT BOOLEAN
     input_boolean.notifier_guest_mode:
       <<: *customize
