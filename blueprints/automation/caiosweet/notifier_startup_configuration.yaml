@@ -78,7 +78,7 @@ blueprint:
 
         _Alexa Group Player list_
         default empty
-        
+
         [![Open your Home Assistant instance and show your helper entities.](https://my.home-assistant.io/badges/helpers.svg)](https://my.home-assistant.io/redirect/helpers/)
 
       selector:
@@ -87,7 +87,7 @@ blueprint:
           filter:
             - integration: group
       default: []
-  
+
     google_media_player:
       name: Google Media Player
       description: |-
@@ -146,7 +146,7 @@ blueprint:
 
       selector:
         object:
-      default: ['notify.persistent_notification','notify.notify']
+      default: ["notify.persistent_notification", "notify.notify"]
 
     enabled_home_assistant_event:
       name: Notification Home Assistant Event
@@ -264,7 +264,6 @@ blueprint:
     alexa_skill_id:
       name: Notifier Alexa actionable skill ID
       description: |-
-
         Inserire l'ID Alexa Skills per [Alexa Actionable notifications](https://github.com/keatontaylor/alexa-actions)
 
         _Notifier Alexa actionable skill ID_
@@ -370,7 +369,7 @@ trigger:
 
   - id: "template_entities_update"
     platform: state
-    entity_id: 
+    entity_id:
       - binary_sensor.notifier_dnd
       - binary_sensor.notifier_people_home
       - select.notifier_text_notify
@@ -390,7 +389,6 @@ trigger:
     platform: state
     entity_id: input_button.notifier_reset_config
 
-# condition: "{{ trigger.id not in ['template_reloaded','reload_all'] }}"
 action:
   #------------------------------------------------------------------------------------#
   # INITIALIZE
@@ -434,11 +432,9 @@ action:
   - alias: "Configuration"
     choose:
       - conditions:
-          # - "{{ trigger.id not in ['template_reloaded','reload_all'] }}"
           - or:
-            - "{{ trigger.id in ['hass_start', 'reload', 'reset_config', 'notifier_on', 'template_entities_update'] }}" 
-            - "{{ trigger.platform is none }}"
-            
+              - "{{ trigger.id in ['hass_start', 'reload', 'reset_config', 'notifier_on', 'template_entities_update'] }}"
+              - "{{ trigger.platform is none }}"
         sequence:
           - alias: "RESTART APP AND DOWNLOAD"
             if:
@@ -458,7 +454,7 @@ action:
 
                     ➡ {{ now().time() }}"
               - stop: "Wait App"
-                    
+
           - variables:
               zero_time: >
                 {% set a = states('input_datetime.notifier_start_early_morning') %}
@@ -471,7 +467,7 @@ action:
                 {{ lst[:-1] == lst[1:] and not 'unknown' in lst }}
 
           - alias: "Create groups only on boot and reload"
-            if: 
+            if:
               - "{{ is_script }}"
               - "{{ trigger.id in ['hass_start', 'reload'] }}"
             then:
@@ -486,17 +482,12 @@ action:
                       | map(attribute='entity_id') | list }}
 
               - alias: "Creation of the notifier_location_tracker Group from Person"
-                if: "{{ not not person }}" # same as ->> person | length > 0 
+                if: "{{ not not person }}" # same as ->> person | length > 0
                 then:
                   - service: group.set
                     data:
                       object_id: notifier_location_tracker
-                      # name: Dispositivi tracciati
                       entities: "{{ person }}"
-                      # icon: mdi:target-account
-                      # entities: "{{ person }}" # not to delta
-                      # add_entities: "{{ person }}"
-                      # remove_entities: "{{ person }}"
 
               - alias: "Creation of the notifier_player_alexa Group, if Alexa exists"
                 if: "{{ not not alexa_media_player }}"
@@ -534,7 +525,7 @@ action:
                         ```
 
           - alias: "Set the default settings to get started"
-            if: 
+            if:
               - "{{ is_script }}"
               - "{{ trigger.id == 'reset_config' or zero_time }}"
             then:
@@ -543,7 +534,7 @@ action:
                 then:
                   service: input_boolean.turn_on
                   target:
-                    entity_id: 
+                    entity_id:
                       - input_boolean.notifier_guest_mode
               - alias: "Set the default times"
                 repeat:
@@ -598,7 +589,7 @@ action:
               - alias: "Set Text and Screen notification switches"
                 service: input_boolean.turn_on
                 target:
-                  entity_id: 
+                  entity_id:
                     - input_boolean.notifier_text_notifications
                     - input_boolean.notifier_screen_notifications
               - alias: "Set first notify service in the text notification selector"
@@ -625,7 +616,7 @@ action:
                           entity_id: select.notifier_player_alexa
                       - service: input_boolean.turn_on
                         target:
-                          entity_id: 
+                          entity_id:
                             - input_boolean.notifier_alexa_switch
                             - input_boolean.notifier_alexa_ssml
                             - input_boolean.notifier_alexa_smart_volume
@@ -683,8 +674,6 @@ action:
                   entity_globs: ".notifier_*"
                 target:
                   entity_id: "script.my_notify"
-                    # {{ ['script.my_notify'] + states | selectattr('object_id', 'match', 'notifier_*') 
-                    #     | map(attribute='entity_id') | list }}
               - service: persistent_notification.create
                 data:
                   notification_id: "centro_notifiche_config_purge"
@@ -698,7 +687,6 @@ action:
           - alias: "SET CONFIGURATION SENSOR"
             event: notifier_config
             event_data: &data
-              # User Input variables
               <<: *ui_check_config
 
               # Template entities state
@@ -731,7 +719,7 @@ action:
                     ```json
                     {{ message | to_json(pretty_print=true,sort_keys=False) }}
                     ```
-                  
+
   #------------------------------------------------------------------------------------#
   # AUTO VOLUME - Media player volume adjustment, based on period_of_day_volume sensor
   #------------------------------------------------------------------------------------#
@@ -829,7 +817,7 @@ action:
               call_modo_ospite: true
               alexa: true
               google: true
-  
+
   #----------------------------------------------------------------------------------------------------#
   # HOME ASSISTANT Start/Final Write/Close/Stop/Restart
   #----------------------------------------------------------------------------------------------------#
@@ -837,7 +825,7 @@ action:
     choose:
       - conditions:
           - "{{ enabled_home_assistant_event }}"
-          # - "{{ trigger.id is defined }}" # stop for run automation or automation.trigger 
+          # - "{{ trigger.id is defined }}" # stop for run automation or automation.trigger
           - "{{ trigger.id is defined and trigger.id is search('^(hass_)', ignorecase=True) }}"
         sequence:
           - variables:
@@ -853,7 +841,7 @@ action:
                     'start' in title: '👍',
                     'Call' in title: '📞',
                     }.get(True, '❗') }}
-              notify_service: >- 
+              notify_service: >-
                 {% set CN_NOTIFY = iif(ha_event_notify, ha_event_notify, states('select.notifier_text_notify')) %}
                 {% set HA_NOTIFY = ['persistent_notification', 'notify'] %}
                 {% set DEFAULT_NOTIFY = iif(CN_NOTIFY in ['unavailable', 'unknown'], HA_NOTIFY, CN_NOTIFY)%}
@@ -875,23 +863,23 @@ action:
                     message: |
                       ➡ {{ time }}
                 - choose:
-                    - conditions: 
+                    - conditions:
                         - "{{ 'start' in title }}"
                         - "{{ is_script }}"
                       sequence:
                         - if: "{{ states.sensor.ha_start.state is defined }}"
                           then:
                             - service: homeassistant.update_entity
-                              entity_id: 
+                              entity_id:
                                 - sensor.ha_start
                                 - sensor.verifica_tempi_setup
                         - wait_template: "{{ is_state('sensor.notifier_debug_error', 'on') }}"
-                        # - wait_for_trigger:
-                        #     - platform: state
-                        #       entity_id: sensor.notifier_debug_error
-                        #       to: 
-                        #         - "on"
-                        #         - "OK"
+                          # - wait_for_trigger:
+                          #     - platform: state
+                          #       entity_id: sensor.notifier_debug_error
+                          #       to:
+                          #         - "on"
+                          #         - "OK"
                           timeout: 120
                           continue_on_timeout: true
                         - service: script.my_notify
