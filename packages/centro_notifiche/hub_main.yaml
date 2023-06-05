@@ -16,7 +16,7 @@ homeassistant:
   customize:
     ## NODE ANCHORS
     package.cn:
-      version: "5.0.4"
+      version: "5.0.5"
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
@@ -371,29 +371,6 @@ template:
           google_select: "{{ trigger.event.data.google_select }}"
           notify_select: "{{ trigger.event.data.notify_select }}"
 
-  - trigger:
-      - platform: state
-        entity_id:
-          - select.notifier_text_notify
-        not_to:
-          - "unavailable"
-          - "unknown"
-          - "none"
-    sensor:
-      - name: "notifier_text_notify"
-        state: >-
-          {% set selected = (trigger.to_state.state 
-            | regex_replace(find=" *, *", replace=",") | lower).rsplit(",") %} 
-          {% set lst = selected %}
-          {% set ns = namespace(notify=[]) %}
-          {% for entity in lst %}
-          {% set ns.notify = ns.notify + ['notify.'+ entity | slugify(separator="_") ] %}
-          {% endfor %}
-          {{ ns.notify | join(', ') }}
-        attributes:
-          selected: "{{ trigger.to_state.state | default }}"
-
-
   - binary_sensor:
       - name: "notifier_dnd"
         state: >-
@@ -461,6 +438,27 @@ template:
         select_option:
           - variables:
               option: "{{ option }}"
+  - trigger:
+      - platform: state
+        entity_id:
+          - select.notifier_text_notify
+        not_to:
+          - "unavailable"
+          - "unknown"
+          - "none"
+    sensor:
+      - name: "notifier_text_notify"
+        state: >-
+          {% set selected = (trigger.to_state.state 
+            | regex_replace(find=" *, *", replace=",") | lower).rsplit(",") %} 
+          {% set lst = selected %}
+          {% set ns = namespace(notify=[]) %}
+          {% for entity in lst %}
+          {% set ns.notify = ns.notify + ['notify.'+ entity | slugify(separator="_") ] %}
+          {% endfor %}
+          {{ ns.notify | join(', ') }}
+        attributes:
+          selected: "{{ trigger.to_state.state | default }}"
 
   - sensor:
       - name: "notifier_day_period"

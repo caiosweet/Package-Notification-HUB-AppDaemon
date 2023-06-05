@@ -316,22 +316,6 @@ trigger_variables:
   enabled: !input enabled_auto_volume
 
 trigger:
-  # - id: "reload_all"
-  #   platform: event
-  #   event_type: call_service
-  #   event_data:
-  #     domain: homeassistant
-  #     service: reload_all
-  # - id: "template_reloaded"
-  #   platform: event
-  #   event_type: call_service
-  #   event_data:
-  #     domain: template
-  #     service: reload
-  # - id: "template_reloaded"
-  #   platform: event
-  #   event_type: event_template_reloaded
-
   - id: "time_pattern_hours"
     platform: template
     value_template: >-
@@ -444,22 +428,6 @@ action:
       google_media_player: "{{ ui_google_player | select('in', integration_entities('cast')) | list }}"
       google_group_player: "{{ ui_google_group | select('in', integration_entities('group')) | list }}"
 
-  # - alias: "Test trigger"
-  #   if:
-  #     - "{{ debug }}"
-  #     - "{{ trigger.idx is defined }}"
-  #   then:
-  #     - service: persistent_notification.create
-  #       data:
-  #         notification_id: "centro_notifiche_config_init"
-  #         title: "DEBUG Centro Notifiche"
-  #         message: |-
-  #           {% set message = state_attr('persistent_notification.centro_notifiche_config_init', 'message') %}
-  #           {{ iif(message | default('',true) | count < 4000, message, '') }}
-  #           ```yaml
-  #           {{(now().time()|string)[:-4]}} - CURRENT {{ this.attributes.current }}
-  #           TRIGGER: {{ trigger.idx }} - {{trigger.id }} - {{trigger.description }}
-  #           ```
   #------------------------------------------------------------------------------------#
   # CONFIGURATION
   #------------------------------------------------------------------------------------#
@@ -468,7 +436,7 @@ action:
       - conditions:
           # - "{{ trigger.id not in ['template_reloaded','reload_all'] }}"
           - or:
-            - "{{ trigger.id in ['hass_start', 'reload', 'notifier_on', 'template_entities_update', 'reset_config'] }}" 
+            - "{{ trigger.id in ['hass_start', 'reload', 'reset_config', 'notifier_on', 'template_entities_update'] }}" 
             - "{{ trigger.platform is none }}"
             
         sequence:
@@ -483,36 +451,12 @@ action:
                 {% set lst = [a,b,c,d,e,f] %}
                 {{ lst[:-1] == lst[1:] and not 'unknown' in lst }}
 
-          - alias: "Creation groups"
+          - alias: "Create groups only on boot and reload"
             if: 
               - "{{ is_script }}"
               - "{{ trigger.id in ['hass_start', 'reload'] }}"
             then:
-              - alias: Creation of the notifier_location_tracker Group from Person
-                service: group.set
-                data:
-                  object_id: notifier_location_tracker
-                  entities: "{{ person }}"
-
-              - alias: "Creation of the notifier_player_alexa Group, if Alexa exists"
-                choose:
-                  - conditions: "{{ not not alexa_media_player }}"
-                    sequence:
-                      - service: group.set
-                        data:
-                          object_id: notifier_player_alexa
-                          entities: "{{ alexa_media_player }}"
-
-              - alias: "Creation of the notifier_player_google Group, if Google exists"
-                choose:
-                  - conditions: "{{ not not google_media_player }}"
-                    sequence:
-                      - service: group.set
-                        data:
-                          object_id: notifier_player_google
-                          entities: "{{ google_media_player }}"
-
-              - alias: Creation of an notifier_automations Group
+              - alias: "Creation of an notifier_automations Group"
                 service: group.set
                 data:
                   object_id: "notifier_automations"
@@ -522,6 +466,35 @@ action:
                       | select('match','.*[_\s]hub|.*notifier[_\s]', ignorecase=True)
                       | map(attribute='entity_id') | list }}
 
+              - alias: "Creation of the notifier_location_tracker Group from Person"
+                if: "{{ not not person }}" # same as ->> person | length > 0 
+                then:
+                  - service: group.set
+                    data:
+                      object_id: notifier_location_tracker
+                      # name: Dispositivi tracciati
+                      entities: "{{ person }}"
+                      # icon: mdi:target-account
+                      # entities: "{{ person }}" # not to delta
+                      # add_entities: "{{ person }}"
+                      # remove_entities: "{{ person }}"
+
+              - alias: "Creation of the notifier_player_alexa Group, if Alexa exists"
+                if: "{{ not not alexa_media_player }}"
+                then:
+                  - service: group.set
+                    data:
+                      object_id: notifier_player_alexa
+                      entities: "{{ alexa_media_player }}"
+
+              - alias: "Creation of the notifier_player_google Group, if Google exists"
+                if: "{{ not not google_media_player }}"
+                then:
+                  - service: group.set
+                    data:
+                      object_id: notifier_player_google
+                      entities: "{{ google_media_player }}"
+
               - alias: "IF DEBUG - GROUP SETTING"
                 if: "{{ debug }}"
                 then:
@@ -529,48 +502,18 @@ action:
                     data:
                       notification_id: "centro_notifiche_config_group"
                       title: "GROUP Setting"
-                      message: |-
+                      message: |
                         ```yaml
-                        {{ state_attr('persistent_notification.centro_notifiche_config_group', 'message') }}
-                        GROUP SETTING
-                        {{ integration_entities('group') }}
+                        ___
+                        AUTO GROUPS
+                        PERSON: {{ state_attr('group.notifier_location_tracker', 'entity_id') }}
+                        ALEXA: {{ state_attr('group.notifier_player_alexa', 'entity_id') }}
+                        GOOGLE: {{ state_attr('group.notifier_player_google', 'entity_id') }}
+                        ___
+                        INTERATION: {{ integration_entities('group') }}
+                        ___
                         ```
 
-          - alias: "Remove orphaned groups and clean the recorder"
-            if:
-              - "{{ not is_script }}"
-              - "{{ trigger.id in ['reload'] }}"
-              - "{{ has_value('group.notifier_automations') }}"
-            then:
-              - alias: Remove group
-                repeat:
-                  for_each:
-                    - "group.notifier_location_tracker"
-                    - "group.notifier_player_alexa"
-                    - "group.notifier_player_google"
-                    - "group.notifier_automations"
-                  sequence:
-                    if: "{{ repeat.item in integration_entities('group') }}"
-                    then:
-                      - service: group.remove
-                        data:
-                          object_id: "{{ repeat.item.split('.')[1] }}"
-              - service: recorder.purge_entities
-                data:
-                  keep_days: 0
-                  # entity_globs: ".notifier_*"
-                target:
-                  entity_id: >-
-                    {{ ['script.my_notify'] + states | selectattr('object_id', 'match', 'notifier_*') 
-                        | map(attribute='entity_id') | list }}
-              - service: persistent_notification.create
-                data:
-                  notification_id: "centro_notifiche_config_purge"
-                  title: "Purge Centro Notifiche"
-                  message: |-
-                    {{ state_attr('persistent_notification.centro_notifiche_config_purge', 'message') }}
-                    PURGE DATABASE
-          
           - alias: "Set the default settings to get started"
             if: 
               - "{{ is_script }}"
@@ -678,7 +621,7 @@ action:
                       - service: input_boolean.turn_on
                         target:
                           entity_id: input_boolean.notifier_google_switch
-              - alias: Set input_text.notifier_called_number blank if unknown
+              - alias: "Set input_text.notifier_called_number blank if unknown"
                 if: "{{ states('input_text.notifier_called_number') == 'unknown' }}"
                 then:
                   - service: input_text.set_value
@@ -696,6 +639,40 @@ action:
                     type: tts
                   google: true
 
+          - alias: "Clean the recorder. Remove orphaned groups on reload, only if has value but the script is missing."
+            if:
+              - "{{ not is_script }}"
+              - "{{ trigger.id in ['reload'] }}"
+              - "{{ has_value('group.notifier_automations') }}"
+            then:
+              - alias: Remove group
+                repeat:
+                  for_each:
+                    - "group.notifier_location_tracker"
+                    - "group.notifier_player_alexa"
+                    - "group.notifier_player_google"
+                    - "group.notifier_automations"
+                  sequence:
+                    if: "{{ repeat.item in integration_entities('group') }}"
+                    then:
+                      - service: group.remove
+                        data:
+                          object_id: "{{ repeat.item.split('.')[1] }}"
+              - service: recorder.purge_entities
+                data:
+                  keep_days: 0
+                  entity_globs: ".notifier_*"
+                target:
+                  entity_id: "script.my_notify"
+                    # {{ ['script.my_notify'] + states | selectattr('object_id', 'match', 'notifier_*') 
+                    #     | map(attribute='entity_id') | list }}
+              - service: persistent_notification.create
+                data:
+                  notification_id: "centro_notifiche_config_purge"
+                  title: "Purge Centro Notifiche"
+                  message: |-
+                    {{ state_attr('persistent_notification.centro_notifiche_config_purge', 'message') }}
+                    PURGE DATABASE
           #----------------------------------------------------------------------------#
           # EVENT DATA - USER INPUT CONFIGURATION AND TEMPLATE ENTITIES STATES
           #----------------------------------------------------------------------------#
