@@ -440,6 +440,23 @@ action:
             - "{{ trigger.platform is none }}"
             
         sequence:
+          - alias: "RESTART APP AND DOWNLOAD"
+            if:
+              - "{{ trigger.id in ['reload'] }}"
+              - "{{ not is_script and download }}"
+            then:
+              - event: notifier
+                event_data:
+                  ad:
+                    command: restart
+              - service: persistent_notification.create
+                data:
+                  notification_id: "centro_notifiche_config_download"
+                  title: "Configurazione Centro Notifiche"
+                  message: "RESTART AND DOWNLOAD {{ now.().time() }}"
+              - stop: "Wait App"
+
+                    
           - variables:
               zero_time: >
                 {% set a = states('input_datetime.notifier_start_early_morning') %}
