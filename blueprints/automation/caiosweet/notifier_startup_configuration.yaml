@@ -453,9 +453,11 @@ action:
                 data:
                   notification_id: "centro_notifiche_config_download"
                   title: "Configurazione Centro Notifiche"
-                  message: "RESTART AND DOWNLOAD {{ now().time() }}"
-              - stop: "Wait App"
+                  message: |
+                    ## Restart Notifier App and Download Package
 
+                    ➡ {{ now().time() }}"
+              - stop: "Wait App"
                     
           - variables:
               zero_time: >
