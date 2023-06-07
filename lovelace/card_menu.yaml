@@ -5,7 +5,7 @@ cards:
       <font size=5><center>🤵
       {{states('sensor.notifier_config')}}</center></font>
 
-      {% if not states('sensor.notifier_debug_error') in ['on','OK']%}
+      {% if states('sensor.notifier_debug_error') not in ['on','OK']%}
 
       <ha-alert title="Centro Notifiche" alert-type="error">
 
@@ -23,7 +23,7 @@ cards:
         type: button
         show_state: false
         entity: group.notifier_group_notification
-        icon: mdi:message-badge
+        icon: ''
       - show_name: false
         show_icon: true
         type: button
@@ -107,88 +107,142 @@ cards:
       - entity: sensor.notifier_day_period
       - entity: sensor.notifier_day_period_volume
       - entity: input_select.notifier_language
-      - entity: select.notifier_player_alexa
-        tap_action:
-          action: call-service
-          service: select.select_next
-          service_data:
-            entity_id: select.notifier_player_alexa
-        hold_action:
-          action: call-service
-          service: input_select.select_previous
-          service_data:
-            entity_id: select.notifier_player_alexa
-        double_tap_action:
-          action: more-info
-      - entity: select.notifier_player_google
-        tap_action:
-          action: call-service
-          service: select.select_next
-          service_data:
-            entity_id: select.notifier_player_google
-        hold_action:
-          action: call-service
-          service: input_select.select_previous
-          service_data:
-            entity_id: select.notifier_player_google
-        double_tap_action:
-          action: more-info
-      - entity: select.notifier_text_notify
-        tap_action:
-          action: call-service
-          service: select.select_next
-          service_data:
-            entity_id: select.notifier_text_notify
-        hold_action:
-          action: call-service
-          service: input_select.select_previous
-          service_data:
-            entity_id: select.notifier_text_notify
-        double_tap_action:
-          action: more-info
+  - type: entities
+    entities:
+      - type: conditional
+        conditions:
+          - entity: sensor.notifier_text_notify
+            state_not: unavailable
+        row:
+          entity: sensor.notifier_text_notify
+          type: attribute
+          attribute: selected
+          tap_action:
+            action: call-service
+            service: select.select_next
+            target:
+              entity_id: select.notifier_text_notify
+            data:
+              cycle: true
+          double_tap_action:
+            action: call-service
+            service: select.select_first
+            target:
+              entity_id: select.notifier_text_notify
+          hold_action:
+            action: more-info
+      - type: conditional
+        conditions:
+          - entity: sensor.notifier_player_alexa
+            state_not: unavailable
+        row:
+          entity: sensor.notifier_player_alexa
+          type: attribute
+          attribute: selected
+          tap_action:
+            action: call-service
+            service: select.select_next
+            target:
+              entity_id: select.notifier_player_alexa
+            data:
+              cycle: true
+          double_tap_action:
+            action: call-service
+            service: select.select_first
+            target:
+              entity_id: select.notifier_player_alexa
+          hold_action:
+            action: more-info
+      - type: conditional
+        conditions:
+          - entity: sensor.notifier_player_google
+            state_not: unavailable
+        row:
+          entity: sensor.notifier_player_google
+          type: attribute
+          attribute: selected
+          tap_action:
+            action: call-service
+            service: select.select_next
+            target:
+              entity_id: select.notifier_player_google
+            data:
+              cycle: true
+          double_tap_action:
+            action: call-service
+            service: select.select_first
+            target:
+              entity_id: select.notifier_player_google
+          hold_action:
+            action: more-info
   - type: horizontal-stack
     cards:
-      - show_name: false
-        show_icon: true
-        type: button
-        icon_height: 24px
-        entity: input_boolean.notifier_google_switch
-        tap_action:
-          action: toggle
-      - type: button
-        show_name: false
-        show_icon: false
-        show_state: true
-        entity: input_select.notifier_tts_notify
-        tap_action:
-          action: call-service
-          service: input_select.select_next
-          service_data:
-            entity_id: input_select.notifier_tts_notify
-      - show_name: false
-        show_icon: true
-        type: button
-        icon_height: 24px
-        entity: input_boolean.notifier_alexa_switch
-        tap_action:
-          action: toggle
-        icon: mdi:dots-circle
-      - show_name: false
-        show_icon: false
-        type: button
-        show_state: true
-        entity: input_select.notifier_alexa_type
-        tap_action:
-          action: call-service
-          service: input_select.select_next
-          service_data:
-            entity_id: input_select.notifier_alexa_type
-      - type: button
-        show_name: false
-        icon_height: 24px
-        entity: input_boolean.notifier_alexa_ssml
-        tap_action:
-          action: toggle
+      - type: conditional
+        conditions:
+          - entity: input_boolean.notifier_google_switch
+            state_not: unavailable
+        card:
+          type: button
+          show_name: false
+          show_icon: true
+          icon_height: 24px
+          entity: input_boolean.notifier_google_switch
+          tap_action:
+            action: toggle
+      - type: conditional
+        conditions:
+          - entity: input_boolean.notifier_google_switch
+            state_not: unavailable
+        card:
+          type: button
+          show_name: false
+          show_icon: false
+          show_state: true
+          entity: input_select.notifier_tts_notify
+          tap_action:
+            action: call-service
+            service: input_select.select_next
+            service_data:
+              entity_id: input_select.notifier_tts_notify
+      - type: conditional
+        conditions:
+          - entity: input_boolean.notifier_alexa_switch
+            state_not: unavailable
+        card:
+          type: button
+          show_name: false
+          show_icon: true
+          icon_height: 24px
+          entity: input_boolean.notifier_alexa_switch
+          tap_action:
+            action: toggle
+          icon: mdi:dots-circle
+      - type: conditional
+        conditions:
+          - entity: input_boolean.notifier_alexa_switch
+            state_not: unavailable
+        card:
+          type: button
+          show_name: false
+          show_icon: false
+          show_state: true
+          entity: input_select.notifier_alexa_type
+          tap_action:
+            action: call-service
+            service: input_select.select_next
+            service_data:
+              entity_id: input_select.notifier_alexa_type
+      - type: conditional
+        conditions:
+          - entity: input_boolean.notifier_alexa_switch
+            state_not: unavailable
+        card:
+          type: button
+          show_name: false
+          icon_height: 24px
+          entity: input_boolean.notifier_alexa_ssml
+          tap_action:
+            action: toggle
       - type: button
         show_name: false
         icon_height: 24px

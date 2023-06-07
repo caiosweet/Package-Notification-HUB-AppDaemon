@@ -16,7 +16,7 @@ homeassistant:
   customize:
     ## NODE ANCHORS
     package.cn:
-      version: "5.0.5"
+      version: "5.0.6"
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
@@ -52,8 +52,8 @@ homeassistant:
       icon: mdi:knob
     group.notifier_group_notification:
       <<: *customize
-      friendly_name: "Gruppo notifiche"
-      icon: mdi:message-badge
+      friendly_name: "Gruppo Notifiche"
+      icon: mdi:power
     ## INPUT BOOLEAN
     input_boolean.notifier_guest_mode:
       <<: *customize
@@ -204,7 +204,7 @@ homeassistant:
     sensor.notifier_config:
       <<: *customize
       friendly_name: "Notifier Config"
-      icon: mdi:account-cog    
+      icon: mdi:account-cog
     sensor.notifier_debug_error:
       <<: *customize
       friendly_name: "Notifier Debug Error"
@@ -308,7 +308,7 @@ input_number:
     min: 0
     max: 100
     step: 10
-  notifier_morning_volume:  *base_vol
+  notifier_morning_volume: *base_vol
   notifier_afternoon_volume: *base_vol
   notifier_evening_volume: *base_vol
   notifier_night_volume: *base_vol
@@ -424,7 +424,7 @@ template:
               google:
                 volume: *intercom_volume
 
-  - select: 
+  - select:
       - name: "notifier_text_notify"
         state: "{{ state_attr('sensor.notifier_text_notify', 'selected') | default('unknown', true) }}"
         optimistic: true
@@ -475,15 +475,16 @@ template:
               c <= nt < d: 'Pomeriggio',
               d <= nt < e: 'Sera',
               e <= nt < f: 'Notte',
-              (e > f) and (nt > e or nt < f): 'Notte',
+              (e > f) and (nt >= e or nt < f): 'Notte',
               }.get(True, 'Notte fonda') }}
           {# Alternative if 00:00 in 'Sera' (period segment --> [e])
+           rule: iif(start <= end, (start <= nt < end), (nt >= start or nt < end)) 
           {{ {
-          a <= nt < b: 'Mattina presto',
-          b <= nt < c: 'Mattina',
-          c <= nt < d: 'Pomeriggio',
-          iif(d <= e, (d <= nt < e), (nt > d or nt < e)): 'Sera',
-          iif(e <= f, (e <= nt < f), (nt > e or nt < f)): 'Notte',
+            a <= nt < b: 'Mattina presto',
+            b <= nt < c: 'Mattina',
+            c <= nt < d: 'Pomeriggio',
+            iif(d <= e, (d <= nt < e), (nt >= d or nt < e)): 'Sera',
+            iif(e <= f, (e <= nt < f), (nt >= e or nt < f)): 'Notte',
           }.get(true, "Notte Fonda") }}
           <------------------------------------------------------ #}
         icon: >-

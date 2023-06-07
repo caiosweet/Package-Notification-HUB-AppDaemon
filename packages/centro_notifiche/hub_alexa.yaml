@@ -30,7 +30,7 @@ homeassistant:
     input_boolean.notifier_alexa_switch:
       <<: *customize
       friendly_name: "Alexa Off/On"
-      icon: si:amazonalexa
+      icon: mdi:dots-circle
       # icon: mdi:alpha-a-circle
     input_boolean.notifier_alexa_smart_volume:
       <<: *customize
@@ -193,7 +193,7 @@ template:
         press:
           - service: input_number.set_value
             data:
-              entity_id: 
+              entity_id:
                 - input_number.notifier_alexa_prosody_pitch
                 - input_number.notifier_alexa_prosody_volume
               value: 0

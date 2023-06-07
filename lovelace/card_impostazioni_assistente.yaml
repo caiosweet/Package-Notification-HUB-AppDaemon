@@ -8,18 +8,17 @@ entities:
   - entity: sensor.notifier_debug_error
     icon: mdi:account-wrench
   - entity: input_button.notifier_reset_config
-  - type: buttons
-    entities:
-      - entity: sensor.notifier_config
-        name: Restart Notifier App
-        tap_action:
-          action: call-service
-          confirmation:
-            text: Sei sicuro di voler riavviare l'App Notifier?
-          service: script.my_notify
-          service_data:
-            ad:
-              command: restart
+  - type: button
+    icon: mdi:restart
+    name: Restart Notifier App
+    tap_action:
+      action: call-service
+      confirmation:
+        text: Sei sicuro di voler riavviare l'App Notifier?
+      service: script.my_notify
+      service_data:
+        ad:
+          command: restart
   - type: section
     label: ''
   - entity: input_select.notifier_language

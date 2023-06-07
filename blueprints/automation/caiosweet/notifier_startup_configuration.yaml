@@ -679,7 +679,6 @@ action:
                   notification_id: "centro_notifiche_config_purge"
                   title: "Purge Centro Notifiche"
                   message: |-
-                    {{ state_attr('persistent_notification.centro_notifiche_config_purge', 'message') }}
                     PURGE DATABASE
           #----------------------------------------------------------------------------#
           # EVENT DATA - USER INPUT CONFIGURATION AND TEMPLATE ENTITIES STATES

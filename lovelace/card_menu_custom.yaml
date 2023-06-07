@@ -1,12 +1,18 @@
 type: custom:vertical-stack-in-card
 cards:
   - type: markdown
-    content: |
-      <font size=5><center>🤵 {{states('sensor.notifier_config')}}</center></font>
+    content: >
+      <font size=5><center>🤵
+      {{states('sensor.notifier_config')}}</center></font>
+
       {% if not states('sensor.notifier_debug_error') in ['on','OK']%}
+
       <ha-alert title="Centro Notifiche" alert-type="error">
+
       {{states('sensor.notifier_debug_error')}}
+
       </ha-alert>
+
       {% endif %}
   - type: divider
     style:

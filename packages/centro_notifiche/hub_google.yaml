@@ -56,7 +56,7 @@ template:
           + (state_attr('sensor.notifier_config', 'google_group_player')
             | map('state_attr', 'friendly_name') | reject('none') | list)
           }}
-        select_option: 
+        select_option:
           - variables:
               option: "{{ state_attr('sensor.notifier_player_google', 'selected') }}"
 
