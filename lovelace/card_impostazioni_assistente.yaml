@@ -3,11 +3,28 @@ title: Impostazioni Assistente
 show_header_toggle: false
 state_color: true
 entities:
+  - entity: automation.notifier_startup_configuration
+  - entity: sensor.notifier_config
+  - entity: sensor.notifier_debug_error
+    icon: mdi:account-wrench
+  - entity: input_button.notifier_reset_config
+  - type: button
+    icon: mdi:restart
+    name: Restart Notifier App
+    tap_action:
+      action: call-service
+      confirmation:
+        text: Sei sicuro di voler riavviare l'App Notifier?
+      service: script.my_notify
+      service_data:
+        ad:
+          command: restart
   - type: section
-    label: ""
-  - entity: input_text.notifier_personal_assistant
+    label: ''
   - entity: input_select.notifier_language
-  - entity: input_select.notifier_text_notify
+  - entity: select.notifier_text_notify
+    secondary_info: none
+  - entity: sensor.notifier_text_notify
   - entity: input_boolean.notifier_html_mode
   - entity: input_boolean.notifier_tts_clock
   - entity: input_boolean.notifier_wrap_text
@@ -22,6 +39,9 @@ entities:
   - entity: input_datetime.notifier_end_holidays
   - type: section
     label: VOLUME di default durante il griorno
+  - entity: group.notifier_group_volumes
+  - entity: input_datetime.notifier_start_early_morning
+  - entity: input_number.notifier_early_morning_volume
   - entity: input_datetime.notifier_start_morning
   - entity: input_number.notifier_morning_volume
   - entity: input_datetime.notifier_start_afternoon
@@ -30,3 +50,5 @@ entities:
   - entity: input_number.notifier_evening_volume
   - entity: input_datetime.notifier_start_night
   - entity: input_number.notifier_night_volume
+  - entity: input_datetime.notifier_start_late_night
+  - entity: input_number.notifier_late_night_volume

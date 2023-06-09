@@ -4,13 +4,16 @@ homeassistant:
   ######################################-#######################################
   customize:
     ## NODE ANCHORS
-    package.node_anchors:
+    package.cn:
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Google 4.0.0"
-
+    ## GROUP
+    group.notifier_player_google:
+      <<: *customize
+      friendly_name: "Gruppo Google"
+      icon: mdi:speaker-multiple
     ## INPUT
     input_boolean.notifier_google_switch:
       <<: *customize
@@ -45,35 +48,36 @@ input_select:
 template:
   - select:
       - name: "notifier_player_google"
-        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('none', true) }}"
+        state: "{{ state_attr('sensor.notifier_player_google', 'selected') | default('unknown', true) }}"
         optimistic: true
         options: |
-          {% set mp = state_attr('group.notifier_player_google', 'entity_id')
-            | default(['\0'], true) | join('|') %}
-          {{ states | select('search', mp, ignorecase=True)
-            | selectattr('entity_id', 'match','media_player|group')
-            | map(attribute='name') | list | unique | sort }}
+          {{ (state_attr('sensor.notifier_config', 'google_media_player')
+            | map('state_attr', 'friendly_name') | reject('none') | list)
+          + (state_attr('sensor.notifier_config', 'google_group_player')
+            | map('state_attr', 'friendly_name') | reject('none') | list)
+          }}
         select_option:
-          - event: notifier_global_variables
-            event_data: 
-              google_selected: "{{ option }}"
-              app: google
+          - variables:
+              option: "{{ state_attr('sensor.notifier_player_google', 'selected') }}"
 
   - trigger:
-      - platform: event
-        event_type: notifier_global_variables
-        event_data:
-          app: google
+      - platform: state
+        entity_id:
+          - select.notifier_player_google
+        not_to:
+          - "unavailable"
+          - "unknown"
+          - "none"
     sensor:
       - name: "notifier_player_google"
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) %}
-          {% set player = state_attr('group.notifier_player_google','entity_id') %}          
-          {% set selected = trigger.event.data.google_selected | lower %}
+          {% set player = state_attr('sensor.notifier_config', 'google_media_player') %}
+          {% set selected = trigger.to_state.state | lower %}
           {% for x in domains if x.name | lower == selected %}
-            {% if x.domain == 'group' and player 
-                and x.attributes.entity_id[0] in player | list %}
-              {{ x.attributes.entity_id | join(', ') }}
+            {% if x.domain in ['group', 'media_player'] and x.attributes.entity_id is defined 
+                and player and x.attributes.entity_id[0] in player | list %}
+               {{ x.attributes.entity_id | join(', ') }}
             {% elif x.domain == 'media_player' %}
               {{ x.entity_id }}
             {% else %}
@@ -81,7 +85,18 @@ template:
             {% endif %}
           {% endfor %}
         icon: >-
-          {{ iif(',' in this.state | default('', true), 
-              'mdi:speaker-multiple', 'mdi:speaker') }}
+          {% set status = trigger.to_state.state
+              in integration_entities('group') | map('state_attr', 'friendly_name') %}
+          {{ iif(status, 'mdi:speaker-multiple', 'mdi:speaker') }}
         attributes:
-          selected: "{{ trigger.event.data.google_selected | default }}"
+          selected: "{{ trigger.to_state.state | default }}"
+          entities: >-
+            {% set status = trigger.to_state.state
+                in integration_entities('group') | map('state_attr', 'friendly_name') %}
+            {% set group = state_attr('sensor.notifier_config', 'google_group_player')
+                | select('is_state_attr', 'friendly_name', states('select.notifier_player_google'))
+                | list | expand | map(attribute='entity_id') | list %}
+            {% set single = expand(state_attr('sensor.notifier_config', 'google_media_player'))
+              | selectattr('name', '==', states('select.notifier_player_google'))
+              | map(attribute='entity_id') | list %}
+            {{ iif(status, group, single) }}

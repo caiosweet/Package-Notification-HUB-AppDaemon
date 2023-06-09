@@ -1,0 +1,902 @@
+blueprint:
+  name: Notifier startup configuration
+  description: >
+    Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
+    per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
+    Authors [Caio](https://github.com/caiosweet), [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
+    Date Started 01/11/2019 - Updated 20/05/2023
+
+    Guida di riferimento per l'utilizzo del Progetto Centro Notifiche, ed altre informazioni le trovi sul [wiki](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki)
+
+  domain: automation
+  author: https://github.com/caiosweet
+  input:
+    packages_folder:
+      name: Package folder
+      description: |-
+        Inserisci il percorso della cartella [packages](https://www.home-assistant.io/docs/configuration/packages/#create-a-packages-folder) nella directory di configurazione di Home Assistant.
+
+        _Path packages folder in your Home Assistant configuration directory_
+        default /config/packages
+      selector:
+        text: {}
+      default: "/config/packages"
+
+    personal_assistant:
+      name: Personal Assistant
+      description: |-
+        Imposta il nome del tuo assistente personale.
+        Verrà utilizzato nei titoli dei messaggi testuali e in dashborad.
+        Esempio **[Jarvis - 20:43:12] Garage**
+
+        _Choose a name for your personal assistant_
+        default empty
+      selector:
+        text: {}
+      default: ""
+
+    person:
+      name: Person
+      description: |-
+        Aggiungi una o più [persone](https://www.home-assistant.io/integrations/person/) per la gestione delle presenze in casa.
+        Verranno creati un gruppo e un sensore in base alla lista. Il sensore, in oltre, avrà gli attributi number e name, corrispondenti al numero di persone in casa e i rispettivi nomi.
+
+        _List of People_
+        default empty
+
+        [![Open your Home Assistant instance and show your people.](https://my.home-assistant.io/badges/people.svg)](https://my.home-assistant.io/redirect/people/)
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: person
+      default: []
+
+    alexa_media_player:
+      name: Alexa Media Player
+      description: |-
+        Aggiungi uno o più media player se utilizzi [Alexa Media](https://github.com/custom-components/alexa_media_player).
+        Verrà creato un gruppo dalla lista risultante. 
+        Inoltre, sarà autocompilato il selettore dei media player Alexa, per la scelta di un dispositivo predefinito, 
+        da usare con il Centro Notifiche.
+
+        _Alexa Media Player list_
+        default empty
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: alexa_media
+              domain: media_player
+      default: []
+
+    alexa_group_player:
+      name: Alexa Group Player
+      description: |-
+        Scegli uno o più gruppi di media player per Alexa.
+        Verranno aggiunti nel selettore per la scelta del dispositivo predefinito, insieme ai precedenti media player Alexa.
+
+        _Alexa Group Player list_
+        default empty
+
+        [![Open your Home Assistant instance and show your helper entities.](https://my.home-assistant.io/badges/helpers.svg)](https://my.home-assistant.io/redirect/helpers/)
+
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: group
+      default: []
+
+    google_media_player:
+      name: Google Media Player
+      description: |-
+        Aggiungi uno o più media player se utilizzi [Google Cast](https://www.home-assistant.io/integrations/cast/)
+
+        _List of Google Media Player_
+        default empty
+
+        [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=cast)
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: cast
+              domain: media_player
+      default: []
+
+    google_group_player:
+      name: Google Group Player
+      description: |-
+        Scegli uno o più gruppi di media player per Google.
+        Verranno aggiunti nel selettore per la scelta del dispositivo predefinito, insieme ai precedenti media player Google.
+
+        _List of google Group Player_
+        default empty
+
+        [![Open your Home Assistant instance and show your helper entities.](https://my.home-assistant.io/badges/helpers.svg)](https://my.home-assistant.io/redirect/helpers/)
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: group
+      default: []
+
+    notify_service_list:
+      name: Notify list
+      description: |-
+        Aggiungi i servizi notify, per ricevere le notifiche testuali.
+        Se desideri inviare notifiche multiple a dispositivi diversi, 
+        e non hai creato un [gruppo di notify](https://www.home-assistant.io/integrations/group/#notify-groups), basta aggiungere più servizi separati da una virgola. 
+        `(es. - notify.notify, notify.mobile_app_pixel_7)`
+
+        Esempio completo, di come compilare la lista a mano, con servizi multipli e singoli.
+        ```
+        - notify.telegram
+        - notify.mobile_app_pixel_7
+        - notify.notify, notify.mobile_app_pixel_7
+        - notify.discord, notify.telegram, notify.pushover
+        - notify.persistent_notification
+        ```
+
+        _List of notify service_
+        default - notify.persistent_notification, notify.notify
+
+        [![Open your Home Assistant instance and show your service developer tools.](https://my.home-assistant.io/badges/developer_services.svg)](https://my.home-assistant.io/redirect/developer_services/)
+
+      selector:
+        object:
+      default: ["notify.persistent_notification", "notify.notify"]
+
+    enabled_home_assistant_event:
+      name: Notification Home Assistant Event
+      description: |-
+        Abilitazione per la ricezione dei seguentio eventi di home assistant:
+        Avvio, Scrittura finale, Chiusura, Stop e Riavvio manuale.
+
+        _Notification Home Assistant Start/Final Write/Close/Stop/Restart_
+        default: on
+      selector:
+        boolean: {}
+      default: true
+
+    ha_event_notify:
+      name: Notification Home Assistant Start
+      description: >-
+        Puoi scegliere un o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
+
+        _You can choose one or more different "notify" services for Home Assistant notifications instead of the default one._
+        default: the state of the text notification selector
+      selector:
+        object:
+      default: []
+
+    enabled_auto_volume:
+      name: Auto volume
+      description: |-
+        I volumi vengono aggiornati in base al sensore del periodo del giorno, da impostare dalla interfaccia grafica (Dashborad o cards).
+        Le entità da impostare sono gli orari e i volumi a partire dal primo mattino fino a notte fonda.
+
+        _Media player volume adjustment, based on Period of day volume sensor_
+        default: on
+      selector:
+        boolean: {}
+      default: true
+
+    time_pattern_hours:
+      name: Pattern hours
+      description: |-
+        Aggiornamento dei volumi che si ripete in base al numero di ore selezionate.
+        Es. 4, l'aggiornamento verrà ripetuto ogni 4 ore.
+
+        _Updates every x hours._
+        default: 0
+      selector:
+        number:
+          min: 0
+          max: 24
+          step: 1
+          unit_of_measurement: "h"
+          mode: box # slider
+      default: 0
+
+    exclude_media_player:
+      name: Exclude Media Player
+      description: |-
+        Selezionare gli eventuali media player (vale per entrambi Alexa-Google), da escludere dall'auto-volume.
+
+        _Exclude Media Player from auto volume sequence_
+        default: empty
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: media_player
+            - domain: group
+      default: []
+
+    tts_google:
+      name: Service TTS Google
+      description: |-
+        Inserire il servizio per il [TTS Google Translate](https://www.home-assistant.io/integrations/google_translate/).
+
+        _Service [Text-to-Speech (TTS)](https://www.home-assistant.io/integrations/tts/#service-say-legacy): 
+        Say a TTS message with Google Translate_
+        default: google_translate_say
+      selector:
+        text: {}
+      default: "google_translate_say"
+
+    tts_google_cloud:
+      name: Service TTS Google Cloud
+      description: |-
+        Inserire il servizio per il TTS Google Cloud.
+
+        _Service TTS Google Cloud_
+        default: google_cloud
+      selector:
+        text: {}
+      default: "google_cloud"
+
+    reverso_tts:
+      name: Service Reverso TTS
+      description: |-
+        Inserire il servizio per il componente personalizzato di [Reverso TTS](https://github.com/rt400/ReversoTTS-HA).
+
+        _Service Reverso TTS_
+        default: reversotts_say
+      selector:
+        text: {}
+      default: "reversotts_say"
+
+    sip_server_name:
+      name: Service Sip server name
+      description: |-
+        N. Tel / @user: inserire qui il numero di telefono da chiamare o l’utente telegram.
+        [Addon](https://github.com/sdesalve/hassio-addons/tree/master/dss_voip) del nostro Admin SDesalve o chiamata tramite [CallMeBot Telegram](https://www.callmebot.com/telegram-call-api/)
+
+        _Service Sip server name_
+        default: fritz.box:5060
+      selector:
+        text: {}
+      default: "fritz.box:5060"
+
+    alexa_skill_id:
+      name: Notifier Alexa actionable skill ID
+      description: |-
+        Inserire l'ID Alexa Skills per [Alexa Actionable notifications](https://github.com/keatontaylor/alexa-actions)
+
+        _Notifier Alexa actionable skill ID_
+        default: empty
+      selector:
+        text: {}
+      default: ""
+
+    download:
+      name: Download
+      description: |-
+        Scarica automaticamente le nuove versioni del pacchetto da Github.
+
+        _Download the new stable version of the package from Github._
+        default: off
+      selector:
+        boolean: {}
+      default: false
+
+    beta_version:
+      name: Beta Version
+      description: |-
+        Scarica la versiona beta invece della stabile.
+
+        _Download the beta version instead of the stable one._
+        default: off
+      selector:
+        boolean: {}
+      default: false
+
+    debug:
+      name: Debug and extra info
+      description: |-
+        Modalità di debug.
+
+        _Show entra information for trigger e configuration_
+        default: off
+      selector:
+        boolean: {}
+      default: false
+
+mode: parallel
+# mode: queued
+max: 50
+max_exceeded: silent
+
+trigger_variables:
+  time_pattern_hours: !input time_pattern_hours
+  enabled: !input enabled_auto_volume
+
+trigger:
+  - id: "time_pattern_hours"
+    platform: template
+    value_template: >-
+      {{ enabled and time_pattern_hours > 0 and now().hour % time_pattern_hours == 0
+        and now().minute == 0 and now().second == 0 }}
+
+  - id: "notifier_on"
+    platform: state
+    entity_id: sensor.notifier_debug_error
+    to: "on"
+
+  - id: "hass_start"
+    platform: homeassistant
+    event: start
+  - id: "hass_shutdown"
+    platform: homeassistant
+    event: shutdown
+  - id: "hass_final_write"
+    platform: event
+    event_type: homeassistant_final_write
+  - id: "hass_close"
+    platform: event
+    event_type: homeassistant_close
+  - id: "hass_restart"
+    platform: event
+    event_type: call_service
+    event_data:
+      domain: homeassistant
+      service: restart
+
+  - id: "reload"
+    platform: event
+    event_type: automation_reloaded
+
+  - id: "notifier_auto_volume"
+    platform: state
+    entity_id: sensor.notifier_day_period_volume
+    attribute: vol
+  - id: "notifier_intercom_message"
+    platform: state
+    entity_id: input_text.notifier_intercom_message
+    not_to:
+      - "unavailable"
+      - "unknown"
+      - ""
+  - id: "notifier_guest_mode"
+    platform: state
+    entity_id: input_boolean.notifier_guest_mode
+    to:
+      - "on"
+      - "off"
+
+  - id: "template_entities_update"
+    platform: state
+    entity_id:
+      - binary_sensor.notifier_dnd
+      - binary_sensor.notifier_people_home
+      - select.notifier_text_notify
+      - select.notifier_player_alexa
+      - select.notifier_player_google
+      - sensor.notifier_day_period
+      - sensor.notifier_day_period_volume
+      - sensor.notifier_player_alexa
+      - sensor.notifier_player_google
+      - sensor.notifier_text_notify
+    not_to:
+      - "unavailable"
+      - "unknown"
+      - "none"
+
+  - id: "reset_config"
+    platform: state
+    entity_id: input_button.notifier_reset_config
+
+action:
+  #------------------------------------------------------------------------------------#
+  # INITIALIZE
+  #------------------------------------------------------------------------------------#
+
+  - variables: &ui_config_all
+      ui_person: !input person
+      ui_alexa_player: !input alexa_media_player
+      ui_alexa_group: !input alexa_group_player
+      ui_google_player: !input google_media_player
+      ui_google_group: !input google_group_player
+
+  - variables: &ui_check_config
+      packages_folder: !input packages_folder
+      personal_assistant: !input personal_assistant
+      notify_service_list: !input notify_service_list
+      enabled_home_assistant_event: !input enabled_home_assistant_event
+      ha_event_notify: !input ha_event_notify
+      enabled_auto_volume: !input enabled_auto_volume
+      time_pattern_hours: !input time_pattern_hours
+      exclude_media_player: !input exclude_media_player
+      tts_google: !input tts_google
+      tts_google_cloud: !input tts_google_cloud
+      reverso_tts: !input reverso_tts
+      sip_server_name: !input sip_server_name
+      alexa_skill_id: !input alexa_skill_id
+      debug: !input debug
+      download: !input download
+      beta_version: !input beta_version
+      is_script: "{{ has_value('script.my_notify') }}"
+
+      person: "{{ ui_person | select('in', integration_entities('person')) | list}}"
+      alexa_media_player: "{{ ui_alexa_player | select('in', integration_entities('alexa_media')) | list }}"
+      alexa_group_player: "{{ ui_alexa_group | select('in', integration_entities('group')) | list }}"
+      google_media_player: "{{ ui_google_player | select('in', integration_entities('cast')) | list }}"
+      google_group_player: "{{ ui_google_group | select('in', integration_entities('group')) | list }}"
+
+  #------------------------------------------------------------------------------------#
+  # CONFIGURATION
+  #------------------------------------------------------------------------------------#
+  - alias: "Configuration"
+    choose:
+      - conditions:
+          - or:
+              - "{{ trigger.id in ['hass_start', 'reload', 'reset_config', 'notifier_on', 'template_entities_update'] }}"
+              - "{{ trigger.platform is none }}"
+        sequence:
+          - alias: "RESTART APP AND DOWNLOAD"
+            if:
+              - "{{ trigger.id in ['reload'] }}"
+              - "{{ not is_script and download }}"
+            then:
+              - event: notifier
+                event_data:
+                  ad:
+                    command: restart
+              - service: persistent_notification.create
+                data:
+                  notification_id: "centro_notifiche_config_download"
+                  title: "Configurazione Centro Notifiche"
+                  message: |
+                    ## Restart Notifier App and Download Package
+
+                    ➡ {{ now().time() }}"
+              - stop: "Wait App"
+
+          - variables:
+              zero_time: >
+                {% set a = states('input_datetime.notifier_start_early_morning') %}
+                {% set b = states('input_datetime.notifier_start_morning') %}
+                {% set c = states('input_datetime.notifier_start_afternoon') %}
+                {% set d = states('input_datetime.notifier_start_evening') %}
+                {% set e = states('input_datetime.notifier_start_night') %}
+                {% set f = states('input_datetime.notifier_start_late_night') %}
+                {% set lst = [a,b,c,d,e,f] %}
+                {{ lst[:-1] == lst[1:] and not 'unknown' in lst }}
+
+          - alias: "Create groups only on boot and reload"
+            if:
+              - "{{ is_script }}"
+              - "{{ trigger.id in ['hass_start', 'reload'] }}"
+            then:
+              - alias: "Creation of an notifier_automations Group"
+                service: group.set
+                data:
+                  object_id: "notifier_automations"
+                  entities: >-
+                    {# Backword compatible .endswith('hub') #}
+                    {{states.automation
+                      | select('match','.*[_\s]hub|.*notifier[_\s]', ignorecase=True)
+                      | map(attribute='entity_id') | list }}
+
+              - alias: "Creation of the notifier_location_tracker Group from Person"
+                if: "{{ not not person }}" # same as ->> person | length > 0
+                then:
+                  - service: group.set
+                    data:
+                      object_id: notifier_location_tracker
+                      entities: "{{ person }}"
+
+              - alias: "Creation of the notifier_player_alexa Group, if Alexa exists"
+                if: "{{ not not alexa_media_player }}"
+                then:
+                  - service: group.set
+                    data:
+                      object_id: notifier_player_alexa
+                      entities: "{{ alexa_media_player }}"
+
+              - alias: "Creation of the notifier_player_google Group, if Google exists"
+                if: "{{ not not google_media_player }}"
+                then:
+                  - service: group.set
+                    data:
+                      object_id: notifier_player_google
+                      entities: "{{ google_media_player }}"
+
+              - alias: "IF DEBUG - GROUP SETTING"
+                if: "{{ debug }}"
+                then:
+                  - service: persistent_notification.create
+                    data:
+                      notification_id: "centro_notifiche_config_group"
+                      title: "GROUP Setting"
+                      message: |
+                        ```yaml
+                        ___
+                        AUTO GROUPS
+                        PERSON: {{ state_attr('group.notifier_location_tracker', 'entity_id') }}
+                        ALEXA: {{ state_attr('group.notifier_player_alexa', 'entity_id') }}
+                        GOOGLE: {{ state_attr('group.notifier_player_google', 'entity_id') }}
+                        ___
+                        INTERATION: {{ integration_entities('group') }}
+                        ___
+                        ```
+
+          - alias: "Set the default settings to get started"
+            if:
+              - "{{ is_script }}"
+              - "{{ trigger.id == 'reset_config' or zero_time }}"
+            then:
+              - alias: "Set Guest if the people list is empty."
+                if: "{{ not person }}"
+                then:
+                  service: input_boolean.turn_on
+                  target:
+                    entity_id:
+                      - input_boolean.notifier_guest_mode
+              - alias: "Set the default times"
+                repeat:
+                  for_each:
+                    - target: input_datetime.notifier_start_early_morning
+                      time: "05:00:00"
+                    - target: input_datetime.notifier_start_morning
+                      time: "07:00:00"
+                    - target: input_datetime.notifier_start_afternoon
+                      time: "12:00:00"
+                    - target: input_datetime.notifier_start_evening
+                      time: "18:00:00"
+                    - target: input_datetime.notifier_start_night
+                      time: "22:00:00"
+                    - target: input_datetime.notifier_start_late_night
+                      time: "01:00:00"
+                    - target: input_datetime.notifier_start_weekdays
+                      time: "22:30:00"
+                    - target: input_datetime.notifier_end_weekdays
+                      time: "08:00:00"
+                    - target: input_datetime.notifier_start_holidays
+                      time: "23:00:00"
+                    - target: input_datetime.notifier_end_holidays
+                      time: "09:00:00"
+                  sequence:
+                    - service: input_datetime.set_datetime
+                      data:
+                        time: "{{ repeat.item.time }}"
+                      target:
+                        entity_id: "{{ repeat.item.target }}"
+              - alias: "Set the default volumes"
+                repeat:
+                  for_each:
+                    - target: input_number.notifier_early_morning_volume
+                      volume: 20
+                    - target: input_number.notifier_morning_volume
+                      volume: 30
+                    - target: input_number.notifier_afternoon_volume
+                      volume: 40
+                    - target: input_number.notifier_evening_volume
+                      volume: 30
+                    - target: input_number.notifier_night_volume
+                      volume: 20
+                    - target: input_number.notifier_late_night_volume
+                      volume: 10
+                  sequence:
+                    - service: input_number.set_value
+                      data:
+                        value: "{{ repeat.item.volume }}"
+                      target:
+                        entity_id: "{{ repeat.item.target }}"
+              - alias: "Set Text and Screen notification switches"
+                service: input_boolean.turn_on
+                target:
+                  entity_id:
+                    - input_boolean.notifier_text_notifications
+                    - input_boolean.notifier_screen_notifications
+              - alias: "Set first notify service in the text notification selector"
+                if: "{{ not not notify_service_list }}"
+                then:
+                  - service: select.select_first
+                    target:
+                      entity_id: select.notifier_text_notify
+              - alias: "Set Speech notification"
+                if: "{{ not not (alexa_media_player + google_media_player) }}"
+                then:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: input_boolean.notifier_speech_notifications
+                  - service: input_number.set_value
+                    data:
+                      value: 5
+                    target:
+                      entity_id: input_number.notifier_tts_wait_time
+                  - if: "{{ not not alexa_media_player }}"
+                    then:
+                      - service: select.select_first
+                        target:
+                          entity_id: select.notifier_player_alexa
+                      - service: input_boolean.turn_on
+                        target:
+                          entity_id:
+                            - input_boolean.notifier_alexa_switch
+                            - input_boolean.notifier_alexa_ssml
+                            - input_boolean.notifier_alexa_smart_volume
+                      - service: button.press
+                        target:
+                          entity_id: button.notifier_ssml_reset
+                  - if: "{{ not not google_media_player }}"
+                    then:
+                      - service: select.select_first
+                        target:
+                          entity_id: select.notifier_player_google
+                      - service: input_boolean.turn_on
+                        target:
+                          entity_id: input_boolean.notifier_google_switch
+              - alias: "Set input_text.notifier_called_number blank if unknown"
+                if: "{{ states('input_text.notifier_called_number') == 'unknown' }}"
+                then:
+                  - service: input_text.set_value
+                    data:
+                      entity_id: input_text.notifier_called_number
+                      value: ""
+              - alias: "Welcome message"
+                service: script.my_notify
+                data:
+                  title: "📬 Benvnuto nel Centro Notifiche! 🕵"
+                  message: |
+                    Centro Notifiche configurato ed operativo!
+                  alexa:
+                    voice: Giorgio
+                    type: tts
+                  google: true
+
+          - alias: "Clean the recorder. Remove orphaned groups on reload, only if has value but the script is missing."
+            if:
+              - "{{ not is_script }}"
+              - "{{ trigger.id in ['reload'] }}"
+              - "{{ has_value('group.notifier_automations') }}"
+            then:
+              - alias: Remove group
+                repeat:
+                  for_each:
+                    - "group.notifier_location_tracker"
+                    - "group.notifier_player_alexa"
+                    - "group.notifier_player_google"
+                    - "group.notifier_automations"
+                  sequence:
+                    if: "{{ repeat.item in integration_entities('group') }}"
+                    then:
+                      - service: group.remove
+                        data:
+                          object_id: "{{ repeat.item.split('.')[1] }}"
+              - service: recorder.purge_entities
+                data:
+                  keep_days: 0
+                  entity_globs: ".notifier_*"
+                target:
+                  entity_id: "script.my_notify"
+              - service: persistent_notification.create
+                data:
+                  notification_id: "centro_notifiche_config_purge"
+                  title: "Purge Centro Notifiche"
+                  message: |-
+                    PURGE DATABASE
+          #----------------------------------------------------------------------------#
+          # EVENT DATA - USER INPUT CONFIGURATION AND TEMPLATE ENTITIES STATES
+          #----------------------------------------------------------------------------#
+          - alias: "SET CONFIGURATION SENSOR"
+            event: notifier_config
+            event_data: &data
+              <<: *ui_check_config
+
+              # Template entities state
+              dnd: "{{ states('binary_sensor.notifier_dnd') }}"
+              people_home: "{{ states('binary_sensor.notifier_people_home') }}"
+              day_period: "{{ states('sensor.notifier_day_period') }}"
+              day_period_volume: "{{ states('sensor.notifier_day_period_volume') }}"
+              alexa_sensor: "{{ states('sensor.notifier_player_alexa') }}"
+              alexa_select: "{{ states('select.notifier_player_alexa') }}"
+              alexa_options: "{{ state_attr('select.notifier_player_alexa', 'options') }}"
+              google_sensor: "{{ states('sensor.notifier_player_google') }}"
+              google_select: "{{ states('select.notifier_player_google') }}"
+              google_options: "{{ state_attr('select.notifier_player_google', 'options') }}"
+              notify_sensor: "{{ states('sensor.notifier_text_notify') }}"
+              notify_select: "{{ states('select.notifier_text_notify') }}"
+              notify_options: "{{ state_attr('select.notifier_text_notify', 'options') }}"
+              location_tracker: "{{ states('group.notifier_location_tracker') }}"
+
+          - alias: "IF DEBUG - PRETTY PRINT CONFIGURATION"
+            if: "{{ debug }}"
+            then:
+              - variables:
+                  data: *data
+              - service: persistent_notification.create
+                data:
+                  notification_id: "centro_notifiche_config"
+                  title: "Configurazione Centro Notifiche"
+                  message: |-
+                    {% set message = data %}
+                    ```json
+                    {{ message | to_json(pretty_print=true,sort_keys=False) }}
+                    ```
+
+  #------------------------------------------------------------------------------------#
+  # AUTO VOLUME - Media player volume adjustment, based on period_of_day_volume sensor
+  #------------------------------------------------------------------------------------#
+  - alias: notifier_auto_volume
+    choose:
+      - conditions:
+          - "{{ enabled_auto_volume }}"
+          - "{{ trigger.id in ['time_pattern_hours', 'notifier_auto_volume', 'hass_start', 'reload'] }}"
+          - "{{ state_attr('sensor.notifier_day_period_volume', 'vol') is not none }}"
+        sequence:
+          - variables:
+              list_alexa: >-
+                {{ alexa_media_player | reject('in', exclude_media_player) | list }}
+              list_google: >-
+                {{ google_media_player | reject('in', exclude_media_player) | list }}
+              volume: "{{ states('sensor.notifier_day_period_volume') | float(10) }}"
+              vol: "{{ state_attr('sensor.notifier_day_period_volume', 'vol') }}"
+              period: "{{ states('sensor.notifier_day_period') }}"
+          - parallel:
+              - choose:
+                  - conditions: "{{ list_alexa | length > 0 }}"
+                    sequence:
+                      - if: "{{ is_state('input_boolean.notifier_alexa_smart_volume', 'on') }}"
+                        then:
+                          - service: script.my_notify
+                            data:
+                              notify: False
+                              call_no_annuncio: True
+                              message: "Set Auto Volumes silent. {{ period }} at {{ volume | int(0) }}%"
+                              no_show: "{{ True if trigger.platform is none else False }}"
+                              alexa:
+                                priority: True
+                                auto_volumes: True
+                                media_player: "{{ list_alexa }}"
+                                volume: "{{ vol }}"
+                        else:
+                          - service: media_player.volume_set
+                            data:
+                              volume_level: "{{ vol }}"
+                            target:
+                              entity_id: "{{ list_alexa }}"
+              - choose:
+                  - conditions: "{{ list_google | length > 0 }}"
+                    sequence:
+                      - service: media_player.volume_set
+                        data:
+                          volume_level: "{{ vol }}"
+                        target:
+                          entity_id: "{{ list_google }}"
+              - service: input_number.set_value
+                data:
+                  entity_id:
+                    - input_number.notifier_intercom_volume
+                  value: "{{ volume }}"
+
+  #------------------------------------------------------------------------------------#
+  # INTERCOM - To send messages from the GUI (Excluding text messages)
+  #------------------------------------------------------------------------------------#
+  - alias: notifier_intercom_message
+    choose:
+      - conditions:
+          - "{{ trigger.id == 'notifier_intercom_message' }}"
+          - "{{ states('input_text.notifier_intercom_message') not in ['unknown','unavailable',''] }}"
+        sequence:
+          - service: script.my_notify
+            data:
+              # notify: False
+              title: "Interfono"
+              message: "{{ states('input_text.notifier_intercom_message')~' ' }}"
+              call_no_annuncio: true
+              alexa:
+                # priority: 1
+                volume: &intercom_volume >
+                  {{ states('input_number.notifier_intercom_volume') | int(0) / 100 }}
+              google:
+                volume: *intercom_volume
+          - service: input_text.set_value
+            data:
+              entity_id: input_text.notifier_intercom_message
+              value: ""
+
+  #------------------------------------------------------------------------------------#
+  # GUEST - On and Off guest mode - The TTS works even if you are away from home.
+  #         Useful even if you want to exclude automations if there are guests in the house
+  #------------------------------------------------------------------------------------#
+  - alias: notifier_guest_mode
+    choose:
+      - conditions:
+          - "{{ trigger.id == 'notifier_guest_mode' }}"
+        sequence:
+          - service: script.my_notify
+            data:
+              title: "Modalità Ospite - {{ trigger.to_state.state | upper }}"
+              call_no_annuncio: true
+              call_modo_ospite: true
+              alexa: true
+              google: true
+
+  #----------------------------------------------------------------------------------------------------#
+  # HOME ASSISTANT Start/Final Write/Close/Stop/Restart
+  #----------------------------------------------------------------------------------------------------#
+  - alias: Home Assistant Start Stop Hub
+    choose:
+      - conditions:
+          - "{{ enabled_home_assistant_event }}"
+          # - "{{ trigger.id is defined }}" # stop for run automation or automation.trigger
+          - "{{ trigger.id is defined and trigger.id is search('^(hass_)', ignorecase=True) }}"
+        sequence:
+          - variables:
+              title: >
+                {{ (trigger.description | regex_replace(find="\W|_|event", replace=" ") | trim | capitalize) 
+                  if trigger.description is defined else trigger.id }}
+              time: "{{(now().time()|string)[:-4]}}"
+              icon: >
+                {{ {'stop' in title: '🛑',
+                    'final' in title: '🏁',
+                    'close' in title: '⛔',
+                    'restart' in title: '👍👍',
+                    'start' in title: '👍',
+                    'Call' in title: '📞',
+                    }.get(True, '❗') }}
+              notify_service: >-
+                {% set CN_NOTIFY = iif(ha_event_notify, ha_event_notify, states('select.notifier_text_notify')) %}
+                {% set HA_NOTIFY = ['persistent_notification', 'notify'] %}
+                {% set DEFAULT_NOTIFY = iif(CN_NOTIFY in ['unavailable', 'unknown'], HA_NOTIFY, CN_NOTIFY)%}
+                {{ iif(DEFAULT_NOTIFY is string, (DEFAULT_NOTIFY
+                  | regex_replace(find=" *, *", replace=",") | lower).rsplit(","), DEFAULT_NOTIFY) }}
+              ha_start: "{{ states('sensor.ha_start') }}"
+              start_message: >-
+                {{ iif(states('sensor.notifier_config') != "", 
+                  states('sensor.notifier_config'), 'Il sistema ') }} è operativo!.
+          - alias: "Repeat text notify"
+            repeat:
+              for_each: "{{ notify_service }}"
+              sequence:
+                - variables:
+                    notify_name: "{{ repeat.item | replace('notify.','') | slugify(separator='_') }}"
+                - service: "notify.{{ notify_name }}"
+                  data:
+                    title: "{{ icon }} {{ title }}"
+                    message: |
+                      ➡ {{ time }}
+                - choose:
+                    - conditions:
+                        - "{{ 'start' in title }}"
+                        - "{{ is_script }}"
+                      sequence:
+                        - if: "{{ states.sensor.ha_start.state is defined }}"
+                          then:
+                            - service: homeassistant.update_entity
+                              entity_id:
+                                - sensor.ha_start
+                                - sensor.verifica_tempi_setup
+                        - wait_template: "{{ is_state('sensor.notifier_debug_error', 'on') }}"
+                          # - wait_for_trigger:
+                          #     - platform: state
+                          #       entity_id: sensor.notifier_debug_error
+                          #       to:
+                          #         - "on"
+                          #         - "OK"
+                          timeout: 120
+                          continue_on_timeout: true
+                        - service: script.my_notify
+                          data:
+                            title: "HomeAssistant Start!"
+                            notify: "notify.{{ notify_name }}"
+                            message: |
+                              📬 {{ start_message }} 🕵
+                              🟩 {{ iif(ha_start != 'unknown', ha_start, states('sensor.notifier_debug_error')) }}
+                            alexa:
+                              mode: "{{ repeat.index == 1 }}"
+                              message: "{{ start_message }}"
+                              voice: Giorgio
+                              type: tts
+                            google:
+                              mode: "{{ repeat.index == 1 }}"
+                              message: "{{ start_message }}"
+                  # default:
+                  #   - service: "notify.{{ notify_service[0] }}"
+                  #     data:
+                  #       message: "DEFAULT: {{ icon }} {{ title }} {{ this.entity_id }}"

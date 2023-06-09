@@ -5,22 +5,32 @@ homeassistant:
   ######################################-#######################################
   customize:
     ## NODE ANCHORS
-    package.node_anchors:
+    package.cn:
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
-        version: "Alexa 4.0.0"
 
-    ## SENSOR
+    ## BINARY SENSOR
     binary_sensor.notifier_alexa_speak:
       <<: *customize
       friendly_name: "Alexa parla"
+      icon: mdi:speaker-message
+    ## BUTTON
+    button.notifier_ssml_reset:
+      <<: *customize
+      friendly_name: "Ripristina SSML"
+      # icon: mdi:restore
+    ## GROUP
+    group.notifier_player_alexa:
+      <<: *customize
+      friendly_name: "Gruppo Alexa"
+      icon: mdi:speaker-multiple
     ## INPUT
     input_boolean.notifier_alexa_switch:
       <<: *customize
       friendly_name: "Alexa Off/On"
-      icon: si:amazonalexa
+      icon: mdi:dots-circle
       # icon: mdi:alpha-a-circle
     input_boolean.notifier_alexa_smart_volume:
       <<: *customize
@@ -59,11 +69,6 @@ homeassistant:
       <<: *customize
       friendly_name: "Tipo Predefinito Alexa"
       icon: mdi:bugle
-    ## SCRIPT
-    script.notifier_ssml_reset:
-      <<: *customize
-      friendly_name: "Ripristina SSML"
-      icon: mdi:restore
     ## SELECT
     select.notifier_player_alexa:
       <<: *customize
@@ -171,42 +176,73 @@ input_select:
         "es-MX",
         "es-US",
       ]
-
+# Legacy binary sensor configuration format (template integration issue with AppDaemon)
+binary_sensor:
+  - platform: template
+    sensors:
+      notifier_alexa_speak:
+        friendly_name: "Alexa Speak"
+        icon_template: "mdi:speaker-message"
+        value_template: "off"
 #######################################-#######################################
 ##                                 TEMPLATE
 #######################################-#######################################
 template:
+  - button:
+      - name: "notifier_ssml_reset"
+        press:
+          - service: input_number.set_value
+            data:
+              entity_id:
+                - input_number.notifier_alexa_prosody_pitch
+                - input_number.notifier_alexa_prosody_volume
+              value: 0
+          - service: input_number.set_value
+            data:
+              entity_id: input_number.notifier_alexa_prosody_rate
+              value: 100
+          - service: input_select.select_option
+            data:
+              entity_id: input_select.notifier_alexa_voice
+              option: Alexa
+          - service: input_select.select_option
+            data:
+              entity_id: input_select.notifier_alexa_language
+              option: Master
+
   - select:
       - name: "notifier_player_alexa"
-        state: "{{ state_attr('sensor.notifier_player_alexa', 'selected') | default('none', true) }}"
+        state: "{{ state_attr('sensor.notifier_player_alexa', 'selected') | default('unknown', true) }}"
         optimistic: true
         options: |
-          {% set mp = state_attr('group.notifier_player_alexa', 'entity_id')
-            | default(['\0'], true) | join('|') %}
-          {{ states | select('search', mp, ignorecase=True)
-            | rejectattr('entity_id', 'search','sensor.notifier_.*')
-            | map(attribute='name') | list | unique | sort }}
+          {{ (state_attr('sensor.notifier_config', 'alexa_media_player')
+            | map('state_attr', 'friendly_name') | reject('none') | list)
+          + (state_attr('sensor.notifier_config', 'alexa_group_player')
+            | map('state_attr', 'friendly_name') | reject('none') | list)
+          }}
         select_option:
-          - event: notifier_global_variables
-            event_data: 
-              alexa_selected: "{{ option }}"
-              app: alexa
+          - variables:
+              option: "{{ option }}"
 
   - trigger:
-      - platform: event
-        event_type: notifier_global_variables
-        event_data:
-          app: alexa
+      - platform: state
+        entity_id:
+          - select.notifier_player_alexa
+        not_to:
+          - "unavailable"
+          - "unknown"
+          - "none"
     sensor:
       - name: "notifier_player_alexa"
+         ## TODO namespace unique plyer comma separate
         state: >-
           {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
-          {% set player = state_attr('group.notifier_player_alexa','entity_id') %}
-          {% set selected = trigger.event.data.alexa_selected | lower %}
+          {% set player = state_attr('sensor.notifier_config', 'alexa_media_player') %}   
+          {% set selected = trigger.to_state.state | lower %}
           {% for x in domains if x.name | lower == selected %}
             {% if x.domain == 'sensor' and player and x.state in player | list %}
               {{ x.state }}
-            {% elif x.domain == 'group'
+            {% elif x.domain in ['group', 'media_player'] and x.attributes.entity_id is defined
                   and player and x.attributes.entity_id[0] in player | list %}
               {{ x.attributes.entity_id | join(', ') }}
             {% else %}
@@ -214,44 +250,23 @@ template:
             {% endif %}
           {% endfor %}
         icon: >-
-          {% set domains = (states.group | list) + (states.media_player | list) + (states.sensor | list) %}
-          {% set selected = trigger.event.data.alexa_selected | lower %}
-          {% for x in domains if x.name | lower == selected %}
-            {% if x.domain == 'group' %}
-              mdi:speaker-multiple
-            {% elif x.domain == 'sensor' %}
-              mdi:cast-audio
-            {% else %}
-              mdi:speaker
-            {% endif %}
-          {% endfor %}
+          {% set status = states('select.notifier_player_alexa') 
+              in integration_entities('group') | map('state_attr', 'friendly_name') %}
+          {{ iif(status, 'mdi:speaker-multiple', 'mdi:speaker') }}
         attributes:
-          selected: "{{ trigger.event.data.alexa_selected | default }}"
+          selected: "{{ trigger.to_state.state | default }}"
+          entities: >-
+            {% set status = trigger.to_state.state
+                in integration_entities('group') | map('state_attr', 'friendly_name') %}
+            {% set group = state_attr('sensor.notifier_config', 'alexa_group_player')
+                | select('is_state_attr', 'friendly_name', states('select.notifier_player_alexa'))
+                | list | expand | map(attribute='entity_id') | list %}
+            {% set single = expand(state_attr('sensor.notifier_config', 'alexa_media_player'))
+              | selectattr('name', '==', states('select.notifier_player_alexa'))
+              | map(attribute='entity_id') | list %}
+            {{ iif(status, group, single) }}
 
-  - binary_sensor:
-      - name: "notifier_alexa_speak"
-        state: "off"
-#######################################-#######################################
-##                                  SCRIPT
-#######################################-#######################################
-script:
-  notifier_ssml_reset:
-    sequence:
-      - service: input_number.set_value
-        data:
-          entity_id: 
-            - input_number.notifier_alexa_prosody_pitch
-            - input_number.notifier_alexa_prosody_volume
-          value: 0
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.notifier_alexa_prosody_rate
-          value: 100
-      - service: input_select.select_option
-        data:
-          entity_id: input_select.notifier_alexa_voice
-          option: Alexa
-      - service: input_select.select_option
-        data:
-          entity_id: input_select.notifier_alexa_language
-          option: Master
+  # Use modern configuration (BUG in namespace AppDaemon)
+  # - binary_sensor:
+  #     - name: "notifier_alexa_speak"
+  #       state: "off"
