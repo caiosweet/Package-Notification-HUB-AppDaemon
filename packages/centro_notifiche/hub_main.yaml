@@ -339,13 +339,13 @@ input_text:
     mode: password
 
 # Legacy sensor configuration format (template integration issue with AppDaemon)
-sensor:
-  - platform: template
-    sensors:
-      notifier_debug_error:
-        friendly_name: "Notifier Debug Error"
-        icon_template: "mdi:account-wrench"
-        value_template: "OK"
+# sensor:
+#   - platform: template
+#     sensors:
+#       notifier_debug_error:
+#         friendly_name: "Notifier Debug Error"
+#         icon_template: "mdi:account-wrench"
+#         value_template: "OK"
 
 #######################################-#######################################
 ##                                 TEMPLATE
