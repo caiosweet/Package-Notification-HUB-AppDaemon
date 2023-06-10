@@ -552,13 +552,13 @@ action:
                     - target: input_datetime.notifier_start_late_night
                       time: "01:00:00"
                     - target: input_datetime.notifier_start_weekdays
-                      time: "22:30:00"
+                      time: "23:00:00"
                     - target: input_datetime.notifier_end_weekdays
-                      time: "08:00:00"
+                      time: "07:00:00"
                     - target: input_datetime.notifier_start_holidays
                       time: "23:00:00"
                     - target: input_datetime.notifier_end_holidays
-                      time: "09:00:00"
+                      time: "08:00:00"
                   sequence:
                     - service: input_datetime.set_datetime
                       data:
