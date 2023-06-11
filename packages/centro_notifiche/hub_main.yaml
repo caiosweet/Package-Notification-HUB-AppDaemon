@@ -16,11 +16,12 @@ homeassistant:
   customize:
     ## NODE ANCHORS
     package.cn:
-      version: "5.0.6"
+      version: "5.0.7"
       customize: &customize
         package: "Centro Notifiche 🔔"
         site: "hassiohelp.eu 🌐"
         author: "Caio & Gianpi"
+        version: "Main 5.0.7"
 
     ## AUTOMATION
     automation.notifier_startup_configuration:
@@ -370,6 +371,10 @@ template:
           alexa_select: "{{ trigger.event.data.alexa_select }}"
           google_select: "{{ trigger.event.data.google_select }}"
           notify_select: "{{ trigger.event.data.notify_select }}"
+          
+          debug: "{{ trigger.event.data.debug }}"
+          download: "{{ trigger.event.data.download }}"
+          beta_version: "{{ trigger.event.data.beta_version }}"
 
   - binary_sensor:
       - name: "notifier_dnd"
