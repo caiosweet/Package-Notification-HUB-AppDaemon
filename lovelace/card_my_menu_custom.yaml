@@ -5,6 +5,8 @@ cards:
       background: var(--primary-color)
     buttons:
       - entity: sensor.notifier_config
+        icon: mdi:account-tie
+        name: '{{ states(config.entity) }}'
         styles:
           button:
             font-size: 16px
@@ -12,8 +14,6 @@ cards:
         tap_action:
           action: navigate
           navigation_path: centro-notifiche
-        icon: mdi:account-tie
-        name: '{{ states(config.entity) }}'
   - type: conditional
     conditions:
       - entity: sensor.notifier_debug_error
@@ -30,7 +30,7 @@ cards:
       content: |-
         <ha-alert alert-type="error">
           <details>
-            <summary>Notifier Debug Error</summary>
+            <summary>Attenzione {{ user }}, si è verificato un errore in Notifier App</summary>
             {{states('sensor.notifier_debug_error')}}
         </details>
   - type: custom:paper-buttons-row
@@ -38,27 +38,8 @@ cards:
       display: flex
       justify-content: space-between
     buttons:
-      - entity: binary_sensor.notifier_people_home
-        layout: state
-        state:
-          attribute: number
-      - entity: group.notifier_location_tracker
+      - entity: group.notifier_group_notification
         layout: icon
-        styles:
-          button:
-            margin-left: '-24px'
-        tap_action:
-          action: more-info
-        state_icons:
-          not_home: mdi:home-export-outline
-          home: mdi:home-import-outline
-        state_styles:
-          not_home:
-            button:
-              color: red
-          home:
-            button:
-              color: var(--state-person-home-color)
       - entity: input_boolean.notifier_speech_notifications
         layout: icon
         state_icons:
@@ -83,6 +64,49 @@ cards:
           'off': mdi:alarm-light-outline
       - entity: input_boolean.notifier_holidays
         layout: icon
+      - entity: automation.centro_notifiche_configurazione_avvio
+        layout: icon
+        icon: mdi:cog
+        styles:
+          button:
+            color: |
+              var(--red-color)
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              title: Impostazioni
+              content:
+                type: entities
+                entities:
+                  - entity: automation.centro_notifiche_configurazione_avvio
+                  - entity: sensor.notifier_debug_error
+                    name: Notifier Debug Error
+                    icon: mdi:account-wrench
+                  - entity: sensor.notifier_config
+                  - entity: input_button.notifier_reset_config
+                    tap_action:
+                      action: call-service
+                      service: input_button.press
+                      target:
+                        entity_id: input_button.notifier_reset_config
+                      confirmation:
+                        text: Procedo al reset della configurazione?
+                  - type: button
+                    icon: mdi:restart
+                    entity: sensor.notifier_debug_error
+                    name: Restart App
+                    tap_action:
+                      action: call-service
+                      confirmation:
+                        text: Sei sicuro di voler riavviare l'App Notifier?
+                      service: script.my_notify
+                      service_data:
+                        ad:
+                          command: restart
   - type: divider
     style:
       background-color: var(--primary-color)
@@ -93,22 +117,34 @@ cards:
       grid-template-columns: repeat(4, 1fr)
       font-size: 0.9em
     buttons:
-      - entity: sensor.notifier_debug_error
+      - entity: group.notifier_location_tracker
         layout: icon|name|state
-        name: Notifier
+        name: |
+          {{ state_attr('binary_sensor.notifier_people_home', 'number') }}
         styles:
           button:
             justify-content: flex-start
-            color: >-
-              {{ iif(states(config.entity)|lower in ['on','ok'],  
-              'var(--success-color)', 'var(--error-color)') }}
+            color: var(--state-person-home-color)
           icon:
             scale: 70%
-        state: |
-          {{ iif(states(config.entity)|lower in ['on','ok'],  
-              states(config.entity), 'Error') }}
+        state_icons:
+          not_home: mdi:home-export-outline
+          home: mdi:home-import-outline
+        state_styles:
+          not_home:
+            button:
+              color: var(--red-color)
+          home:
+            button:
+              color: var(--state-person-home-color)
+        tap_action:
+          action: more-info
       - entity: sensor.notifier_day_period
         layout: state
+        icon: '{{state_attr(''sensor.notifier_day_period'',''icon'')}}'
+        styles:
+          button:
+            color: var(--info-color)
         tap_action:
           action: fire-dom-event
           browser_mod:
@@ -124,8 +160,14 @@ cards:
                   - input_datetime.notifier_start_evening
                   - input_datetime.notifier_start_night
                   - input_datetime.notifier_start_late_night
-        icon: '{{state_attr(''sensor.notifier_day_period'',''icon'')}}'
       - entity: sensor.notifier_day_period_volume
+        layout: name|state
+        icon: '{{state_attr(config.entity,''icon'')}}'
+        state: '{{states(config.entity)}}%'
+        name: VOL
+        styles:
+          button:
+            color: var(--info-color)
         tap_action:
           action: fire-dom-event
           browser_mod:
@@ -142,19 +184,15 @@ cards:
                   - input_number.notifier_night_volume
                   - input_number.notifier_late_night_volume
                   - input_number.notifier_intercom_volume
-        icon: '{{state_attr(''sensor.notifier_day_period_volume'',''icon'')}}'
-        state: |
-          {{states('sensor.notifier_day_period_volume')}}%
-        name: VOL
-        layout: name|state
+
       - entity: binary_sensor.notifier_dnd
-        name: DND
         layout: name|state
+        name: DND
         styles:
           button:
             - color: >-
                 {{ iif(states(config.entity) == 'on',  'var(--warning-color)',
-                '') }}
+                'var(--info-color)') }}
         state_icons:
           'on': mdi:minus-circle
           'off': mdi:minus-circle-off
@@ -171,6 +209,10 @@ cards:
                   - input_datetime.notifier_end_weekdays
                   - input_datetime.notifier_start_holidays
                   - input_datetime.notifier_end_holidays
+  - type: divider
+    style:
+      background-color: var(--primary-color)
+      height: 1px
   - type: custom:paper-buttons-row
     styles:
       display: grid
@@ -191,7 +233,58 @@ cards:
               'blink 1.5s linear infinite alternate', '') }}
           icon:
             scale: 70%
+        hold_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              title: Alexa
+              content:
+                type: entities
+                entities:
+                  - entity: input_boolean.notifier_alexa_switch
+                    icon: mdi:dots-circle
+                  - entity: select.notifier_player_alexa
+                  - entity: input_select.notifier_alexa_type
+                  - entity: input_select.notifier_alexa_method
+                  - entity: input_boolean.notifier_alexa_smart_volume
+                  - entity: binary_sensor.notifier_alexa_speak
+                    icon: mdi:speaker-message
+                    name: Alexa Parla
+                  - type: section
+                    label: SSML
+                  - entity: input_boolean.notifier_alexa_ssml
+                  - entity: input_select.notifier_alexa_voice
+                  - entity: input_select.notifier_alexa_language
+                  - entity: input_number.notifier_alexa_prosody_rate
+                  - entity: input_number.notifier_alexa_prosody_pitch
+                  - entity: input_number.notifier_alexa_prosody_volume
+                  - entity: button.notifier_ssml_reset
+                  - type: section
+                    label: Info
+                  - entity: sensor.notifier_player_alexa
+                  - type: attribute
+                    name: Entities list
+                    entity: sensor.notifier_player_alexa
+                    attribute: entities
+                  - type: attribute
+                    entity: sensor.notifier_player_alexa
+                    attribute: selected
+                  - entity: group.notifier_player_alexa
+                  - type: attribute
+                    entity: group.notifier_player_alexa
+                    attribute: entity_id
+                    name: Players
       - entity: select.notifier_player_alexa
+        layout: state
+        state:
+          case: first
+        state_icons:
+          'on': mdi:minus-circle
+          'off': mdi:minus-circle-off
+        styles:
+          button:
+            color: var(--primary-text-color)
         tap_action:
           action: call-service
           service: select.select_next
@@ -204,15 +297,6 @@ cards:
           service: select.select_first
           target:
             entity_id: select.notifier_player_alexa
-        layout: state
-        state:
-          case: first
-        state_icons:
-          'on': mdi:minus-circle
-          'off': mdi:minus-circle-off
-        styles:
-          button:
-            color: var(--primary-text-color)
       - entity: input_select.notifier_alexa_type
         layout: state
         state:
@@ -229,9 +313,17 @@ cards:
           service: input_select.select_next
           service_data:
             entity_id: input_select.notifier_alexa_type
-      - entity: input_boolean.notifier_alexa_ssml
-        layout: name
-        name: SSML
+      - entity: sensor.notifier_player_alexa
+        layout: state
+        styles:
+          button:
+            color: var(--info-color)
+          icon:
+            scale: 70%
+        state: >
+          {{ state_attr(config.entity, 'entities') |map('state_attr',
+          'volume_level') |unique |list }}
+            
   - type: custom:paper-buttons-row
     styles:
       display: grid
@@ -246,7 +338,40 @@ cards:
             justify-content: flex-start
           icon:
             scale: 70%
+        hold_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              title: Google
+              content:
+                type: entities
+                entities:
+                  - entity: input_boolean.notifier_google_switch
+                  - entity: select.notifier_player_google
+                  - entity: input_select.notifier_tts_notify
+                  - type: section
+                    label: Info
+                  - entity: sensor.notifier_player_google
+                  - type: attribute
+                    name: Entities list
+                    entity: sensor.notifier_player_google
+                    attribute: entities
+                  - type: attribute
+                    name: Selected
+                    entity: sensor.notifier_player_google
+                    attribute: selected
+                  - entity: group.notifier_player_google
+                  - type: attribute
+                    entity: group.notifier_player_google
+                    attribute: entity_id
       - entity: select.notifier_player_google
+        layout: state
+        state:
+          case: first
+        styles:
+          button:
+            color: var(--primary-text-color)
         tap_action:
           action: call-service
           service: select.select_next
@@ -259,12 +384,6 @@ cards:
           service: select.select_first
           target:
             entity_id: select.notifier_player_google
-        layout: state
-        state:
-          case: first
-        styles:
-          button:
-            color: var(--primary-text-color)
       - entity: input_select.notifier_tts_notify
         layout: icon|state
         icon: false
@@ -281,6 +400,17 @@ cards:
           service: input_select.select_next
           service_data:
             entity_id: input_select.notifier_tts_notify
+      - entity: sensor.notifier_player_google
+        layout: state
+        styles:
+          button:
+            color: var(--info-color)
+          icon:
+            scale: 70%
+        state: >
+          {{ state_attr('sensor.notifier_player_google', 'entities')  |
+          map('state_attr','volume_level')  | reject('none') |  map('round', 1)
+          | list |default('OFF',true) }}
   - type: custom:paper-buttons-row
     styles:
       display: grid
@@ -295,6 +425,8 @@ cards:
             justify-content: flex-start
           icon:
             scale: 70%
+        state_icons:
+          'off': mdi:phone-off
       - entity: input_select.notifier_phone_notify
         name: Voip
         layout: state
@@ -303,20 +435,6 @@ cards:
         styles:
           button:
             color: var(--primary-text-color)
-      - entity: group.notifier_player_alexa
-        layout: name|state
-        styles:
-          button:
-            color: var(--info-color)
-            justify-content: flex-start
-          icon:
-            scale: 70%
-        name: >
-          {{ state_attr(config.entity, 'entity_id') |map('state_attr',
-          'friendly_name') | join(', ') }}
-        state: >
-          {{ state_attr(config.entity, 'entity_id') |map('state_attr',
-          'volume_level') | join(', ') }}
   - type: divider
     style:
       background-color: var(--primary-color)
@@ -327,7 +445,29 @@ cards:
       justify-content: space-between
       font-size: 0.9em
     buttons:
+      - entity: input_boolean.notifier_text_notifications
+        layout: icon|name
+        name: Notify
+        styles:
+          button:
+            justify-content: flex-start
+          icon:
+            scale: 70%
+        state_icons:
+          'off': mdi:cellphone-message-off
       - entity: select.notifier_text_notify
+        layout: state
+        state:
+          case: first
+        styles:
+          button:
+            justify-self: flex-start
+          icon:
+            color: >
+              {{ iif(is_state(config.entity, 'on'), 'var(--state-active-color)',
+              '') }}
+          state:
+            color: var(--primary-text-color)
         tap_action:
           action: call-service
           service: select.select_next
@@ -340,21 +480,14 @@ cards:
           service: select.select_first
           target:
             entity_id: select.notifier_text_notify
-        layout: icon|name|state
-        name: Notify
-        state:
-          case: first
-        styles:
-          state:
-            color: var(--primary-text-color)
       - entity: input_boolean.notifier_html_mode
+        layout: icon
         icon: |
           {{ iif(is_state(config.entity, 'off'), 'mdi:language-markdown', '') }}
-        layout: icon
       - entity: input_boolean.notifier_wrap_text
+        layout: icon
         icon: |
           {{ iif(is_state(config.entity, 'off'), 'mdi:text-long', '') }}
-        layout: icon
       - entity: input_boolean.notifier_tts_clock
         layout: icon
   - type: divider
@@ -435,3 +568,22 @@ cards:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.notifier_intercom_volume
+  - type: conditional
+    conditions:
+      - entity: input_text.notifier_last_message
+        state_not: ''
+    card:
+      type: markdown
+      entity_id: input_text.notifier_last_message
+      card_mod:
+        style: |
+          ha-markdown.no-header {
+            padding: 0px !important;
+          }
+      content: |-
+        <ha-alert alert-type="success">
+        <details>
+            <summary>Ultimo Messaggio</summary>
+            {{states('input_text.notifier_last_message')}}
+        </details>
+        </ha-alert>

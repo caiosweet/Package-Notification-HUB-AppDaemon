@@ -1,25 +1,30 @@
-type: entities
-title: Google
-show_header_toggle: false
-state_color: true
-entities:
-  - type: section
-    label: ''
-  - entity: input_boolean.notifier_google_switch
-  - entity: select.notifier_player_google
-  - entity: input_select.notifier_tts_notify
-  - type: section
-    label: Info
+type: conditional
+conditions:
   - entity: sensor.notifier_player_google
-  - type: attribute
-    name: Entities list
-    entity: sensor.notifier_player_google
-    attribute: entities
-  - type: attribute
-    name: Selected
-    entity: sensor.notifier_player_google
-    attribute: selected
-  - entity: group.notifier_player_google
-  - type: attribute
-    entity: group.notifier_player_google
-    attribute: entity_id
+    state_not: unavailable
+card:
+  type: entities
+  title: Google
+  show_header_toggle: false
+  state_color: true
+  entities:
+    - type: section
+      label: ''
+    - entity: input_boolean.notifier_google_switch
+    - entity: select.notifier_player_google
+    - entity: input_select.notifier_tts_notify
+    - type: section
+      label: Info
+    - entity: sensor.notifier_player_google
+    - type: attribute
+      name: Entities list
+      entity: sensor.notifier_player_google
+      attribute: entities
+    - type: attribute
+      name: Selected
+      entity: sensor.notifier_player_google
+      attribute: selected
+    - entity: group.notifier_player_google
+    - type: attribute
+      entity: group.notifier_player_google
+      attribute: entity_id

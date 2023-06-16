@@ -43,7 +43,7 @@
 
 
   {# *************************************************************************** #}
-  {#        INIZIO SEQUENZIALE DELLA COSTRUZIONE DEL MESSAGGIO / NOTICIA         #}
+  {#        INIZIO SEQUENZIALE DELLA COSTRUZIONE DEL MESSAGGIO / NOTIZIA         #}
   {# *************************************************************************** #}
   {% if not call_no_annuncio|default %} {{ annuncio() }} {% endif %}
   {% if call_modo_ospite|default %} {{ modo_ospite() }} {% endif %}

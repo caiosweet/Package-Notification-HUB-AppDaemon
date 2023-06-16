@@ -6,93 +6,93 @@ automation:
   #----------------------------------------------------------------------------------------------------#
   # Home Assistant Start/Final Write/Close/Stop/Restart
   #----------------------------------------------------------------------------------------------------#
-  - alias: Home Assistant Start Stop Hub
-    description: "Notification Home Assistant Start/Final Write/Close/Stop/Restart"
-    initial_state: true
-    mode: queued
-    max_exceeded: silent
-    trigger:
-      - platform: homeassistant
-        event: start
-      - platform: homeassistant
-        event: shutdown
-      - platform: event
-        event_type: homeassistant_final_write
-      - platform: event
-        event_type: homeassistant_close
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: homeassistant
-          service: restart
-      - platform: event
-        event_type: core_config_updated
-    action:
-      - variables:
-          title: >
-            {{ (trigger.description | regex_replace(find="\W|_|event", replace=" ") | trim | capitalize) 
-            if trigger.description is defined else "TEST" }}
-          time: "{{(now().time()|string)[:-4]}}"
-          icon: >
-            {% if 'stop' in title %}🛑
-            {% elif 'final' in title %}🏁
-            {% elif 'close' in title %}⛔
-            {% elif 'restart' in title %}👍👍
-            {% elif 'start' in title %}👍
-            {% elif 'Call' in title %}📞
-            {% else %}❗❓
-            {% endif %}
-          notify_service: >-
-            {% set DEFAULT_NOTIFY = states('input_select.notifier_text_notify') %}
-            {{ (DEFAULT_NOTIFY|replace('notify.','')|regex_replace(find=" *, *", replace=",")|lower).rsplit(",") 
-            if DEFAULT_NOTIFY is string else DEFAULT_NOTIFY }}
-      - choose:
-          - conditions: "{{ title != 'TEST' }}"
-            sequence:
-              - alias: "Repeat text notify"
-                repeat:
-                  while: "{{ repeat.index <= notify_service | length }}"
-                  sequence:
-                    - variables:
-                        notify_name: "{{ notify_service[repeat.index -1] | replace(' ','_') | lower }}"
-                    - service: "notify.{{ notify_name }}"
-                      data:
-                        title: "{{ icon }} {{ title }}"
-                        message: |
-                          ➡ {{ time }}
-                    - choose:
-                        - conditions: "{{ 'start' in title }}"
-                          sequence:
-                            - service: homeassistant.update_entity
-                              entity_id: 
-                                - sensor.ha_start
-                                - sensor.verifica_tempi_setup
-                            - wait_for_trigger:
-                                - platform: state
-                                  entity_id: sensor.notifier_debug_error
-                                  to: "on"
-                              timeout: 120
-                              continue_on_timeout: true
-                            - service: script.my_notify
-                              data:
-                                title: "HomeAssistant Start!"
-                                notify: "notify.{{ notify_name }}"
-                                message: |
-                                  📬 Centro Notifiche operativo! 🕵
-                                  🟩 {{ states('sensor.ha_start') }}
-                                alexa:
-                                  message: >-
-                                    Il sistema è operativo!.
-                                  voice: Giorgio
-                                  type: tts
-                                google:
-                                  priority: true
-                                  message: >-
-                                    Il sistema è operativo!.
-        default:
-          - service: "notify.{{ (notify_service | default(['notify']))[0] | replace(' ','_') | lower }}"
-            data:
-              message: "DEFAULT: {{ icon }} {{ title }} {{ trigger | replace('_','\_') }} {{ this | replace('_','\_') }}"
+  # - alias: Home Assistant Start Stop Hub
+  #   description: "Notification Home Assistant Start/Final Write/Close/Stop/Restart"
+  #   initial_state: true
+  #   mode: queued
+  #   max_exceeded: silent
+  #   trigger:
+  #     - platform: homeassistant
+  #       event: start
+  #     - platform: homeassistant
+  #       event: shutdown
+  #     - platform: event
+  #       event_type: homeassistant_final_write
+  #     - platform: event
+  #       event_type: homeassistant_close
+  #     - platform: event
+  #       event_type: call_service
+  #       event_data:
+  #         domain: homeassistant
+  #         service: restart
+  #     - platform: event
+  #       event_type: core_config_updated
+  #   action:
+  #     - variables:
+  #         title: >
+  #           {{ (trigger.description | regex_replace(find="\W|_|event", replace=" ") | trim | capitalize) 
+  #           if trigger.description is defined else "TEST" }}
+  #         time: "{{(now().time()|string)[:-4]}}"
+  #         icon: >
+  #           {% if 'stop' in title %}🛑
+  #           {% elif 'final' in title %}🏁
+  #           {% elif 'close' in title %}⛔
+  #           {% elif 'restart' in title %}👍👍
+  #           {% elif 'start' in title %}👍
+  #           {% elif 'Call' in title %}📞
+  #           {% else %}❗❓
+  #           {% endif %}
+  #         notify_service: >-
+  #           {% set DEFAULT_NOTIFY = states('input_select.notifier_text_notify') %}
+  #           {{ (DEFAULT_NOTIFY|replace('notify.','')|regex_replace(find=" *, *", replace=",")|lower).rsplit(",") 
+  #           if DEFAULT_NOTIFY is string else DEFAULT_NOTIFY }}
+  #     - choose:
+  #         - conditions: "{{ title != 'TEST' }}"
+  #           sequence:
+  #             - alias: "Repeat text notify"
+  #               repeat:
+  #                 while: "{{ repeat.index <= notify_service | length }}"
+  #                 sequence:
+  #                   - variables:
+  #                       notify_name: "{{ notify_service[repeat.index -1] | replace(' ','_') | lower }}"
+  #                   - service: "notify.{{ notify_name }}"
+  #                     data:
+  #                       title: "{{ icon }} {{ title }}"
+  #                       message: |
+  #                         ➡ {{ time }}
+  #                   - choose:
+  #                       - conditions: "{{ 'start' in title }}"
+  #                         sequence:
+  #                           - service: homeassistant.update_entity
+  #                             entity_id: 
+  #                               - sensor.ha_start
+  #                               - sensor.verifica_tempi_setup
+  #                           - wait_for_trigger:
+  #                               - platform: state
+  #                                 entity_id: sensor.notifier_debug_error
+  #                                 to: "on"
+  #                             timeout: 120
+  #                             continue_on_timeout: true
+  #                           - service: script.my_notify
+  #                             data:
+  #                               title: "HomeAssistant Start!"
+  #                               notify: "notify.{{ notify_name }}"
+  #                               message: |
+  #                                 📬 Centro Notifiche operativo! 🕵
+  #                                 🟩 {{ states('sensor.ha_start') }}
+  #                               alexa:
+  #                                 message: >-
+  #                                   Il sistema è operativo!.
+  #                                 voice: Giorgio
+  #                                 type: tts
+  #                               google:
+  #                                 priority: true
+  #                                 message: >-
+  #                                   Il sistema è operativo!.
+  #       default:
+  #         - service: "notify.{{ (notify_service | default(['notify']))[0] | replace(' ','_') | lower }}"
+  #           data:
+  #             message: "DEFAULT: {{ icon }} {{ title }} {{ trigger | replace('_','\_') }} {{ this | replace('_','\_') }}"
 
   #----------------------------------------------------------------------------------------------------#
   # Accesso Fallito # Banned IP persistent_notification.ip_ban title: Banning IP address

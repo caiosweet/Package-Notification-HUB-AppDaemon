@@ -1,36 +1,35 @@
 homeassistant:
-  ######################################-#######################################
-  ##                                CUSTOMIZE
-  ######################################-#######################################
   customize:
-    ## NODE ANCHORS
     package.cn:
-      customize: &customize
+      extra_attributes: &extra_attributes
         package: "Centro Notifiche 🔔"
-        site: "hassiohelp.eu 🌐"
-        author: "Caio & Gianpi"
+        authors: "Caio & Gianpi"
+
+  ######################################-######################################
+  ##                                CUSTOMIZE
+  ######################################-######################################
     ## GROUP
     group.notifier_player_google:
-      <<: *customize
+      <<: *extra_attributes
       friendly_name: "Gruppo Google"
       icon: mdi:speaker-multiple
     ## INPUT
     input_boolean.notifier_google_switch:
-      <<: *customize
+      <<: *extra_attributes
       friendly_name: "Google Off/On"
       icon: mdi:dots-horizontal-circle-outline
     input_select.notifier_tts_notify:
-      <<: *customize
+      <<: *extra_attributes
       friendly_name: "Servizio TTS"
       icon: mdi:form-select
     ## SELECT
     select.notifier_player_google:
-      <<: *customize
+      <<: *extra_attributes
       friendly_name: "Sorgente Google"
       icon: mdi:speaker-wireless
     ## SENSOR
     sensor.notifier_player_google:
-      <<: *customize
+      <<: *extra_attributes
       friendly_name: "Player Google Predefinito"
 
 #######################################-#######################################
