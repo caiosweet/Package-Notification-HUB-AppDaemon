@@ -184,7 +184,6 @@ cards:
                   - input_number.notifier_night_volume
                   - input_number.notifier_late_night_volume
                   - input_number.notifier_intercom_volume
-
       - entity: binary_sensor.notifier_dnd
         layout: name|state
         name: DND

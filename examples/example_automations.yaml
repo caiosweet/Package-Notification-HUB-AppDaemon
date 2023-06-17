@@ -4,7 +4,7 @@
 #----------------------------------------------------------------------------------------------------#
 automation:
   #----------------------------------------------------------------------------------------------------#
-  # Home Assistant Start/Final Write/Close/Stop/Restart
+  # Home Assistant Start/Final Write/Close/Stop/Restart [👍 Integrated into blueprint projects]
   #----------------------------------------------------------------------------------------------------#
   # - alias: Home Assistant Start Stop Hub
   #   description: "Notification Home Assistant Start/Final Write/Close/Stop/Restart"

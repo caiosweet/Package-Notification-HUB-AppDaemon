@@ -1,0 +1,37 @@
+command_line:
+#------------------------------------------------------------------------------#
+# Home Assistant initialized sesnor
+#------------------------------------------------------------------------------#
+  - sensor:
+      name: HA Start
+      command: >
+        grep -m1 'Home Assistant initialized' home-assistant.log 
+        | awk '{ print $6, $7, $8, $9, $10 }'
+      value_template: '{{ value | default("Error", true) }}'
+      scan_interval: 525600 # 1 year
+
+#------------------------------------------------------------------------------#
+# Home Assistant Setup of domain sensor
+#------------------------------------------------------------------------------#
+  - sensor:
+      name: Verifica tempi setup
+      command: >
+        grep 'Setup of domain' home-assistant.log 
+        | tail | cut -c -255 | awk '$11 > 10 { print $9, $11 " sec" }'
+      value_template: '{{ value | default("Setup Domain Ok", true) }}'
+      scan_interval: 525600 # 1 year
+
+## N.B. In order to use sensor.ha_start, set the info logs in this way
+
+# logger:
+#   default: warn # or whatever you want (info, error...)
+#   logs:
+#     homeassistant.bootstrap: info
+
+## If you need to use these sensors outside my project, 
+## then remember to insert this service when Home Assistant restarts.
+
+# service: homeassistant.update_entity
+# entity_id:
+#   - sensor.ha_start
+#   - sensor.verifica_tempi_setup

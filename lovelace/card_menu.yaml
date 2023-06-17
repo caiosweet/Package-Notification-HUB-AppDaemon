@@ -7,8 +7,8 @@ card:
   cards:
     - type: markdown
       content: >
-        <font size=5><center>🤵
-        {{ states('sensor.notifier_config') }}</center></font>
+        <font size=5><center>🤵 {{ states('sensor.notifier_config')
+        }}</center></font>
 
         {% if states('sensor.notifier_debug_error') not in ['on','OK'] %}
 

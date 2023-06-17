@@ -1,7 +1,7 @@
 homeassistant:
   customize:
     package.cn:
-      version: "5.0.9"
+      version: "5.0.10"
       date: 📅 01/11/2019 - Updated 11/06/2023
       info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
       links: 
@@ -9,7 +9,7 @@ homeassistant:
         package: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon
         web: https://hassiohelp.eu/
       extra_attributes: &extra_attributes
-        package: "Centro Notifiche 🔔 5.0.9"
+        package: "Centro Notifiche 🔔 5.0.10"
         authors: "Caio & Gianpi"
 
   #######################################-#######################################

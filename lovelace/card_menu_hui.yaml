@@ -8,10 +8,10 @@ card:
   show_header_toggle: false
   entities:
     - type: custom:hui-markdown-card
-      content: |
-        <font size=5><center>🤵 {{ states('sensor.notifier_config') }}</center></font>
-        {% if states('sensor.notifier_debug_error') not in ['on','OK'] %}
-        <ha-alert title="Centro Notifiche" alert-type="error">
+      content: >
+        <font size=5><center>🤵 {{ states('sensor.notifier_config') }}
+        </center></font> {% if states('sensor.notifier_debug_error') not in
+        ['on','OK'] %} <ha-alert title="Centro Notifiche" alert-type="error">
         {{states('sensor.notifier_debug_error')}} </ha-alert> {% endif %}
     - type: divider
       style:
@@ -90,7 +90,6 @@ card:
           show_icon: true
           show_name: false
           show_state: false
-          action_name: Reset
           tap_action:
             action: toggle
             confirmation:
