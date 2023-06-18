@@ -151,19 +151,21 @@ blueprint:
     enabled_home_assistant_event:
       name: Notification Home Assistant Event
       description: |-
-        Abilitazione per la ricezione dei seguentio eventi di home assistant:
+        Abilitazione per la ricezione dei seguenti eventi di home assistant:
         Avvio, Scrittura finale, Chiusura, Stop e Riavvio manuale.
+        Come opzione, puoi aggiungere nel tuo sistema, il sensore per conoscere i tempi di avvio di home assistant, che trovi nel file [utility](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/tree/main/extra)
 
         _Notification Home Assistant Start/Final Write/Close/Stop/Restart_
+        _As an option, you can add in your system the sensor to know the home assistant startup time, which you find in the file [utility]_
         default: on
       selector:
         boolean: {}
       default: true
 
     ha_event_notify:
-      name: Notification Home Assistant Start
-      description: >-
-        Puoi scegliere un o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
+      name: Notify service Notification Home Assistant Event
+      description: |-
+        Puoi scegliere uno o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
 
         _You can choose one or more different "notify" services for Home Assistant notifications instead of the default one._
         default: the state of the text notification selector

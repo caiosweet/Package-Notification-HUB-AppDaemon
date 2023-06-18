@@ -69,8 +69,8 @@ cards:
         icon: mdi:cog
         styles:
           button:
-            color: |
-              var(--red-color)
+            color: >
+              {{ iif(is_state(config.entity, 'off'), 'var(--error-color)', 'var(--state-active-color)') }}
         hold_action:
           action: more-info
         tap_action:
@@ -81,6 +81,7 @@ cards:
               title: Impostazioni
               content:
                 type: entities
+                state_color: true
                 entities:
                   - entity: automation.centro_notifiche_configurazione_avvio
                   - entity: sensor.notifier_debug_error
@@ -141,7 +142,6 @@ cards:
           action: more-info
       - entity: sensor.notifier_day_period
         layout: state
-        icon: '{{state_attr(''sensor.notifier_day_period'',''icon'')}}'
         styles:
           button:
             color: var(--info-color)
@@ -162,7 +162,6 @@ cards:
                   - input_datetime.notifier_start_late_night
       - entity: sensor.notifier_day_period_volume
         layout: name|state
-        icon: '{{state_attr(config.entity,''icon'')}}'
         state: '{{states(config.entity)}}%'
         name: VOL
         styles:
@@ -240,6 +239,7 @@ cards:
               title: Alexa
               content:
                 type: entities
+                state_color: true
                 entities:
                   - entity: input_boolean.notifier_alexa_switch
                     icon: mdi:dots-circle
@@ -303,7 +303,7 @@ cards:
         state_styles:
           announce:
             button:
-              color: var(--paper-item-icon-active-color)
+              color: var(--state-active-color)
         styles:
           button:
             color: var(--primary-text-color)
@@ -345,6 +345,7 @@ cards:
               title: Google
               content:
                 type: entities
+                state_color: true
                 entities:
                   - entity: input_boolean.notifier_google_switch
                   - entity: select.notifier_player_google
@@ -427,7 +428,6 @@ cards:
         state_icons:
           'off': mdi:phone-off
       - entity: input_select.notifier_phone_notify
-        name: Voip
         layout: state
         state:
           case: first
@@ -504,23 +504,26 @@ cards:
       - type: custom:fold-entity-row
         cickable: true
         head:
-          entity: button.notifier_last_message
-          state_color: true
+          entity: input_number.notifier_intercom_volume
+          icon: mdi:bullhorn-outline
           name: Interfono
           tap_action:
-            action: toggle
+            action: fire-dom-event
+            fold_row: true
           extend_paper_buttons_row:
             hide_state: true
             position: right
             buttons:
-              - entity: input_boolean.notifier_last_message
-                layout: icon|name
-                state_styles:
-                  'on':
-                    ripple:
-                      color: var(--accent-color)
-                    button:
-                      background-color: var(--table-row-alternative-background-color)
+              - entity: button.notifier_last_message
+                layout: icon
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  target:
+                    entity_id: button.notifier_last_message
+                styles:
+                  ripple:
+                    color: var(--accent-color)
         entities:
           - type: custom:lovelace-multiline-text-input-card
             card_mod:
