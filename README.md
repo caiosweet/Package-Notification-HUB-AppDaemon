@@ -34,51 +34,50 @@ To get started, head over to the **[Notifier Wiki][Wiki]**.
 
 ___
 
-<div align="center">
-
 ## Dashboard preview
 
-### [My Lovelace Card Menu](./extra/my_lovelace_card.yaml)
+<div align="center">
+
+### [Card My Menu Custom](./lovelace/card_my_menu_custom.yaml)
 
 <p align="center">
-<img src="./assets/images/CN_my_card_menu.png">
+<img src="./assets/images/CN_card_my_menu_custom.png" width="500">
 <br><br>
-</p>
 
-> Custom cards used for this menu:
-> 
-  > [Banner card](https://github.com/nervetattoo/banner-card),
-  > [Lovelace card mod](https://github.com/thomasloven/lovelace-card-mod),
-  > [Lovelace fold entity row](https://github.com/thomasloven/lovelace-fold-entity-row),
-  > [Lovelace multiline text input card](https://github.com/faeibson/lovelace-multiline-text-input-card),
-  > [Lovelace paper buttons row](https://github.com/jcwillox/lovelace-paper-buttons-row),
-  > [Lovelace slider entity row](https://github.com/thomasloven/lovelace-slider-entity-row),
-  > [Vertical stack in card](https://github.com/ofekashery/vertical-stack-in-card)
+### My custom menu, contains all in one, but use these custom cards:
+
+[Hass Browser mod](https://github.com/thomasloven/hass-browser_mod),
+[Lovelace card mod](https://github.com/thomasloven/lovelace-card-mod),
+[Lovelace fold entity row](https://github.com/thomasloven/lovelace-fold-entity-row),
+
+[Lovelace multiline text input card](https://github.com/faeibson/lovelace-multiline-text-input-card),
+[Lovelace paper buttons row](https://github.com/jcwillox/lovelace-paper-buttons-row),
+[Vertical stack in card](https://github.com/ofekashery/vertical-stack-in-card)
 
 &nbsp;
 
-### [My Lovelace view](./extra/my_lovelace_view.yaml)
+### [Standard Card Menu](./lovelace/card_menu.yaml)
 
 <p align="center">
-<img src="./assets/images/CN_my_view.png">
-<br><br>
-</p>
-
-&nbsp;
-
-### [Standard Cards & Custom vertical Menu](./lovelace/)
-
-<p align="center">
-<img src="./assets/images/CN_vertical_stack_in_card_menu.png">
+<img src="./assets/images/CN_card_menu.png" width="500">
 <br><br>
 </p>
 
 &nbsp;
 
-### [Standard Lovelace View and Cards](./lovelace/)
+### [Standard Card Menu HUI](./lovelace/card_menu_hui.yaml)
 
 <p align="center">
-<img src="./assets/images/CN_standard_cards.png">
+<img src="./assets/images/CN_card_menu_hui.png" width="500">
+<br><br>
+</p>
+
+&nbsp;
+
+### [Standard Dashboard](./lovelace/dashboard_raw.yaml)
+
+<p align="center">
+<img src="./assets/images/CN_standard_dashboard.png" width="500">
 <br><br>
 </p>
 

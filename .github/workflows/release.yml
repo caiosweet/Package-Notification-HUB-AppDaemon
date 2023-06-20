@@ -1,0 +1,37 @@
+name: Release Workflow
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  zip-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: 🔢 Get release version
+        id: get_version
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.homeassistant.customize."package.cn".version' packages/centro_notifiche/hub_main.yaml
+
+      - name: 📦 Create zip file for the packages blueprints lovelace folder
+        uses: vimtor/action-zip@v1
+        with:
+          files: packages/ blueprints/ lovelace/
+          dest: centro_notifiche.zip
+          recursive: false
+          
+      - name: 📤 Upload the zip file as a release asset and 🖊️ Set version number
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "${{ github.workspace }}/centro_notifiche.zip"
+          asset_name: centro_notifiche.zip
+          # default # tag: ${{ github.ref }}
+          tag: ${{ steps.get_version.outputs.result }}
+          prerelease: true
+          make_latest: false
+          overwrite: true

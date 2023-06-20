@@ -3,10 +3,16 @@ title: Impostazioni Assistente
 show_header_toggle: false
 state_color: true
 entities:
-  - entity: automation.notifier_startup_configuration
+  - entity: automation.centro_notifiche_configurazione_avvio
   - entity: sensor.notifier_config
-  - entity: sensor.notifier_debug_error
-    icon: mdi:account-wrench
+  - type: conditional
+    conditions:
+      - entity: sensor.notifier_debug_error
+        state_not: unavailable
+    row:
+      entity: sensor.notifier_debug_error
+      name: Notifier Debug Error
+      icon: mdi:account-wrench
   - entity: input_button.notifier_reset_config
   - type: button
     icon: mdi:restart
@@ -38,7 +44,7 @@ entities:
   - entity: input_datetime.notifier_start_holidays
   - entity: input_datetime.notifier_end_holidays
   - type: section
-    label: VOLUME di default durante il griorno
+    label: VOLUME di default e Periodo del griorno
   - entity: group.notifier_group_volumes
   - entity: input_datetime.notifier_start_early_morning
   - entity: input_number.notifier_early_morning_volume

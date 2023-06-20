@@ -1,15 +1,19 @@
 blueprint:
-  name: Notifier startup configuration
+  name: Centro Notifiche - Configurazione Avvio
   description: >
+    `v5.0.12`
+
     Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
     per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
     Authors [Caio](https://github.com/caiosweet), [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 01/11/2019 - Updated 20/05/2023
+    Date Started 01/11/2019 - Updated 18/06/2023
 
     Guida di riferimento per l'utilizzo del Progetto Centro Notifiche, ed altre informazioni le trovi sul [wiki](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki)
 
   domain: automation
   author: https://github.com/caiosweet
+  homeassistant:
+    min_version: 2023.6.0
   input:
     packages_folder:
       name: Package folder
@@ -26,7 +30,7 @@ blueprint:
       name: Personal Assistant
       description: |-
         Imposta il nome del tuo assistente personale.
-        Verrà utilizzato nei titoli dei messaggi testuali e in dashborad.
+        Verrà utilizzato nei titoli dei messaggi testuali, in plancia, e nelle notifiche di home assistant.
         Esempio **[Jarvis - 20:43:12] Garage**
 
         _Choose a name for your personal assistant_
@@ -151,19 +155,21 @@ blueprint:
     enabled_home_assistant_event:
       name: Notification Home Assistant Event
       description: |-
-        Abilitazione per la ricezione dei seguentio eventi di home assistant:
+        Abilitazione per la ricezione dei seguenti eventi di home assistant:
         Avvio, Scrittura finale, Chiusura, Stop e Riavvio manuale.
+        Come opzione, puoi aggiungere nel tuo sistema, il sensore per conoscere i tempi di avvio di home assistant, che trovi nel file [utility](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/tree/main/extra)
 
         _Notification Home Assistant Start/Final Write/Close/Stop/Restart_
+        _As an option, you can add in your system the sensor to know the home assistant startup time, which you find in the file [utility]_
         default: on
       selector:
         boolean: {}
       default: true
 
     ha_event_notify:
-      name: Notification Home Assistant Start
-      description: >-
-        Puoi scegliere un o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
+      name: Notify service Notification Home Assistant Event
+      description: |-
+        Puoi scegliere uno o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
 
         _You can choose one or more different "notify" services for Home Assistant notifications instead of the default one._
         default: the state of the text notification selector
@@ -252,8 +258,7 @@ blueprint:
     sip_server_name:
       name: Service Sip server name
       description: |-
-        N. Tel / @user: inserire qui il numero di telefono da chiamare o l’utente telegram.
-        [Addon](https://github.com/sdesalve/hassio-addons/tree/master/dss_voip) del nostro Admin SDesalve o chiamata tramite [CallMeBot Telegram](https://www.callmebot.com/telegram-call-api/)
+        Inserire il servizio utilizzato nell'[Addon](https://github.com/sdesalve/hassio-addons/tree/master/dss_voip) del nostro Admin SDesalve
 
         _Service Sip server name_
         default: fritz.box:5060
@@ -275,7 +280,8 @@ blueprint:
     download:
       name: Download
       description: |-
-        Scarica automaticamente le nuove versioni del pacchetto da Github.
+        Permette di scaricare i file, della versione più recente del package, al riavvio dell'app Notifier.
+        I file saranno salvati nella cartella centro_notifiche nella directory dei packages. 
 
         _Download the new stable version of the package from Github._
         default: off
@@ -309,6 +315,8 @@ mode: parallel
 # mode: queued
 max: 50
 max_exceeded: silent
+trace:
+  stored_traces: 10
 
 trigger_variables:
   time_pattern_hours: !input time_pattern_hours
@@ -478,7 +486,7 @@ action:
                   entities: >-
                     {# Backword compatible .endswith('hub') #}
                     {{states.automation
-                      | select('match','.*[_\s]hub|.*notifier[_\s]', ignorecase=True)
+                      | select('match','.*[_\s]hub|.*notifier[_\s]|centro.notifiche[_\s]', ignorecase=True)
                       | map(attribute='entity_id') | list }}
 
               - alias: "Creation of the notifier_location_tracker Group from Person"
@@ -504,25 +512,6 @@ action:
                     data:
                       object_id: notifier_player_google
                       entities: "{{ google_media_player }}"
-
-              - alias: "IF DEBUG - GROUP SETTING"
-                if: "{{ debug }}"
-                then:
-                  - service: persistent_notification.create
-                    data:
-                      notification_id: "centro_notifiche_config_group"
-                      title: "GROUP Setting"
-                      message: |
-                        ```yaml
-                        ___
-                        AUTO GROUPS
-                        PERSON: {{ state_attr('group.notifier_location_tracker', 'entity_id') }}
-                        ALEXA: {{ state_attr('group.notifier_player_alexa', 'entity_id') }}
-                        GOOGLE: {{ state_attr('group.notifier_player_google', 'entity_id') }}
-                        ___
-                        INTERATION: {{ integration_entities('group') }}
-                        ___
-                        ```
 
           - alias: "Set the default settings to get started"
             if:
@@ -716,7 +705,7 @@ action:
                   message: |-
                     {% set message = data %}
                     ```json
-                    {{ message | to_json(pretty_print=true,sort_keys=False) }}
+                    {{ message | to_json(pretty_print=true,sort_keys=True) }}
                     ```
 
   #------------------------------------------------------------------------------------#
@@ -846,7 +835,6 @@ action:
                 {% set DEFAULT_NOTIFY = iif(CN_NOTIFY in ['unavailable', 'unknown'], HA_NOTIFY, CN_NOTIFY)%}
                 {{ iif(DEFAULT_NOTIFY is string, (DEFAULT_NOTIFY
                   | regex_replace(find=" *, *", replace=",") | lower).rsplit(","), DEFAULT_NOTIFY) }}
-              ha_start: "{{ states('sensor.ha_start') }}"
               start_message: >-
                 {{ iif(states('sensor.notifier_config') != "", 
                   states('sensor.notifier_config'), 'Il sistema ') }} è operativo!.
@@ -861,42 +849,35 @@ action:
                     title: "{{ icon }} {{ title }}"
                     message: |
                       ➡ {{ time }}
-                - choose:
-                    - conditions:
-                        - "{{ 'start' in title }}"
-                        - "{{ is_script }}"
-                      sequence:
-                        - if: "{{ states.sensor.ha_start.state is defined }}"
-                          then:
-                            - service: homeassistant.update_entity
-                              entity_id:
-                                - sensor.ha_start
-                                - sensor.verifica_tempi_setup
-                        - wait_template: "{{ is_state('sensor.notifier_debug_error', 'on') }}"
-                          # - wait_for_trigger:
-                          #     - platform: state
-                          #       entity_id: sensor.notifier_debug_error
-                          #       to:
-                          #         - "on"
-                          #         - "OK"
-                          timeout: 120
-                          continue_on_timeout: true
-                        - service: script.my_notify
-                          data:
-                            title: "HomeAssistant Start!"
-                            notify: "notify.{{ notify_name }}"
-                            message: |
-                              📬 {{ start_message }} 🕵
-                              🟩 {{ iif(ha_start != 'unknown', ha_start, states('sensor.notifier_debug_error')) }}
-                            alexa:
-                              mode: "{{ repeat.index == 1 }}"
-                              message: "{{ start_message }}"
-                              voice: Giorgio
-                              type: tts
-                            google:
-                              mode: "{{ repeat.index == 1 }}"
-                              message: "{{ start_message }}"
-                  # default:
-                  #   - service: "notify.{{ notify_service[0] }}"
-                  #     data:
-                  #       message: "DEFAULT: {{ icon }} {{ title }} {{ this.entity_id }}"
+                - if:
+                    - "{{ 'start' in title }}"
+                    - "{{ is_script }}"
+                  then:
+                    - wait_template: "{{ is_state('sensor.notifier_debug_error', 'on') }}"
+                      timeout: 180
+                      continue_on_timeout: true
+                    - if: 
+                        - "{{ states.sensor.ha_start.state is defined }}"
+                      then:
+                        - service: homeassistant.update_entity
+                          entity_id:
+                            - sensor.ha_start
+                            # - sensor.verifica_tempi_setup
+                        - wait_template: "{{ states('sensor.ha_start') not in ['Error', 'unknown'] }}"
+                          timeout: "{{ wait.remaining }}" 
+                    - service: script.my_notify
+                      data:
+                        title: "HomeAssistant Start!"
+                        notify: "notify.{{ notify_name }}"
+                        message: |
+                          📬 {{ start_message }} 🕵
+                          🟩 {{ iif(states('sensor.ha_start') != 'unknown', 
+                          states('sensor.ha_start'), states('sensor.notifier_debug_error')) }}
+                        alexa:
+                          mode: "{{ repeat.index == 1 }}"
+                          message: "{{ start_message }}"
+                          voice: Giorgio
+                          type: tts
+                        google:
+                          mode: "{{ repeat.index == 1 }}"
+                          message: "{{ start_message }}"

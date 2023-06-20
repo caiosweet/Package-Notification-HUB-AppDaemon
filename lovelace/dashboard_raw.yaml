@@ -6,21 +6,22 @@ views:
     cards:
       - type: conditional
         conditions:
-          - entity: input_boolean.notifier_phone_notifications
+          - entity: script.my_notify
             state_not: unavailable
         card:
           type: vertical-stack
           cards:
             - type: markdown
               content: >
-                <font size=5><center>🤵
-                {{states('sensor.notifier_config')}}</center></font>
+                <font size=5><center>🤵 {{ states('sensor.notifier_config')
+                }}</center></font>
 
-                {% if states('sensor.notifier_debug_error') not in ['on','OK']%}
+                {% if states('sensor.notifier_debug_error') not in ['on','OK']
+                %}
 
                 <ha-alert title="Centro Notifiche" alert-type="error">
 
-                {{states('sensor.notifier_debug_error')}}
+                {{ states('sensor.notifier_debug_error') }}
 
                 </ha-alert>
 
@@ -29,105 +30,129 @@ views:
               type: grid
               columns: 8
               cards:
-                - show_name: false
-                  show_icon: true
-                  type: button
-                  show_state: false
+                - type: button
                   entity: group.notifier_group_notification
+                  show_icon: true
+                  show_name: false
+                  show_state: false
                   icon: ''
-                - show_name: false
-                  show_icon: true
-                  type: button
-                  show_state: false
+                - type: button
                   entity: input_boolean.notifier_speech_notifications
-                - show_name: false
                   show_icon: true
-                  type: button
+                  show_name: false
                   show_state: false
+                - type: button
                   entity: input_boolean.notifier_text_notifications
-                - show_name: false
                   show_icon: true
-                  type: button
+                  show_name: false
                   show_state: false
+                - type: button
                   entity: input_boolean.notifier_screen_notifications
-                - show_name: false
                   show_icon: true
-                  type: button
+                  show_name: false
                   show_state: false
+                - type: button
                   entity: input_boolean.notifier_phone_notifications
-                - show_name: false
                   show_icon: true
-                  type: button
+                  show_name: false
                   show_state: false
+                - type: button
                   entity: input_boolean.notifier_guest_mode
-                - show_name: false
                   show_icon: true
-                  type: button
+                  show_name: false
                   show_state: false
+                - type: button
                   entity: input_boolean.notifier_priority_message
-                - show_name: false
                   show_icon: true
-                  type: button
+                  show_name: false
                   show_state: false
+                - type: button
                   entity: input_boolean.notifier_holidays
-            - square: true
+                  show_icon: true
+                  show_name: false
+                  show_state: false
+            - square: false
               type: grid
               columns: 5
               cards:
-                - show_name: false
+                - type: button
+                  entity: automation.centro_notifiche_configurazione_avvio
                   show_icon: true
-                  type: button
-                  show_state: true
-                  entity: binary_sensor.notifier_dnd
+                  show_name: false
                   tap_action:
                     action: more-info
-                - show_name: false
-                  show_icon: true
-                  type: button
-                  show_state: true
-                  entity: binary_sensor.notifier_people_home
-                  tap_action:
-                    action: more-info
-                - show_name: false
-                  show_icon: true
-                  type: button
-                  show_state: true
-                  entity: group.notifier_location_tracker
-                  tap_action:
-                    action: more-info
-                - show_name: false
-                  show_icon: true
-                  icon: ''
-                  type: button
-                  show_state: true
-                  tap_action:
-                    action: more-info
+                - type: button
                   entity: sensor.notifier_config
-                - show_name: false
                   show_icon: true
+                  show_name: false
+                  tap_action:
+                    action: more-info
+                - type: button
+                  entity: sensor.notifier_debug_error
+                  show_icon: true
+                  show_name: false
                   icon: mdi:account-wrench
-                  type: button
+                  tap_action:
+                    action: more-info
+                - type: button
+                  entity: input_button.notifier_reset_config
+                  show_icon: true
+                  show_name: false
+                  show_state: false
+                  action_name: Reset
+                  tap_action:
+                    action: toggle
+                    confirmation:
+                      text: Procedo al reset della configurazione?
+                - type: button
+                  icon: mdi:restart
+                  tap_action:
+                    action: call-service
+                    confirmation:
+                      text: Sei sicuro di voler riavviare l'App Notifier?
+                    service: script.my_notify
+                    service_data:
+                      ad:
+                        command: restart
+            - type: grid
+              square: false
+              columns: 4
+              cards:
+                - type: button
+                  entity: group.notifier_location_tracker
+                  show_icon: true
+                  show_name: false
                   show_state: true
                   tap_action:
                     action: more-info
-                  entity: sensor.notifier_debug_error
-            - type: glance
-              columns: 3
-              show_icon: false
-              entities:
-                - entity: sensor.notifier_day_period
-                - entity: sensor.notifier_day_period_volume
-                - entity: input_select.notifier_language
+                - type: button
+                  entity: sensor.notifier_day_period
+                  show_name: false
+                  show_state: true
+                - type: button
+                  entity: sensor.notifier_day_period_volume
+                  show_name: false
+                  show_state: true
+                - type: button
+                  entity: binary_sensor.notifier_dnd
+                  show_name: false
+                  show_state: true
             - type: entities
+              state_color: true
               entities:
+                - type: attribute
+                  entity: binary_sensor.notifier_people_home
+                  name: In casa
+                  attribute: name
                 - type: conditional
                   conditions:
                     - entity: sensor.notifier_text_notify
                       state_not: unavailable
                   row:
-                    entity: sensor.notifier_text_notify
                     type: attribute
+                    entity: sensor.notifier_text_notify
                     attribute: selected
+                    name: Notify
                     tap_action:
                       action: call-service
                       service: select.select_next
@@ -147,9 +172,10 @@ views:
                     - entity: sensor.notifier_player_alexa
                       state_not: unavailable
                   row:
-                    entity: sensor.notifier_player_alexa
                     type: attribute
+                    entity: sensor.notifier_player_alexa
                     attribute: selected
+                    name: Alexa
                     tap_action:
                       action: call-service
                       service: select.select_next
@@ -169,9 +195,10 @@ views:
                     - entity: sensor.notifier_player_google
                       state_not: unavailable
                   row:
-                    entity: sensor.notifier_player_google
                     type: attribute
+                    entity: sensor.notifier_player_google
                     attribute: selected
+                    name: Google
                     tap_action:
                       action: call-service
                       service: select.select_next
@@ -186,6 +213,8 @@ views:
                         entity_id: select.notifier_player_google
                     hold_action:
                       action: more-info
+                - entity: input_text.notifier_intercom_message
+                - entity: input_number.notifier_intercom_volume
             - type: horizontal-stack
               cards:
                 - type: conditional
@@ -194,10 +223,10 @@ views:
                       state_not: unavailable
                   card:
                     type: button
+                    entity: input_boolean.notifier_google_switch
                     show_name: false
                     show_icon: true
                     icon_height: 24px
-                    entity: input_boolean.notifier_google_switch
                     tap_action:
                       action: toggle
                 - type: conditional
@@ -206,10 +235,10 @@ views:
                       state_not: unavailable
                   card:
                     type: button
+                    entity: input_select.notifier_tts_notify
                     show_name: false
                     show_icon: false
                     show_state: true
-                    entity: input_select.notifier_tts_notify
                     tap_action:
                       action: call-service
                       service: input_select.select_next
@@ -221,10 +250,10 @@ views:
                       state_not: unavailable
                   card:
                     type: button
+                    entity: input_boolean.notifier_alexa_switch
                     show_name: false
                     show_icon: true
                     icon_height: 24px
-                    entity: input_boolean.notifier_alexa_switch
                     tap_action:
                       action: toggle
                     icon: mdi:dots-circle
@@ -234,10 +263,10 @@ views:
                       state_not: unavailable
                   card:
                     type: button
+                    entity: input_select.notifier_alexa_type
                     show_name: false
                     show_icon: false
                     show_state: true
-                    entity: input_select.notifier_alexa_type
                     tap_action:
                       action: call-service
                       service: input_select.select_next
@@ -249,32 +278,32 @@ views:
                       state_not: unavailable
                   card:
                     type: button
+                    entity: input_boolean.notifier_alexa_ssml
                     show_name: false
                     icon_height: 24px
-                    entity: input_boolean.notifier_alexa_ssml
                     tap_action:
                       action: toggle
                 - type: button
+                  entity: button.notifier_last_message
                   show_name: false
                   icon_height: 24px
-                  entity: button.notifier_last_message
                   tap_action:
                     action: toggle
-            - type: entities
-              show_header_toggle: false
-              state_color: true
-              entities:
-                - entity: input_text.notifier_intercom_message
-                - entity: input_number.notifier_intercom_volume
       - type: entities
         title: Impostazioni Assistente
         show_header_toggle: false
         state_color: true
         entities:
-          - entity: automation.notifier_startup_configuration
+          - entity: automation.centro_notifiche_configurazione_avvio
           - entity: sensor.notifier_config
-          - entity: sensor.notifier_debug_error
-            icon: mdi:account-wrench
+          - type: conditional
+            conditions:
+              - entity: sensor.notifier_debug_error
+                state_not: unavailable
+            row:
+              entity: sensor.notifier_debug_error
+              name: Notifier Debug Error
+              icon: mdi:account-wrench
           - entity: input_button.notifier_reset_config
           - type: button
             icon: mdi:restart
@@ -306,7 +335,7 @@ views:
           - entity: input_datetime.notifier_start_holidays
           - entity: input_datetime.notifier_end_holidays
           - type: section
-            label: VOLUME di default durante il griorno
+            label: VOLUME di default e Periodo del griorno
           - entity: group.notifier_group_volumes
           - entity: input_datetime.notifier_start_early_morning
           - entity: input_number.notifier_early_morning_volume

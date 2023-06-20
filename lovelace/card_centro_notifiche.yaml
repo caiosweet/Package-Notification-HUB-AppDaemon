@@ -1,29 +1,34 @@
-type: entities
-title: Centro Notifiche
-show_header_toggle: false
-state_color: true
-entities:
-  - type: section
-    label: Monitor
-  - entity: binary_sensor.notifier_people_home
-  - entity: group.notifier_location_tracker
-  - entity: sensor.notifier_day_period
-  - entity: sensor.notifier_day_period_volume
-  - entity: binary_sensor.notifier_dnd
-  - type: section
-    label: Modalità
-  - entity: group.notifier_group_notification
-  - entity: input_boolean.notifier_text_notifications
-  - entity: input_boolean.notifier_screen_notifications
-  - entity: input_boolean.notifier_speech_notifications
-  - entity: input_boolean.notifier_phone_notifications
-  - type: section
-    label: ''
-  - entity: input_boolean.notifier_holidays
-  - entity: input_boolean.notifier_guest_mode
-  - entity: input_boolean.notifier_priority_message
-  - type: section
-    label: Interfono
-  - entity: input_number.notifier_intercom_volume
-  - entity: input_text.notifier_intercom_message
-  - entity: button.notifier_last_message
+type: conditional
+conditions:
+  - entity: script.my_notify
+    state_not: unavailable
+card:
+  type: entities
+  title: Centro Notifiche
+  show_header_toggle: false
+  state_color: true
+  entities:
+    - type: section
+      label: Monitor
+    - entity: binary_sensor.notifier_people_home
+    - entity: group.notifier_location_tracker
+    - entity: sensor.notifier_day_period
+    - entity: sensor.notifier_day_period_volume
+    - entity: binary_sensor.notifier_dnd
+    - type: section
+      label: Modalità
+    - entity: group.notifier_group_notification
+    - entity: input_boolean.notifier_text_notifications
+    - entity: input_boolean.notifier_screen_notifications
+    - entity: input_boolean.notifier_speech_notifications
+    - entity: input_boolean.notifier_phone_notifications
+    - type: section
+      label: ''
+    - entity: input_boolean.notifier_holidays
+    - entity: input_boolean.notifier_guest_mode
+    - entity: input_boolean.notifier_priority_message
+    - type: section
+      label: Interfono
+    - entity: input_number.notifier_intercom_volume
+    - entity: input_text.notifier_intercom_message
+    - entity: button.notifier_last_message
