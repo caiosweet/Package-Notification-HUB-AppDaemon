@@ -32,6 +32,4 @@ jobs:
           asset_name: centro_notifiche.zip
           # default # tag: ${{ github.ref }}
           tag: ${{ steps.get_version.outputs.result }}
-          prerelease: true
-          make_latest: false
           overwrite: true
