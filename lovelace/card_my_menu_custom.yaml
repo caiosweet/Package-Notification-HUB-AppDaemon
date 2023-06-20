@@ -70,7 +70,8 @@ cards:
         styles:
           button:
             color: >
-              {{ iif(is_state(config.entity, 'off'), 'var(--error-color)', 'var(--state-active-color)') }}
+              {{ iif(is_state(config.entity, 'off'), 'var(--error-color)',
+              'var(--state-active-color)') }}
         hold_action:
           action: more-info
         tap_action:
@@ -101,13 +102,19 @@ cards:
                     entity: sensor.notifier_debug_error
                     name: Restart App
                     tap_action:
-                      action: call-service
-                      confirmation:
-                        text: Sei sicuro di voler riavviare l'App Notifier?
-                      service: script.my_notify
-                      service_data:
-                        ad:
-                          command: restart
+                      action: fire-dom-event
+                      browser_mod:
+                        service: browser_mod.popup
+                        data:
+                          content: |
+                            Sei sicuro di voler riavviare l'App Notifier?
+                          right_button: SI
+                          left_button: 'NO'
+                          right_button_action:
+                            service: script.my_notify
+                            data:
+                              ad:
+                                command: restart
   - type: divider
     style:
       background-color: var(--primary-color)
@@ -414,7 +421,7 @@ cards:
   - type: custom:paper-buttons-row
     styles:
       display: grid
-      grid-template-columns: 1fr 1fr 2fr
+      grid-template-columns: repeat(4, 1fr)
       font-size: 0.9em
     buttons:
       - entity: input_boolean.notifier_phone_notifications
@@ -434,6 +441,31 @@ cards:
         styles:
           button:
             color: var(--primary-text-color)
+      - entity: input_button.notifier_reset_config
+        layout: icon|name
+        name: Reset
+        styles:
+          button:
+            color: var(--error-color)
+        tap_action:
+          action: toggle
+          confirmation:
+            text: Procedo al reset della configurazione?
+      - type: button
+        layout: icon|name
+        name: Restart
+        icon: mdi:restart
+        styles:
+          button:
+            color: var(--error-color)
+        tap_action:
+          action: call-service
+          confirmation:
+            text: Sei sicuro di voler riavviare l'App Notifier?
+          service: script.my_notify
+          service_data:
+            ad:
+              command: restart
   - type: divider
     style:
       background-color: var(--primary-color)

@@ -19,8 +19,8 @@ card:
         </ha-alert>
 
         {% endif %}
-    - square: true
-      type: grid
+    - type: grid
+      square: true
       columns: 8
       cards:
         - type: button
@@ -64,8 +64,8 @@ card:
           show_icon: true
           show_name: false
           show_state: false
-    - square: false
-      type: grid
+    - type: grid
+      square: false
       columns: 5
       cards:
         - type: button

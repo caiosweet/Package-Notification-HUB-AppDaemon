@@ -44,7 +44,7 @@ ___
 <img src="./assets/images/CN_card_my_menu_custom.png" width="500">
 <br><br>
 
-### Custom cards used for this menu above:
+### My custom menu, contains all in one, but use these custom cards:
 
 [Hass Browser mod](https://github.com/thomasloven/hass-browser_mod),
 [Lovelace card mod](https://github.com/thomasloven/lovelace-card-mod),

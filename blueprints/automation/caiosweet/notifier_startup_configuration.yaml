@@ -1,15 +1,19 @@
 blueprint:
   name: Centro Notifiche - Configurazione Avvio
   description: >
+    `v5.0.12`
+
     Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
     per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
     Authors [Caio](https://github.com/caiosweet), [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 01/11/2019 - Updated 20/05/2023
+    Date Started 01/11/2019 - Updated 18/06/2023
 
     Guida di riferimento per l'utilizzo del Progetto Centro Notifiche, ed altre informazioni le trovi sul [wiki](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki)
 
   domain: automation
   author: https://github.com/caiosweet
+  homeassistant:
+    min_version: 2023.6.0
   input:
     packages_folder:
       name: Package folder
@@ -276,7 +280,8 @@ blueprint:
     download:
       name: Download
       description: |-
-        Scarica automaticamente le nuove versioni del pacchetto da Github.
+        Permette di scaricare i file, della versione più recente del package, al riavvio dell'app Notifier.
+        I file saranno salvati nella cartella centro_notifiche nella directory dei packages. 
 
         _Download the new stable version of the package from Github._
         default: off
@@ -310,6 +315,8 @@ mode: parallel
 # mode: queued
 max: 50
 max_exceeded: silent
+trace:
+  stored_traces: 10
 
 trigger_variables:
   time_pattern_hours: !input time_pattern_hours
