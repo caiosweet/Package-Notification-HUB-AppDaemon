@@ -486,7 +486,7 @@ action:
                   entities: >-
                     {# Backword compatible .endswith('hub') #}
                     {{states.automation
-                      | select('match','.*[_\s]hub|.*notifier[_\s]|centro.notifiche[_\s]', ignorecase=True)
+                      | select('match','.*[_\s]hub|.*notifier[_\s]|.*centro.notifiche[_\s]', ignorecase=True)
                       | map(attribute='entity_id') | list }}
 
               - alias: "Creation of the notifier_location_tracker Group from Person"
