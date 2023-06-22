@@ -10,6 +10,10 @@ command_line:
       value_template: '{{ value | default("Error", true) }}'
       scan_interval: 525600 # 1 year
 
+      # If you only want seconds as sensor state, then use this:
+      # command: >
+      #   grep -m1 'Home Assistant initialized' home-assistant.log | awk '{ print $10 }'
+
 #------------------------------------------------------------------------------#
 # Home Assistant Setup of domain sensor
 #------------------------------------------------------------------------------#
@@ -26,7 +30,8 @@ command_line:
 # logger:
 #   default: warn # or whatever you want (info, error...)
 #   logs:
-#     homeassistant.bootstrap: info
+#     homeassistant.bootstrap: info # for ha start sensor
+#     homeassistant.setup: info     # for Verifica tempi setup sensor
 
 ## If you need to use these sensors outside my project, 
 ## then remember to insert this service when Home Assistant restarts.

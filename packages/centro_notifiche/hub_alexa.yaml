@@ -9,77 +9,77 @@ homeassistant:
   ######################################-######################################
   ##                                CUSTOMIZE
   ######################################-######################################
-    ## BINARY SENSOR
-    binary_sensor.notifier_alexa_speak:
-      <<: *extra_attributes
-      friendly_name: "Alexa parla"
-      icon: mdi:speaker-message
-    ## BUTTON
-    button.notifier_ssml_reset:
-      <<: *extra_attributes
-      friendly_name: "Ripristina SSML"
-      # icon: mdi:restore
-    ## GROUP
-    group.notifier_player_alexa:
-      <<: *extra_attributes
-      friendly_name: "Gruppo Alexa"
-      icon: mdi:speaker-multiple
-    ## INPUT
-    input_boolean.notifier_alexa_switch:
-      <<: *extra_attributes
-      friendly_name: "Alexa Off/On"
-      icon: mdi:dots-circle
-      # icon: mdi:alpha-a-circle
-    input_boolean.notifier_alexa_smart_volume:
-      <<: *extra_attributes
-      friendly_name: "Imposta volume smart"
-      icon: mdi:volume-equal
-    input_boolean.notifier_alexa_ssml:
-      <<: *extra_attributes
-      friendly_name: "SSML Off/On"
-      icon: mdi:waveform
-    input_number.notifier_alexa_prosody_rate:
-      <<: *extra_attributes
-      friendly_name: "Rate"
-      icon: mdi:alpha-r
-    input_number.notifier_alexa_prosody_pitch:
-      <<: *extra_attributes
-      friendly_name: "Pitch"
-      icon: mdi:alpha-p
-    input_number.notifier_alexa_prosody_volume:
-      <<: *extra_attributes
-      friendly_name: "Volume"
-      icon: mdi:alpha-v
-      unit_of_measurement: "dB"
-    input_select.notifier_alexa_voice:
-      <<: *extra_attributes
-      friendly_name: "Amazon Polly voice"
-      icon: mdi:account-tie-voice-outline
-    input_select.notifier_alexa_language:
-      <<: *extra_attributes
-      friendly_name: Amazon Polly language
-      icon: mdi:flag-variant
-    input_select.notifier_alexa_method:
-      <<: *extra_attributes
-      friendly_name: "Metodo Predefinito Alexa"
-      icon: mdi:monitor-speaker
-    input_select.notifier_alexa_type:
-      <<: *extra_attributes
-      friendly_name: "Tipo Predefinito Alexa"
-      icon: mdi:bugle
-    ## SELECT
-    select.notifier_player_alexa:
-      <<: *extra_attributes
-      friendly_name: "Sorgente Alexa"
-      icon: mdi:speaker-wireless
-    ## SENSOR
-    sensor.last_alexa:
-      <<: *extra_attributes
-      friendly_name: "Last Alexa"
-      icon: mdi:play-network
-    sensor.notifier_player_alexa:
-      <<: *extra_attributes
-      friendly_name: "Player Alexa Predefinito"
+    # ## BINARY SENSOR
+    # binary_sensor.notifier_alexa_speak:
+    #   <<: *extra_attributes
+    #   friendly_name: "Alexa parla"
+    #   icon: mdi:speaker-message
+    # ## BUTTON
+    # button.notifier_ssml_reset:
+    #   <<: *extra_attributes
+    #   friendly_name: "Ripristina SSML"
+    #   # icon: mdi:restore
+    # ## GROUP
+    # group.notifier_player_alexa:
+    #   <<: *extra_attributes
+    #   friendly_name: "Gruppo Alexa"
+    #   icon: mdi:speaker-multiple
+    # ## INPUT
+    # input_boolean.notifier_alexa_switch:
+    #   <<: *extra_attributes
+    #   friendly_name: "Alexa Off/On"
+    #   icon: mdi:dots-circle
+    #   # icon: mdi:alpha-a-circle
+    # input_boolean.notifier_alexa_smart_volume:
+    #   <<: *extra_attributes
+    #   friendly_name: "Imposta volume smart"
+    #   icon: mdi:volume-equal
+    # input_boolean.notifier_alexa_ssml:
+    #   <<: *extra_attributes
+    #   friendly_name: "SSML Off/On"
+    #   icon: mdi:waveform
+    # input_number.notifier_alexa_prosody_rate:
+    #   <<: *extra_attributes
+    #   friendly_name: "Rate"
+    #   icon: mdi:alpha-r
+    # input_number.notifier_alexa_prosody_pitch:
+    #   <<: *extra_attributes
+    #   friendly_name: "Pitch"
+    #   icon: mdi:alpha-p
+    # input_number.notifier_alexa_prosody_volume:
+    #   <<: *extra_attributes
+    #   friendly_name: "Volume"
+    #   icon: mdi:alpha-v
+    #   unit_of_measurement: "dB"
+    # input_select.notifier_alexa_voice:
+    #   <<: *extra_attributes
+    #   friendly_name: "Amazon Polly voice"
+    #   icon: mdi:account-tie-voice-outline
+    # input_select.notifier_alexa_language:
+    #   <<: *extra_attributes
+    #   friendly_name: Amazon Polly language
+    #   icon: mdi:flag-variant
+    # input_select.notifier_alexa_method:
+    #   <<: *extra_attributes
+    #   friendly_name: "Metodo Predefinito Alexa"
+    #   icon: mdi:monitor-speaker
+    # input_select.notifier_alexa_type:
+    #   <<: *extra_attributes
+    #   friendly_name: "Tipo Predefinito Alexa"
+    #   icon: mdi:bugle
+    # ## SELECT
+    # select.notifier_player_alexa:
+    #   <<: *extra_attributes
+    #   friendly_name: "Sorgente Alexa"
+    #   icon: mdi:speaker-wireless
+    # ## SENSOR
+    # sensor.last_alexa:
+    #   <<: *extra_attributes
+    #   friendly_name: "Last Alexa"
+    #   icon: mdi:play-network
+    # sensor.notifier_player_alexa:
+    #   <<: *extra_attributes
+    #   friendly_name: "Player Alexa Predefinito"
 
 #######################################-#######################################
 ##                                   INPUT

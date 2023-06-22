@@ -8,29 +8,29 @@ homeassistant:
   ######################################-######################################
   ##                                CUSTOMIZE
   ######################################-######################################
-    ## GROUP
-    group.notifier_player_google:
-      <<: *extra_attributes
-      friendly_name: "Gruppo Google"
-      icon: mdi:speaker-multiple
-    ## INPUT
-    input_boolean.notifier_google_switch:
-      <<: *extra_attributes
-      friendly_name: "Google Off/On"
-      icon: mdi:dots-horizontal-circle-outline
-    input_select.notifier_tts_notify:
-      <<: *extra_attributes
-      friendly_name: "Servizio TTS"
-      icon: mdi:form-select
-    ## SELECT
-    select.notifier_player_google:
-      <<: *extra_attributes
-      friendly_name: "Sorgente Google"
-      icon: mdi:speaker-wireless
-    ## SENSOR
-    sensor.notifier_player_google:
-      <<: *extra_attributes
-      friendly_name: "Player Google Predefinito"
+    # ## GROUP
+    # group.notifier_player_google:
+    #   <<: *extra_attributes
+    #   friendly_name: "Gruppo Google"
+    #   icon: mdi:speaker-multiple
+    # ## INPUT
+    # input_boolean.notifier_google_switch:
+    #   <<: *extra_attributes
+    #   friendly_name: "Google Off/On"
+    #   icon: mdi:dots-horizontal-circle-outline
+    # input_select.notifier_tts_notify:
+    #   <<: *extra_attributes
+    #   friendly_name: "Servizio TTS"
+    #   icon: mdi:form-select
+    # ## SELECT
+    # select.notifier_player_google:
+    #   <<: *extra_attributes
+    #   friendly_name: "Sorgente Google"
+    #   icon: mdi:speaker-wireless
+    # ## SENSOR
+    # sensor.notifier_player_google:
+    #   <<: *extra_attributes
+    #   friendly_name: "Player Google Predefinito"
 
 #######################################-#######################################
 ##                                   INPUT
