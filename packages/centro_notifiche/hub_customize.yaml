@@ -1,0 +1,327 @@
+homeassistant:
+  customize:
+    package.cn:
+      extra_attributes: &extra_attributes
+        attribution: "Caio & Gianpi - Centro Notifiche 🔔 hassiohelp.eu"
+#######################################-#######################################
+##                                 CUSTOMIZE
+#######################################-#######################################
+
+  ##############################################################################
+  ##  MAIN
+  ##############################################################################
+    ## BINARY SENSOR
+    binary_sensor.notifier_dnd:
+      <<: *extra_attributes
+      friendly_name: "Modo Silenzioso"
+    binary_sensor.notifier_people_home:
+      <<: *extra_attributes
+      friendly_name: "Persone in casa"
+    button.notifier_last_message:
+      <<: *extra_attributes
+      friendly_name: "Ultimo Messaggio"
+      icon: mdi:repeat-once
+    ## GROUP
+    group.notifier_automations:
+      <<: *extra_attributes
+      friendly_name: "Automazioni Notifier"
+      icon: mdi:home-automation
+    group.notifier_location_tracker:
+      <<: *extra_attributes
+      friendly_name: "Dispositivi tracciati"
+      icon: mdi:target-account
+    group.notifier_group_volumes:
+      <<: *extra_attributes
+      friendly_name: "Volumi"
+      icon: mdi:knob
+    group.notifier_group_notification:
+      <<: *extra_attributes
+      friendly_name: "Gruppo Notifiche"
+      icon: mdi:power
+    ## INPUT BOOLEAN
+    input_boolean.notifier_guest_mode:
+      <<: *extra_attributes
+      friendly_name: "Modo Ospite"
+      icon: mdi:account-multiple-plus
+    input_boolean.notifier_holidays:
+      <<: *extra_attributes
+      friendly_name: "Modo Vacanza"
+      icon: mdi:beach
+    input_boolean.notifier_html_mode:
+      <<: *extra_attributes
+      friendly_name: "Modo Markdown/Html"
+      icon: mdi:language-html5 #language-markdown
+    input_boolean.notifier_phone_notifications:
+      <<: *extra_attributes
+      friendly_name: "Notifiche VoIP"
+      icon: mdi:phone-in-talk
+    input_boolean.notifier_priority_message:
+      <<: *extra_attributes
+      friendly_name: "Modo Prioritario"
+      icon: mdi:alarm-light
+    input_boolean.notifier_screen_notifications:
+      <<: *extra_attributes
+      friendly_name: "Notifiche Persistenti"
+      icon: mdi:dock-left #message-bulleted
+    input_boolean.notifier_speech_notifications:
+      <<: *extra_attributes
+      friendly_name: "Notifiche Vocali"
+      icon: mdi:account-tie-voice
+    input_boolean.notifier_text_notifications:
+      <<: *extra_attributes
+      friendly_name: "Notifiche Testo"
+      icon: mdi:cellphone-message
+    input_boolean.notifier_tts_clock:
+      <<: *extra_attributes
+      friendly_name: "Orario in TTS App"
+      icon: mdi:message-text-clock
+    input_boolean.notifier_wrap_text:
+      <<: *extra_attributes
+      friendly_name: "Testo a capo"
+      icon: mdi:wrap
+    ## INPUT BUTTON
+    input_button.notifier_reset_config:
+      <<: *extra_attributes
+      friendly_name: "Reset Configurazione"
+      icon: mdi:gesture-tap-button
+    ## INPUT DATETIME
+    input_datetime.notifier_start_early_morning:
+      <<: *extra_attributes
+      friendly_name: "Inizio Mattina Presto"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_morning:
+      <<: *extra_attributes
+      friendly_name: "Inizio Mattina"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_afternoon:
+      <<: *extra_attributes
+      friendly_name: "Inizio Pomeriggio"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_evening:
+      <<: *extra_attributes
+      friendly_name: "Inizio Sera"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_night:
+      <<: *extra_attributes
+      friendly_name: "Inizio Notte"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_late_night:
+      <<: *extra_attributes
+      friendly_name: "Inizio Notte Fonda"
+      icon: mdi:timer-play-outline
+    input_datetime.notifier_start_weekdays:
+      <<: *extra_attributes
+      friendly_name: "Inizio DND Feriali"
+    input_datetime.notifier_end_weekdays:
+      <<: *extra_attributes
+      friendly_name: "Fine DND Feriali"
+    input_datetime.notifier_start_holidays:
+      <<: *extra_attributes
+      friendly_name: "Inizio DND Festivi"
+    input_datetime.notifier_end_holidays:
+      <<: *extra_attributes
+      friendly_name: "Fine DND Festivi"
+    ## INPUT NUMBER
+    input_number.notifier_early_morning_volume:
+      <<: *extra_attributes
+      friendly_name: "Vol Mattina Presto"
+      icon: mdi:volume-medium
+    input_number.notifier_morning_volume:
+      <<: *extra_attributes
+      friendly_name: "Vol Mattina"
+      icon: mdi:volume-medium
+    input_number.notifier_afternoon_volume:
+      <<: *extra_attributes
+      friendly_name: "Vol Pomeriggio"
+      icon: mdi:volume-high
+    input_number.notifier_evening_volume:
+      <<: *extra_attributes
+      friendly_name: "Vol Sera"
+      icon: mdi:volume-medium
+    input_number.notifier_night_volume:
+      <<: *extra_attributes
+      friendly_name: "Vol Notte"
+      icon: mdi:volume-low
+    input_number.notifier_late_night_volume:
+      <<: *extra_attributes
+      friendly_name: "Vol Notte Fonda"
+      icon: mdi:volume-low
+    input_number.notifier_intercom_volume:
+      <<: *extra_attributes
+      friendly_name: "Volume Interfono"
+      icon: mdi:volume-source
+    input_number.notifier_tts_wait_time:
+      <<: *extra_attributes
+      friendly_name: "TTS tempo di attesa"
+      icon: mdi:av-timer
+      unit_of_measurement: "sec"
+    ## INPUT SELECT
+    input_select.notifier_language:
+      <<: *extra_attributes
+      friendly_name: "Lingua"
+      icon: mdi:flag-variant
+    input_select.notifier_phone_notify:
+      <<: *extra_attributes
+      friendly_name: "Notifica Telefonica"
+      icon: mdi:phone-forward
+    select.notifier_text_notify:
+      <<: *extra_attributes
+      friendly_name: "Notifica Testo"
+      icon: mdi:message-text-fast
+    ## INPUT TEXT
+    input_text.notifier_called_number:
+      <<: *extra_attributes
+      friendly_name: "N. Tel / @user"
+      icon: mdi:phone-classic
+    input_text.notifier_last_message:
+      <<: *extra_attributes
+      friendly_name: "Salva Ultimo Messaggio"
+      icon: mdi:repeat
+    input_text.notifier_intercom_message:
+      <<: *extra_attributes
+      friendly_name: "Messaggio Interfono"
+      icon: mdi:bullhorn-outline
+    ## SCRIPT
+    script.my_notify:
+      <<: *extra_attributes
+      friendly_name: "My Notify"
+    ## SENSOR
+    sensor.notifier_debug_error:
+      <<: *extra_attributes
+      friendly_name: "Notifier Debug Error"
+      icon: mdi:account-wrench
+    sensor.notifier_day_period:
+      <<: *extra_attributes
+      friendly_name: "Periodo del Giorno"
+    sensor.notifier_day_period_volume:
+      <<: *extra_attributes
+      friendly_name: "Volume Notifica"
+    sensor.notifier_text_notify:
+      <<: *extra_attributes
+      friendly_name: "Notify Predefinito"
+      icon: mdi:send-check
+
+  ##############################################################################
+  ##  ALEXA
+  ##############################################################################
+    ## BINARY SENSOR
+    binary_sensor.notifier_alexa_speak:
+      <<: *extra_attributes
+      friendly_name: "Alexa parla"
+      icon: mdi:speaker-message
+    ## BUTTON
+    button.notifier_ssml_reset:
+      <<: *extra_attributes
+      friendly_name: "Ripristina SSML"
+      # icon: mdi:restore
+    ## GROUP
+    group.notifier_player_alexa:
+      <<: *extra_attributes
+      friendly_name: "Gruppo Alexa"
+      icon: mdi:speaker-multiple
+    ## INPUT
+    input_boolean.notifier_alexa_switch:
+      <<: *extra_attributes
+      friendly_name: "Alexa Off/On"
+      icon: mdi:dots-circle
+      # icon: mdi:alpha-a-circle
+    input_boolean.notifier_alexa_smart_volume:
+      <<: *extra_attributes
+      friendly_name: "Imposta volume smart"
+      icon: mdi:volume-equal
+    input_boolean.notifier_alexa_ssml:
+      <<: *extra_attributes
+      friendly_name: "SSML Off/On"
+      icon: mdi:waveform
+    input_number.notifier_alexa_prosody_rate:
+      <<: *extra_attributes
+      friendly_name: "Rate"
+      icon: mdi:alpha-r
+    input_number.notifier_alexa_prosody_pitch:
+      <<: *extra_attributes
+      friendly_name: "Pitch"
+      icon: mdi:alpha-p
+    input_number.notifier_alexa_prosody_volume:
+      <<: *extra_attributes
+      friendly_name: "Volume"
+      icon: mdi:alpha-v
+      unit_of_measurement: "dB"
+    input_select.notifier_alexa_voice:
+      <<: *extra_attributes
+      friendly_name: "Amazon Polly voice"
+      icon: mdi:account-tie-voice-outline
+    input_select.notifier_alexa_language:
+      <<: *extra_attributes
+      friendly_name: Amazon Polly language
+      icon: mdi:flag-variant
+    input_select.notifier_alexa_method:
+      <<: *extra_attributes
+      friendly_name: "Metodo Predefinito Alexa"
+      icon: mdi:monitor-speaker
+    input_select.notifier_alexa_type:
+      <<: *extra_attributes
+      friendly_name: "Tipo Predefinito Alexa"
+      icon: mdi:bugle
+    ## SELECT
+    select.notifier_player_alexa:
+      <<: *extra_attributes
+      friendly_name: "Sorgente Alexa"
+      icon: mdi:speaker-wireless
+    ## SENSOR
+    sensor.last_alexa:
+      <<: *extra_attributes
+      friendly_name: "Last Alexa"
+      icon: mdi:play-network
+    sensor.notifier_player_alexa:
+      <<: *extra_attributes
+      friendly_name: "Player Alexa Predefinito"
+
+  ##############################################################################
+  ##  GOOGLE
+  ##############################################################################
+    ## GROUP
+    group.notifier_player_google:
+      <<: *extra_attributes
+      friendly_name: "Gruppo Google"
+      icon: mdi:speaker-multiple
+    ## INPUT
+    input_boolean.notifier_google_switch:
+      <<: *extra_attributes
+      friendly_name: "Google Off/On"
+      icon: mdi:dots-horizontal-circle-outline
+    input_select.notifier_tts_notify:
+      <<: *extra_attributes
+      friendly_name: "Servizio TTS"
+      icon: mdi:form-select
+    ## SELECT
+    select.notifier_player_google:
+      <<: *extra_attributes
+      friendly_name: "Sorgente Google"
+      icon: mdi:speaker-wireless
+    ## SENSOR
+    sensor.notifier_player_google:
+      <<: *extra_attributes
+      friendly_name: "Player Google Predefinito"
+
+#######################################-#######################################
+##                              CUSTOMIZE  GLOB
+#######################################-#######################################
+  customize_glob:
+    automation.notifier_*:
+      <<: *extra_attributes
+      icon: mdi:alpha-a-circle-outline
+    automation.centro_notifiche_*:
+      <<: *extra_attributes
+      icon: mdi:alpha-a-circle-outline
+    input_datetime.notifier_start_*days:
+      <<: *extra_attributes
+      icon: mdi:clock-start
+    input_datetime.notifier_end_*days:
+      <<: *extra_attributes
+      icon: mdi:clock-end
+    input_number.notifier_*_volume:
+      <<: *extra_attributes
+      unit_of_measurement: "%"
+    sensor.notifier_*_volume:
+      <<: *extra_attributes
+      unit_of_measurement: "%"
