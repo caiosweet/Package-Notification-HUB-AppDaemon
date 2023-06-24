@@ -42,6 +42,7 @@ ___
 
 <p align="center">
 <img src="./assets/images/CN_card_my_menu_custom.png" width="500">
+<img src="./assets/images/CN_card_my_menu_custom_extend.png" width="500">
 <br><br>
 
 ### My custom menu, contains all in one, but use these custom cards:

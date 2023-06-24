@@ -23,13 +23,6 @@ jobs:
         with:
           cmd: yq '.homeassistant.customize."package.cn".version' packages/centro_notifiche/hub_main.yaml
 
-      # - name: 📦 Create zip file for the packages blueprints lovelace folder
-      #   uses: vimtor/action-zip@v1.1
-      #   with:
-      #     files: packages/ blueprints/ lovelace/
-      #     dest: centro_notifiche.zip
-      #     recursive: false
-
       - name: 📦 Create zip file for the packages blueprints lovelace folder
         run: |
           cd "${{ github.workspace }}"
@@ -41,7 +34,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "${{ github.workspace }}/centro_notifiche.zip"
           asset_name: centro_notifiche.zip
-          tag: ${{ steps.get_version.outputs.result }}
+          tag: v${{ steps.get_version.outputs.result }}
           overwrite: true
           prerelease: true
           make_latest: false
