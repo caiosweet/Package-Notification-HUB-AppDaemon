@@ -1,7 +1,7 @@
 blueprint:
   name: Centro Notifiche - Configurazione Avvio
   description: >
-    `v5.0.12`
+    `v5.0.15`
 
     Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
     per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
@@ -158,6 +158,12 @@ blueprint:
         Abilitazione per la ricezione dei seguenti eventi di home assistant:
         Avvio, Scrittura finale, Chiusura, Stop e Riavvio manuale.
         Come opzione, puoi aggiungere nel tuo sistema, il sensore per conoscere i tempi di avvio di home assistant, che trovi nel file [utility](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/tree/main/extra)
+        ```
+        [Jerry - 17:31:15] HomeAssistant Start!
+        Buonasera.
+        📬 Jerry è operativo!. 🕵️
+        🟩 Home Assistant initialized in 50.21s
+        ```
 
         _Notification Home Assistant Start/Final Write/Close/Stop/Restart_
         _As an option, you can add in your system the sensor to know the home assistant startup time, which you find in the file [utility]_
