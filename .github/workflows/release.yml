@@ -1,9 +1,6 @@
 name: Release Workflow
 
 on:
-  # release:
-  #   types: [published]
-
   push:
     branches:
       - main
@@ -17,11 +14,11 @@ jobs:
       - name: 📥 Checkout the repository
         uses: actions/checkout@v3
 
-      - name: 🔢 Get release version
-        id: get_version
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq '.homeassistant.customize."package.cn".version' packages/centro_notifiche/hub_main.yaml
+      - name: 🔢 Get release version from hub_main file
+        id: main_version
+        run: |
+          VERSION=$(yq -r '.homeassistant.customize."package.cn".version' ./packages/centro_notifiche/hub_main.yaml)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: 📦 Create zip file for the packages blueprints lovelace folder
         run: |
@@ -34,7 +31,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "${{ github.workspace }}/centro_notifiche.zip"
           asset_name: centro_notifiche.zip
-          tag: v${{ steps.get_version.outputs.result }}
+          tag: v${{ steps.main_version.outputs.version }}
+          release_name: ${{ steps.main_version.outputs.version }}
           overwrite: true
           prerelease: true
           make_latest: false

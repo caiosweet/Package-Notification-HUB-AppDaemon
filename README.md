@@ -1,6 +1,12 @@
 
 # Package Notification HUB AppDaemon
 
+> **Warning**
+> This is a package for Home Assistant, which works together with the [Notifier][notifier] App in [AppDaemon][appdaemon].
+
+> **Note**
+> This project is used to send, in one place, text messages (Telegram, Push...), TTS Google and Alexa, Voip notifications to you and/or your devices such as Pcs, smartphones, pads, etc.
+
 ⭐ Star us on GitHub — it motivates us a lot!
 
 Package Notification HUB AppDaemon<br>
@@ -9,6 +15,8 @@ Package Notification HUB AppDaemon<br>
 [![Hass.io][img-homeassistant]][link-homeassistant]
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen.svg)](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/graphs/commit-activity)
 [![GitHub issues](https://img.shields.io/github/issues/caiosweet/Package-Notification-HUB-AppDaemon)](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/issues)
+
+[![Release Workflow](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/actions/workflows/release.yml/badge.svg)](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/actions/workflows/release.yml)
 
 Appdaemon Notifier for Home Assistant by [Engineer Gianpi (@jumping2000)](https://github.com/jumping2000/appdaemon/commits?author=jumping2000)<br>
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jumping2000/notifier)](https://github.com/jumping2000/notifier/releases)
@@ -22,13 +30,9 @@ How to reach us:<br>
 [![Chat on Facebook](https://img.shields.io/badge/Group-Facebook-blue?logo=Facebook)](https://www.facebook.com/groups/2062381507393179/)
 [![Forum](https://img.shields.io/badge/HassioHelp-Forum-blue?logo=Wordpress)](https://forum.hassiohelp.eu/showthread.php?tid=481&pid=1758#pid1758)
 
-*This is a package for Home Assistant, which works together with the [Notifier][notifier] App in [AppDaemon][appdaemon].
-It is used to send, in one place, text messages (Telegram, Push...),
-TTS Google and Alexa, Voip notifications to you and/or your devices such as Pcs, smartphones, pads, etc.*
-
 ## [Getting Started][Wiki]
 
-To get started, head over to the **[Notifier Wiki][Wiki]**.
+To get started, go to the **[Wiki page][Wiki]**.
 
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fcaiosweet%2FPackage-Notification-HUB-AppDaemon%2Fblob%2Fbeta%2Fblueprints%2Fautomation%2Fcaiosweet%2Fnotifier_startup_configuration.yaml)
 

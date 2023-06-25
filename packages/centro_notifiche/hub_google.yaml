@@ -1,9 +1,7 @@
 homeassistant:
   customize:
     package.cn:
-      extra_attributes: &extra_attributes
-        package: "Centro Notifiche 🔔"
-        authors: "Caio & Gianpi"
+      info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
 
 #######################################-#######################################
 ##                                   INPUT
