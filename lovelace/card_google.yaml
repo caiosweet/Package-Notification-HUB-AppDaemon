@@ -12,7 +12,7 @@ card:
       label: ''
     - entity: input_boolean.notifier_google_switch
     - entity: select.notifier_player_google
-    - entity: input_select.notifier_tts_notify
+    - entity: input_select.notifier_google_tts_notify
     - type: section
       label: Info
     - entity: sensor.notifier_player_google

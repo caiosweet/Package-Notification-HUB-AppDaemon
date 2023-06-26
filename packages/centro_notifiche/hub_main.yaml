@@ -1,7 +1,7 @@
 homeassistant:
   customize:
     package.cn:
-      version: &v "5.0.16"
+      version: &v "5.1.0"
       date: 📅 01/11/2019 - Updated 25/06/2023
       info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
       links: 
@@ -9,7 +9,7 @@ homeassistant:
         centro_notifiche: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon
         web: https://hassiohelp.eu/
     sensor.notifier_config:
-      attribution: "Centro Notifiche Main 🔔 Caio & Gianpi by hassiohelp.eu"
+      attribution: "Centro Notifiche 🔔 Caio & Gianpi by hassiohelp.eu"
       friendly_name: "Notifier Config"
       icon: mdi:account-cog
       version: *v

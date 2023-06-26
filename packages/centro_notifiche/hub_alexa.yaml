@@ -111,7 +111,7 @@ binary_sensor:
 #######################################-#######################################
 template:
   - button:
-      - name: "notifier_ssml_reset"
+      - name: "notifier_alexa_ssml_reset"
         press:
           - service: input_number.set_value
             data:
