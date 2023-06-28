@@ -1,9 +1,7 @@
 homeassistant:
   customize:
     package.cn:
-      extra_attributes: &extra_attributes
-        package: "Centro Notifiche 🔔"
-        authors: "Caio & Gianpi"
+      info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
 
 #######################################-#######################################
 ##                                   INPUT
@@ -11,7 +9,7 @@ homeassistant:
 input_boolean:
   notifier_google_switch:
 input_select:
-  notifier_tts_notify:
+  notifier_google_tts_notify:
     options: ["Google Say", "Google Cloud", "Google Assistant", "Reverso"]
 
 #######################################-#######################################

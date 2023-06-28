@@ -1,7 +1,7 @@
 blueprint:
   name: Centro Notifiche - Configurazione Avvio
   description: >
-    `v5.0.15`
+    `v5.1.0`
 
     Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
     per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
@@ -469,17 +469,6 @@ action:
                     ➡ {{ now().time() }}"
               - stop: "Wait App"
 
-          - variables:
-              zero_time: >
-                {% set a = states('input_datetime.notifier_start_early_morning') %}
-                {% set b = states('input_datetime.notifier_start_morning') %}
-                {% set c = states('input_datetime.notifier_start_afternoon') %}
-                {% set d = states('input_datetime.notifier_start_evening') %}
-                {% set e = states('input_datetime.notifier_start_night') %}
-                {% set f = states('input_datetime.notifier_start_late_night') %}
-                {% set lst = [a,b,c,d,e,f] %}
-                {{ lst[:-1] == lst[1:] and not 'unknown' in lst }}
-
           - alias: "Create groups only on boot and reload"
             if:
               - "{{ is_script }}"
@@ -519,10 +508,25 @@ action:
                       object_id: notifier_player_google
                       entities: "{{ google_media_player }}"
 
+          - variables:
+              zero_time: >
+                {% set a = states('input_datetime.notifier_start_early_morning') %}
+                {% set b = states('input_datetime.notifier_start_morning') %}
+                {% set c = states('input_datetime.notifier_start_afternoon') %}
+                {% set d = states('input_datetime.notifier_start_evening') %}
+                {% set e = states('input_datetime.notifier_start_night') %}
+                {% set f = states('input_datetime.notifier_start_late_night') %}
+                {% set g = states('input_datetime.notifier_start_weekdays') %}
+                {% set h = states('input_datetime.notifier_end_weekdays') %}
+                {% set i = states('input_datetime.notifier_start_holidays') %}
+                {% set l = states('input_datetime.notifier_end_holidays') %}
+                {% set lst = [a,b,c,d,e,f,g,h,i,l] %}
+                {{ (lst[:-1] == lst[1:]) and not 'unknown' in lst }}
+
           - alias: "Set the default settings to get started"
             if:
               - "{{ is_script }}"
-              - "{{ trigger.id == 'reset_config' or zero_time }}"
+              - "{{ (trigger.id == 'reset_config') or zero_time }}"
             then:
               - alias: "Set Guest if the people list is empty."
                 if: "{{ not person }}"
@@ -617,7 +621,7 @@ action:
                             - input_boolean.notifier_alexa_smart_volume
                       - service: button.press
                         target:
-                          entity_id: button.notifier_ssml_reset
+                          entity_id: button.notifier_alexa_ssml_reset
                   - if: "{{ not not google_media_player }}"
                     then:
                       - service: select.select_first

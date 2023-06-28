@@ -235,7 +235,7 @@ views:
                       state_not: unavailable
                   card:
                     type: button
-                    entity: input_select.notifier_tts_notify
+                    entity: input_select.notifier_google_tts_notify
                     show_name: false
                     show_icon: false
                     show_state: true
@@ -243,7 +243,7 @@ views:
                       action: call-service
                       service: input_select.select_next
                       service_data:
-                        entity_id: input_select.notifier_tts_notify
+                        entity_id: input_select.notifier_google_tts_notify
                 - type: conditional
                   conditions:
                     - entity: input_boolean.notifier_alexa_switch
@@ -412,7 +412,7 @@ views:
             - entity: input_number.notifier_alexa_prosody_rate
             - entity: input_number.notifier_alexa_prosody_pitch
             - entity: input_number.notifier_alexa_prosody_volume
-            - entity: button.notifier_ssml_reset
+            - entity: button.notifier_alexa_ssml_reset
             - type: section
               label: Info
             - entity: sensor.notifier_player_alexa
@@ -450,7 +450,7 @@ views:
               label: ''
             - entity: input_boolean.notifier_google_switch
             - entity: select.notifier_player_google
-            - entity: input_select.notifier_tts_notify
+            - entity: input_select.notifier_google_tts_notify
             - type: section
               label: Info
             - entity: sensor.notifier_player_google

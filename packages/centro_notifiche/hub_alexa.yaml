@@ -1,10 +1,9 @@
 homeassistant:
   customize:
     package.cn:
-      icon: https://github.com/vigonotion/hass-simpleicons
-      extra_attributes: &extra_attributes
-        package: "Centro Notifiche 🔔"
-        authors: "Caio & Gianpi"
+      simpleicons: https://github.com/vigonotion/hass-simpleicons
+      icon: si:amazonalexa
+      info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
 
 #######################################-#######################################
 ##                                   INPUT
@@ -112,7 +111,7 @@ binary_sensor:
 #######################################-#######################################
 template:
   - button:
-      - name: "notifier_ssml_reset"
+      - name: "notifier_alexa_ssml_reset"
         press:
           - service: input_number.set_value
             data:

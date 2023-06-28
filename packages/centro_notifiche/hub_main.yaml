@@ -1,15 +1,15 @@
 homeassistant:
   customize:
     package.cn:
-      version: &v "5.0.15"
-      date: 📅 01/11/2019 - Updated 23/06/2023
+      version: &v "5.1.0"
+      date: 📅 01/11/2019 - Updated 27/06/2023
       info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
       links: 
         notifier: https://github.com/jumping2000/notifier
-        package: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon
+        centro_notifiche: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon
         web: https://hassiohelp.eu/
     sensor.notifier_config:
-      attribution: "Caio & Gianpi - Centro Notifiche 🔔 hassiohelp.eu"
+      attribution: "Centro Notifiche 🔔 Caio & Gianpi by hassiohelp.eu"
       friendly_name: "Notifier Config"
       icon: mdi:account-cog
       version: *v
@@ -314,7 +314,7 @@ script:
   # MAIN SCRIPT - Variables to be passed to the HUB + template file event if included
   #------------------------------------------------------------------------------------#
   my_notify:
-    alias: Notifier
+    alias: Notifier Event Centro Notifiche
     description: "Cross-platform notification sorting center"
     fields:
       title:
@@ -547,6 +547,6 @@ script:
           whatsapp: >-
             {{ whatsapp | default }}
           #----------------------------------------------------------------------------#
-          # FILE TO BE INCLUDED IF MACROS ARE USED - DO NOT MODIFY THE .yml EXTENSION
+          # DO NOT MODIFY THE .yml EXTENSION - File included for macros/custom templates
           #----------------------------------------------------------------------------#
           message: !include hub_build_message.yml

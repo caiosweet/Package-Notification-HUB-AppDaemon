@@ -2,7 +2,8 @@ homeassistant:
   customize:
     package.cn:
       extra_attributes: &extra_attributes
-        attribution: "Caio & Gianpi - Centro Notifiche 🔔 hassiohelp.eu"
+        attribution: "Centro Notifiche 🔔 Caio & Gianpi by hassiohelp.eu"
+
 #######################################-#######################################
 ##                                 CUSTOMIZE
 #######################################-#######################################
@@ -185,6 +186,7 @@ homeassistant:
     script.my_notify:
       <<: *extra_attributes
       friendly_name: "My Notify"
+      icon: mdi:script-text-play
     ## SENSOR
     sensor.notifier_debug_error:
       <<: *extra_attributes
@@ -210,10 +212,10 @@ homeassistant:
       friendly_name: "Alexa parla"
       icon: mdi:speaker-message
     ## BUTTON
-    button.notifier_ssml_reset:
+    button.notifier_alexa_ssml_reset:
       <<: *extra_attributes
       friendly_name: "Ripristina SSML"
-      # icon: mdi:restore
+      icon: mdi:gesture-tap-button
     ## GROUP
     group.notifier_player_alexa:
       <<: *extra_attributes
@@ -224,7 +226,7 @@ homeassistant:
       <<: *extra_attributes
       friendly_name: "Alexa Off/On"
       icon: mdi:dots-circle
-      # icon: mdi:alpha-a-circle
+      # icon: si:amazonalexa
     input_boolean.notifier_alexa_smart_volume:
       <<: *extra_attributes
       friendly_name: "Imposta volume smart"
@@ -289,7 +291,7 @@ homeassistant:
       <<: *extra_attributes
       friendly_name: "Google Off/On"
       icon: mdi:dots-horizontal-circle-outline
-    input_select.notifier_tts_notify:
+    input_select.notifier_google_tts_notify:
       <<: *extra_attributes
       friendly_name: "Servizio TTS"
       icon: mdi:form-select

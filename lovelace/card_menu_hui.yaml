@@ -227,7 +227,7 @@ card:
             tap_action:
               action: toggle
           - type: button
-            entity: input_select.notifier_tts_notify
+            entity: input_select.notifier_google_tts_notify
             show_icon: false
             show_name: false
             show_state: true
@@ -235,7 +235,7 @@ card:
               action: call-service
               service: input_select.select_next
               service_data:
-                entity_id: input_select.notifier_tts_notify
+                entity_id: input_select.notifier_google_tts_notify
           - type: button
             entity: button.notifier_last_message
             icon_height: 24px
