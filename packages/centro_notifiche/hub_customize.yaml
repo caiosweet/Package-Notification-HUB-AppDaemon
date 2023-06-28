@@ -186,6 +186,7 @@ homeassistant:
     script.my_notify:
       <<: *extra_attributes
       friendly_name: "My Notify"
+      icon: mdi:script-text-play
     ## SENSOR
     sensor.notifier_debug_error:
       <<: *extra_attributes
@@ -214,7 +215,7 @@ homeassistant:
     button.notifier_alexa_ssml_reset:
       <<: *extra_attributes
       friendly_name: "Ripristina SSML"
-      # icon: mdi:restore
+      icon: mdi:gesture-tap-button
     ## GROUP
     group.notifier_player_alexa:
       <<: *extra_attributes
