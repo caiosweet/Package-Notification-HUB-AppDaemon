@@ -1,12 +1,12 @@
 blueprint:
   name: Centro Notifiche - Configurazione Avvio
   description: >
-    `v5.1.0`
+    `v5.1.1`
 
     Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
     per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
     Authors [Caio](https://github.com/caiosweet), [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 01/11/2019 - Updated 18/06/2023
+    Date Started 01/11/2019 - Updated 01/07/2023
 
     Guida di riferimento per l'utilizzo del Progetto Centro Notifiche, ed altre informazioni le trovi sul [wiki](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki)
 
@@ -133,6 +133,7 @@ blueprint:
         Se desideri inviare notifiche multiple a dispositivi diversi, 
         e non hai creato un [gruppo di notify](https://www.home-assistant.io/integrations/group/#notify-groups), basta aggiungere più servizi separati da una virgola. 
         `(es. - notify.notify, notify.mobile_app_pixel_7)`
+        `(può andare bene anche senza notify: - Mobile App Pixel 7, telegram)`
 
         Esempio completo, di come compilare la lista a mano, con servizi multipli e singoli.
         ```
@@ -141,6 +142,10 @@ blueprint:
         - notify.notify, notify.mobile_app_pixel_7
         - notify.discord, notify.telegram, notify.pushover
         - notify.persistent_notification
+        - Telegram html
+        - News Telegram
+        - Test Nome NOTIFICA
+        - Mobile App Pixel 7, Pushbullet, Pushover, WhatsApp
         ```
 
         _List of notify service_
@@ -176,6 +181,8 @@ blueprint:
       name: Notify service Notification Home Assistant Event
       description: |-
         Puoi scegliere uno o più servizi di "notify" diversi, per le notifiche di Home Assistant, invece di quello predefinito.
+        Per esempio, se vuoi ricevere le notifche di Home Assistant Start/Final Write/Close/Stop/Restart solo sul dispositivo mobile
+        `- notify.mobile_app_pixel_7 `
 
         _You can choose one or more different "notify" services for Home Assistant notifications instead of the default one._
         default: the state of the text notification selector
@@ -231,6 +238,7 @@ blueprint:
       name: Service TTS Google
       description: |-
         Inserire il servizio per il [TTS Google Translate](https://www.home-assistant.io/integrations/google_translate/).
+        Ad esempio se il servizio è tts.google_say basta scrivere solo google_say
 
         _Service [Text-to-Speech (TTS)](https://www.home-assistant.io/integrations/tts/#service-say-legacy): 
         Say a TTS message with Google Translate_

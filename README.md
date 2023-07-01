@@ -34,7 +34,7 @@ How to reach us:<br>
 
 To get started, go to the **[Wiki page][Wiki]**.
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fcaiosweet%2FPackage-Notification-HUB-AppDaemon%2Fblob%2Fbeta%2Fblueprints%2Fautomation%2Fcaiosweet%2Fnotifier_startup_configuration.yaml)
+[![][blueprint_import_shield]][blueprint_notifier_startup_configuration]
 
 ___
 
@@ -104,3 +104,5 @@ ___
 
 [link-homeassistant]:https://www.home-assistant.io/getting-started
 [Wiki]: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
+[blueprint_import_shield]: https://my.home-assistant.io/badges/blueprint_import.svg
+[blueprint_notifier_startup_configuration]: https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fcaiosweet%2FPackage-Notification-HUB-AppDaemon%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fcaiosweet%2Fnotifier_startup_configuration.yaml
