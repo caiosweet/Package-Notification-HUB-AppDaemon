@@ -1,7 +1,7 @@
 homeassistant:
   customize:
     package.cn:
-      version: &v "5.1.0"
+      version: &v "5.1.1"
       date: 📅 01/11/2019 - Updated 27/06/2023
       info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
       links: 
