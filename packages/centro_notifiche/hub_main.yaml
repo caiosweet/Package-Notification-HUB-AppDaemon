@@ -1,7 +1,7 @@
 homeassistant:
   customize:
     package.cn:
-      version: &v "5.1.1"
+      version: &v "5.1.2"
       date: 📅 01/11/2019 - Updated 27/06/2023
       info: https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki
       links: 
@@ -158,8 +158,8 @@ template:
           {% set no_workday = integration_entities('workday') | select('is_state', 'off') | list %}
           {% set holidays = is_state('input_boolean.notifier_holidays', 'on') %}
           {% set day = iif(holidays or no_workday, 'holidays', 'weekdays') %}
-          {% set start = state_attr('input_datetime.notifier_start_%s'%day, 'timestamp') %}
-          {% set end = state_attr('input_datetime.notifier_end_%s'%day, 'timestamp') %}
+          {% set start = state_attr('input_datetime.notifier_start_%s'%day, 'timestamp') | default(0, true) %}
+          {% set end = state_attr('input_datetime.notifier_end_%s'%day, 'timestamp') | default(0, true) %}
           {% set dnd = iif(start <= end, (start <= nt < end), (nt >= start or nt < end)) %}
           {{ iif(speech and not priority, dnd, (not (speech or priority)), false) }}
         icon: >-

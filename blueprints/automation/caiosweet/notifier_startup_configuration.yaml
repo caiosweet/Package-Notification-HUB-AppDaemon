@@ -1,7 +1,7 @@
 blueprint:
   name: Centro Notifiche - Configurazione Avvio
   description: >
-    `v5.1.1`
+    `v5.1.2`
 
     Blueprint per la configurazione del [Package Centro Notifiche](https://api.github.com/repos/caiosweet/Package-Notification-HUB-AppDaemon/releases/latest)
     per Appdaemon [Notifier Center](https://github.com/jumping2000/notifier) 🔔 - 
