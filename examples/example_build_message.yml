@@ -4,7 +4,7 @@
   {#             MACRO E IMPOSTAZIONI              #}
   {# ********************************************* #}
 
-  {%- set nome = states('input_text.personal_assistant_name') -%}
+  {%- set nome = states('sensor.notifier_config') | default('Maggiordomo') -%}
     {% if nome | length == 0 %}
       {% set nome = 'Home Assistant' %}
     {%- endif -%}
@@ -35,7 +35,7 @@
     {% else %}
       {% set annuncio = ["Buonasera. "] %}
     {% endif %}
-    {{ annuncio|random }}
+    {{ annuncio | random }}
   {%- endmacro -%}
 
   {%- macro saluto() -%}
@@ -51,7 +51,7 @@
       "Ciao ciao, "
       "aloha, ",
     ] %}
-    {{ saluto|random }}
+    {{ saluto | random }}
   {%- endmacro -%}
 
   {%- macro informare() -%}
@@ -67,7 +67,7 @@
       "Il mio scopo è tenerti informato, ",
       "Pensavo che ti piacesse saperlo. "
     ] %}
-    {{ informare|random }}
+    {{ informare | random }}
   {%- endmacro -%}
 
   {%- macro info() -%}
@@ -83,10 +83,10 @@
       "Mmm, aggiungo, ",
       "Devo ricordarti sempre tutto, "
     ] %}
-    {{ info|random }}
+    {{ info | random }}
   {%- endmacro -%}
 
-  {%- macro va_bene()-%}
+  {%- macro va_bene() -%}
     {% set va_bene = [
       "Va bene. Vi amo ragazzi. ",
       "Idea straordinariamente cattiva. Bene.. ",
@@ -111,7 +111,7 @@
       "Non ho potuto fare questo 800 riavvii fa, ma a quanto pare ora posso. "
       "Si. Ciao. "
     ] %}
-    {{ va_bene|random }}
+    {{ va_bene | random }}
   {%- endmacro -%}
 
   {%- macro bentornato(person) -%}
@@ -126,7 +126,7 @@
   {%- endmacro -%}
 
   {%- macro modo_ospite() -%}
-    {% if is_state ('input_boolean.guest_mode', 'on') %}
+    {% if is_state ('input_boolean.notifier_guest_mode', 'on') %}
       {% set modo_ospite = [
         "yippii, sembra che abbiamo un ospite in casa. ",
         "toc toc, abbiamo un ospite. Attiverò la modalità ospite. ",
@@ -143,7 +143,7 @@
         "fiuu, dal momento che non ci sono più ospiti mi permetto di disabilitare la modalità ospite. "
       ] %}
     {% endif %}
-    {{ modo_ospite|random }}
+    {{ modo_ospite | random }}
   {%- endmacro -%}
 
   {%- macro inizio_lavoro(person) -%}
@@ -176,7 +176,7 @@
   {%- endmacro -%}
 
   {%- macro meteo_ora() -%}
-    Fuori, sarà {{ states('sensor.dark_sky_hourly_summary')|lower }}
+    Fuori, sarà {{ states('sensor.dark_sky_hourly_summary') | lower }}
   {%- endmacro -%}
 
   {%- macro cattivo_tempo() -%}
@@ -203,7 +203,7 @@
   {%- macro controllo_luci() -%}
     {% if states.group.all_lights.state != 'off' %}
       {% set n = states.light | selectattr('state', 'eq', 'on') | list | count %}
-      {% set x = states.light | selectattr('state', 'eq', 'on') |join(', ', attribute='name') |replace('_',' ') %}
+      {% set x = states.light | selectattr('state', 'eq', 'on') | join(', ', attribute='name') | replace('_',' ') %}
       {% if n %}
         c'è una luce accesa in casa. Luce {{x}}
       {% elif  n > 1 %}
@@ -216,8 +216,8 @@
 
   {%- macro controllo_prese() -%}
     {% if states.group.all_switches.state != 'off' %}
-      {% set n = states.switch | selectattr('state', 'eq', 'on') | rejectattr('attributes.package')| list | count %}
-      {% set x = states.switch | selectattr('state', 'eq', 'on') | rejectattr('attributes.package') |join(', ', attribute='name') |replace('_',' ') %}
+      {% set n = states.switch | selectattr('state', 'eq', 'on') | rejectattr('attributes.package') | list | count %}
+      {% set x = states.switch | selectattr('state', 'eq', 'on') | rejectattr('attributes.package') | join(', ', attribute='name') | replace('_',' ') %}
       {% if n %}
         c'è un interruttore acceso. {{x}}
       {% elif n > 1 %}
@@ -230,8 +230,8 @@
 
   {%- macro controllo_infissi() -%}
     {% if states.group.finestre_gr.state != 'off'  %}
-      {% set n = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'window')|list|count %}
-      {% set x = states.binary_sensor |selectattr('state', 'eq', 'on')|selectattr('attributes.device_class', 'eq', 'window')|join(', ', attribute='name') |replace('_',' ') %}
+      {% set n = states.binary_sensor | selectattr('state', 'eq', 'on') | selectattr('attributes.device_class', 'eq', 'window') | list | count %}
+      {% set x = states.binary_sensor | selectattr('state', 'eq', 'on') | selectattr('attributes.device_class', 'eq', 'window') | join(', ', attribute='name') | replace('_',' ') %}
       {% if n %}
         c'è un infisso aperto in casa, {{x}}.
       {% elif  n > 1 %}
@@ -287,14 +287,14 @@
   {%- endmacro -%}
 
   {%- macro uv() -%}
-    {% if states.sensor.dark_sky_uv_index.state|int >= 6 %}
+    {% if states.sensor.dark_sky_uv_index.state|int(0) >= 6 %}
       L'indice UV di oggi è, {{ states.sensor.dark_sky_uv_index.state }}. 
     {% endif -%}
-    {% if 6 <= states.sensor.dark_sky_uv_index.state|int <= 7.9 %}
-      Se vai fuori, dovresti indossare una protezione solare.
-    {% elif 8 <= states.sensor.dark_sky_uv_index.state|int <= 10.9 %}
+    {% if 6 <= states.sensor.dark_sky_uv_index.state|int(0) <= 7.9 %}
+      Se vai fuori, dovresti indossare una protezione solare.
+    {% elif 8 <= states.sensor.dark_sky_uv_index.state|int(0) <= 10.9 %}
       Questo è MOLTO ALTO. Assicurarsi di indossare la protezione solare e riapplicare.
-    {% elif states.sensor.dark_sky_uv_index.state|int >= 11 %}
+    {% elif states.sensor.dark_sky_uv_index.state|int(0) >= 11 %}
       Questo è ESTREMO. Dovresti essere molto prudente andando fuori.
     {% else %}
       {{ fatto_casuale() }}
@@ -309,29 +309,31 @@
   {#        INIZIO SEQUENZIALE DELLA COSTRUZIONE DEL MESSAGGIO / NOTICIA         #}
   {# *************************************************************************** #}
 
-  {% if not call_no_annuncio|default %} {{ annuncio() }} {% endif %}
-  {% if call_saluto|default %} {{ saluto() }} {% endif %}
-  {% if call_introduzione|default %} {{ introduzione() }} {% endif %}
-  {% if call_va_bene|default %} {{ va_bene () }} {% endif %}
-  {% if call_informare|default %} {{ informare() }} {% endif %}
-  {% if call_info|default %} {{ info() }} {% endif %}
-  {% if call_modo_ospite|default %} {{ modo_ospite() }} {% endif %}
+  {# {% if not call_no_annuncio | default %} {{ annuncio() }} {% endif %} #}
+  {% if not call_no_annuncio | default %} {{ annuncio() }} {% endif %}
+  {% if call_annuncio | default %} {{ annuncio() }} {% endif %}
+  {% if call_saluto | default %} {{ saluto() }} {% endif %}
+  {% if call_introduzione | default %} {{ introduzione() }} {% endif %}
+  {% if call_va_bene | default %} {{ va_bene () }} {% endif %}
+  {% if call_informare | default %} {{ informare() }} {% endif %}
+  {% if call_info | default %} {{ info() }} {% endif %}
+  {% if call_modo_ospite | default %} {{ modo_ospite() }} {% endif %}
 
   {# Esempio di come aggiungere altre variabili - Chiamata da Automazione di Benvenuto #}
-  {{ benvenuto|default }}
+  {{ benvenuto | default }}
 
-  {% if call_bentornato|default %} {{ bentornato(person) }} {% endif %}
-  {% if call_inizio_lavoro|default %} {{ inizio_lavoro(person) }} {% endif %}
-  {% if call_fine_lavoro|default %} {{ fine_lavoro(person) }} {% endif %}
-  {% if call_controllo_luci|default %} {{ controllo_luci() }} {% endif %}
-  {% if call_controllo_prese|default %} {{ controllo_prese() }} {% endif %}
-  {% if call_controllo_infissi|default %} {{ controllo_infissi() }} {% endif %}
-  {% if call_avviso_pioggia|default %} {{ avviso_pioggia(cattivo_tempo())}} {% endif %}
+  {% if call_bentornato | default %} {{ bentornato(person) }} {% endif %}
+  {% if call_inizio_lavoro | default %} {{ inizio_lavoro(person) }} {% endif %}
+  {% if call_fine_lavoro | default %} {{ fine_lavoro(person) }} {% endif %}
+  {% if call_controllo_luci | default %} {{ controllo_luci() }} {% endif %}
+  {% if call_controllo_prese | default %} {{ controllo_prese() }} {% endif %}
+  {% if call_controllo_infissi | default %} {{ controllo_infissi() }} {% endif %}
+  {% if call_avviso_pioggia | default %} {{ avviso_pioggia(cattivo_tempo()) }} {% endif %}
   {# + Contenuto del messaggio passato tramite automazioni/script + #}
-  
-  {{ message|default }}
 
-  {% if call_arrivederci|default %} {{ arrivederci() }} {% endif %}
-  {% if call_spegni|default %} {{ spegni() }} {% endif %}
-  {% if call_nuovo_dispositivo|default %} {{ nuovo_dispositivo(introduzione()) }} {% endif %}
-  {% if call_fatto_casuale|default %} {{ fatto_casuale() }} {% endif %}
+  {{ message | default }}
+
+  {% if call_arrivederci | default %} {{ arrivederci() }} {% endif %}
+  {% if call_spegni | default %} {{ spegni() }} {% endif %}
+  {% if call_nuovo_dispositivo | default %} {{ nuovo_dispositivo(introduzione()) }} {% endif %}
+  {% if call_fatto_casuale | default %} {{ fatto_casuale() }} {% endif %}
