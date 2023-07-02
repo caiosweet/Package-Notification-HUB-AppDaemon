@@ -36,6 +36,8 @@ To get started, go to the **[Wiki page][Wiki]**.
 
 [![][blueprint_import_shield]][blueprint_notifier_startup_configuration]
 
+![Blueprint Configuration](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon/wiki/assets/videos/blueprint_centro_notifiche_configuration_and_changes.gif)
+
 ___
 
 ## Dashboard preview
