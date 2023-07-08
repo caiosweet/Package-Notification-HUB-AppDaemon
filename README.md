@@ -32,7 +32,7 @@ How to reach us:<br>
 
 ## [Getting Started][Wiki]
 
-To get started, go to the **[Wiki page][Wiki]**.
+To get started 📚 Read the **[Wiki page][Wiki]**.
 
 [![][blueprint_import_shield]][blueprint_notifier_startup_configuration]
 

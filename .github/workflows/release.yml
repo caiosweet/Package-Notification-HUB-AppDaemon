@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-
+    paths:
+      - packages/**
+      - blueprints/**
   workflow_dispatch:
 
 jobs:
